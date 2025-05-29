@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3: Probability</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <style>
+        :root {
+            --primary: #0466c8;
+            --primary-light: #e0f2fe;
+            --accent: #0353a4;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --info: #4361ee;
+            --gray-light: #dee2e6;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: var(--dark);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+        
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tip {
+            background-color: var(--primary-light);
+            border-left: 5px solid var(--primary);
+            border-radius: 5px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .tip::before {
+            content: "💡";
+            font-size: 1.5rem;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+        }
+        
+        .warning {
+            background-color: #fff8e6;
+            border-left: 5px solid var(--warning);
+            border-radius: 5px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .warning::before {
+            content: "⚠️";
+            font-size: 1.5rem;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+        }
+        
+        .objectives-toggle {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+        
+        .objectives-toggle:hover {
+            background-color: var(--accent);
+        }
+        
+        .objectives-toggle::after {
+            content: "▼";
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .objectives-toggle.active::after {
+            transform: rotate(180deg);
+        }
+        
+        .objectives-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            background-color: var(--light);
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .objectives-content.show {
+            padding: 20px;
+            max-height: 800px;
+        }
+        
+        .week-overview {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .week-image {
+            flex: 0 0 80px;
+            height: 80px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .week-content {
+            flex: 1;
+        }
+        
+        .chapter-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .chapter-section {
+            background-color: var(--light);
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .chapter-section h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        
+        .section-number {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+        }
+        
+        .deadline-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .deadline-list li {
+            background-color: var(--light);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .deadline-list li:hover {
+            transform: translateX(5px);
+        }
+        
+        .deadline-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: var(--primary);
+        }
+        
+        .deadline-date {
+            margin-left: auto;
+            background-color: var(--primary-light);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .resources-section {
+            margin-top: 30px;
+        }
+        
+        .resource-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .resource-item {
+            flex: 1 1 200px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .resource-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .resource-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: var(--info);
+        }
+
+        .probability-interactive {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .dice {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .dice:hover {
+            transform: scale(1.1);
+            background: var(--primary-light);
+        }
+
+        .probability-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .prob-btn {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .prob-btn:hover {
+            background: var(--accent);
+        }
+
+        .probability-result {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid var(--success);
+        }
+
+        #sampleSpaceContainer {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        
+        #sampleSpaceContainer h3 {
+            text-align: center;
+            color: #3498DB;
+            margin-bottom: 10px;
+        }
+        
+        #sampleSpaceGrid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .sample-space-cell {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            padding: 8px;
+            text-align: center;
+            font-size: 0.9em;
+            border-radius: 3px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .highlighted-outcome {
+            background-color: #AED6F1;
+            color: #1A5276;
+            font-weight: bold;
+        }
+        
+        #favorableOutcomesDisplay {
+            font-size: 0.9em;
+            word-break: break-all;
+            background-color: #eef;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .probability-result h4, .experimental-results h4 {
+            margin-top: 0;
+            color: #3498DB;
+        }
+        
+        .experimental-results {
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        
+        @media (max-width: 768px) {
+            .chapter-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .week-overview {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .deadline-list li {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .deadline-date {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            
+            .deadline-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .dice-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .probability-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Week 3: Probability</h1>
+    
+    <div class="week-overview">
+        <div class="week-image">3</div>
+        <div class="week-content">
+            <h2>Quantifying Uncertainty</h2>
+            <p>This week we explore the fascinating world of probability, learning to quantify uncertainty and understand the mathematical framework that underlies statistical inference. You'll master the tools needed to calculate probabilities for complex events and understand how sample results relate to population characteristics.</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🎲 Interactive Probability Explorer</h2>
+        <p style="text-align: center; margin-bottom: 20px; color: #666;">
+            Explore probability concepts by rolling dice and observing different events.
+        </p>
+        
+        <div class="probability-interactive">
+            <div class="dice-container">
+                <div class="dice" id="dice1" onclick="rollDice(1)">?</div>
+                <div class="dice" id="dice2" onclick="rollDice(2)">?</div>
+            </div>
+            
+            <div class="probability-buttons">
+                <button class="prob-btn" onclick="rollBoth()">Roll Both Dice</button>
+                <button class="prob-btn" onclick="reset()">Reset All</button>
+            </div>
+            <p style="text-align: center; margin-bottom: 5px; color: #555; font-weight: bold;">Select an Event to Analyze:</p>
+            <div class="probability-buttons">
+                <button class="prob-btn" onclick="showEvent('bothEven')">Both Dice Even</button>
+                <button class="prob-btn" onclick="showEvent('sum7')">Sum = 7</button>
+                <button class="prob-btn" onclick="showEvent('doubles')">Doubles</button>
+                <button class="prob-btn" onclick="showEvent('sumGreaterThan8')">Sum > 8</button>
+                <button class="prob-btn" onclick="showEvent('atLeastOneSix')">At Least One 6</button>
+            </div>
+            
+            <div id="sampleSpaceContainer" style="display: none;">
+                <h3>Sample Space ($S$) - All Possible Outcomes ($n(S)=36$)</h3>
+                <div id="sampleSpaceGrid"></div>
+            </div>
+            
+            <div id="probabilityResult" class="probability-result" style="display: none;">
+                <div id="theoreticalAnalysis">
+                    <h4>Theoretical Analysis</h4>
+                    <p><strong>Sample Space ($S$):</strong> The set of all 36 possible outcomes when rolling two fair six-sided dice. $n(S) = 36$.</p>
+                    <p><strong>Event ($E$):</strong> <span id="eventNameDisplay" style="font-weight:bold;"></span> - <span id="eventDescriptionDisplay"></span></p>
+                    <p><strong>Favorable Outcomes for $E$ (Total: <span id="nEDisplay"></span>):</strong></p>
+                    <div id="favorableOutcomesDisplay"></div>
+                    <p><strong>Theoretical Probability $P(E) = \frac{n(E)}{n(S)}$:</strong> <span id="theoreticalProbabilityDisplay"></span></p>
+                </div>
+                <div id="currentRollAnalysis" style="display: none; margin-top: 15px; padding-top:10px; border-top: 1px dashed #ccc;">
+                    <h4>Current Roll Analysis</h4>
+                    <p id="currentRollOutcome"></p>
+                    <p id="currentRollEventCheck"></p>
+                </div>
+            </div>
+            
+            <div id="experimentalResults" class="experimental-results" style="display: none;">
+                <h4>Experimental Results</h4>
+                <p id="trialCount"></p>
+                <p id="eventOccurrences"></p>
+                <p id="experimentalProbability"></p>
+                <p style="font-size:0.8em; color: #666;">Experimental results are based on all rolls made since the page loaded.</p>
+            </div>
+            
+            <div style="text-align: center; font-size: 0.9em; color: #666; margin-top: 20px;">
+                <strong>Instructions:</strong> Click on individual dice or "Roll Both Dice". Then, select an event type to see its theoretical probability, how it relates to the sample space, and how it compares to experimental results over multiple rolls.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let dice1Value = null;
+        let dice2Value = null;
+        let rollHistory = [];
+        let currentEventForAnalysis = null;
+
+        const allPossibleOutcomes = [];
+        for (let i = 1; i <= 6; i++) {
+            for (let j = 1; j <= 6; j++) {
+                allPossibleOutcomes.push([i, j]);
+            }
+        }
+
+        const eventDefinitions = {
+            'bothEven': {
+                name: "Both Dice Even",
+                descriptionText: "Both dice land on an even number.",
+                isFavorable: (d1, d2) => d1 % 2 === 0 && d2 % 2 === 0,
+            },
+            'sum7': {
+                name: "Sum is 7",
+                descriptionText: "The sum of the two dice is 7.",
+                isFavorable: (d1, d2) => (d1 + d2) === 7,
+            },
+            'doubles': {
+                name: "Doubles",
+                descriptionText: "Both dice show the same number.",
+                isFavorable: (d1, d2) => d1 === d2,
+            },
+            'sumGreaterThan8': {
+                name: "Sum > 8",
+                descriptionText: "The sum of the two dice is greater than 8.",
+                isFavorable: (d1, d2) => (d1 + d2) > 8,
+            },
+            'atLeastOneSix': {
+                name: "At Least One 6",
+                descriptionText: "At least one die shows a 6.",
+                isFavorable: (d1, d2) => d1 === 6 || d2 === 6,
+            }
+        };
+
+        // Pre-calculate favorable outcomes and probabilities
+        Object.keys(eventDefinitions).forEach(key => {
+            const event = eventDefinitions[key];
+            event.favorableOutcomesList = allPossibleOutcomes.filter(outcome => event.isFavorable(outcome[0], outcome[1]));
+            event.nE = event.favorableOutcomesList.length;
+            event.theoreticalProbValue = event.nE / 36;
+            event.theoreticalProbText = `${event.nE}/36 = ${reduceFraction(event.nE, 36)}`;
+        });
+
+        function gcd(a, b) {
+            return b === 0 ? a : gcd(b, a % b);
+        }
+
+        function reduceFraction(numerator, denominator) {
+            const commonDivisor = gcd(numerator, denominator);
+            const num = numerator / commonDivisor;
+            const den = denominator / commonDivisor;
+            if (den === 1) return `${num}`;
+            return `${num}/${den}`;
+        }
+
+        function initializeTool() {
+            const sampleSpaceGrid = document.getElementById('sampleSpaceGrid');
+            sampleSpaceGrid.innerHTML = ''; // Clear previous cells
+            allPossibleOutcomes.forEach(outcome => {
+                const cell = document.createElement('div');
+                cell.classList.add('sample-space-cell');
+                cell.id = `cell-${outcome[0]}-${outcome[1]}`;
+                cell.textContent = `(${outcome[0]},${outcome[1]})`;
+                sampleSpaceGrid.appendChild(cell);
+            });
+            document.getElementById('sampleSpaceContainer').style.display = 'block';
+        }
+
+        function rollSingleDie(diceNum) {
+            const value = Math.floor(Math.random() * 6) + 1;
+            if (diceNum === 1) {
+                dice1Value = value;
+                document.getElementById('dice1').textContent = value;
+            } else {
+                dice2Value = value;
+                document.getElementById('dice2').textContent = value;
+            }
+        }
+
+        function rollDice(diceNum) {
+            rollSingleDie(diceNum);
+            if (dice1Value && dice2Value) { // Only add to history and update if both are rolled
+                // Check if the other die has a value, if not, don't proceed with full analysis yet
+                const otherDiceVal = (diceNum === 1) ? dice2Value : dice1Value;
+                if (otherDiceVal !== null) {
+                    // Intentionally create a new pair for history if one die is re-rolled
+                    // This might be confusing if one die is clicked multiple times after both have values.
+                    // A "full roll" means both dice have new values.
+                    // For simplicity now, any click updates the pair if both are set.
+                    rollHistory.push([dice1Value, dice2Value]); // Add latest pair
+                    updateAnalysisDisplay();
+                    updateCurrentRollAnalysisDisplay();
+                }
+            } else if (diceNum === 1 && dice2Value === null) {
+                document.getElementById('dice2').textContent = '?'; // Visually reset other die if not rolled yet
+            } else if (diceNum === 2 && dice1Value === null) {
+                document.getElementById('dice1').textContent = '?';
+            }
+            updateCurrentRollAnalysisDisplay(); // Update even if only one die rolled (for current roll section)
+        }
+
+        function rollBoth() {
+            rollSingleDie(1);
+            rollSingleDie(2);
+            rollHistory.push([dice1Value, dice2Value]);
+            updateAnalysisDisplay();
+            updateCurrentRollAnalysisDisplay();
+        }
+
+        function reset() {
+            dice1Value = null;
+            dice2Value = null;
+            rollHistory = [];
+            currentEventForAnalysis = null;
+
+            document.getElementById('dice1').textContent = '?';
+            document.getElementById('dice2').textContent = '?';
+
+            document.getElementById('probabilityResult').style.display = 'none';
+            document.getElementById('experimentalResults').style.display = 'none';
+            document.getElementById('currentRollAnalysis').style.display = 'none';
+            // document.getElementById('sampleSpaceContainer').style.display = 'none'; // Keep sample space visible
+
+            clearSampleSpaceHighlights();
+            // Optionally clear text fields if desired
+            document.getElementById('trialCount').textContent = '';
+            document.getElementById('eventOccurrences').textContent = '';
+            document.getElementById('experimentalProbability').textContent = '';
+        }
+
+        function clearSampleSpaceHighlights() {
+            allPossibleOutcomes.forEach(outcome => {
+                const cell = document.getElementById(`cell-${outcome[0]}-${outcome[1]}`);
+                if (cell) cell.classList.remove('highlighted-outcome');
+            });
+        }
+
+        function showEvent(eventType) {
+            currentEventForAnalysis = eventType;
+            const eventData = eventDefinitions[eventType];
+
+            if (!eventData) {
+                alert('Event definition not found!');
+                return;
+            }
+
+            document.getElementById('eventNameDisplay').textContent = eventData.name;
+            document.getElementById('eventDescriptionDisplay').textContent = eventData.descriptionText;
+
+            const favorableOutcomesHtml = eventData.favorableOutcomesList.map(o => `(${o[0]},${o[1]})`).join(', ');
+            document.getElementById('favorableOutcomesDisplay').innerHTML = favorableOutcomesHtml || 'None';
+            document.getElementById('nEDisplay').textContent = eventData.nE;
+
+            document.getElementById('theoreticalProbabilityDisplay').innerHTML =
+                `$P(E) = \\frac{${eventData.nE}}{36} = ${eventData.theoreticalProbText} \\approx ${eventData.theoreticalProbValue.toFixed(3)}$`;
+
+            clearSampleSpaceHighlights();
+            eventData.favorableOutcomesList.forEach(outcome => {
+                const cell = document.getElementById(`cell-${outcome[0]}-${outcome[1]}`);
+                if (cell) cell.classList.add('highlighted-outcome');
+            });
+
+            document.getElementById('probabilityResult').style.display = 'block';
+            document.getElementById('experimentalResults').style.display = 'block';
+
+            updateAnalysisDisplay(); // Update experimental results for the new event
+            updateCurrentRollAnalysisDisplay(); // Update current roll analysis for the new event
+            
+            // Re-render MathJax for the new content
+            if (window.MathJax) {
+                MathJax.typesetPromise([document.getElementById('probabilityResult')]).catch((err) => console.log(err.message));
+            }
+        }
+
+        function updateCurrentRollAnalysisDisplay() {
+            const currentRollDiv = document.getElementById('currentRollAnalysis');
+            if (!currentEventForAnalysis || dice1Value === null || dice2Value === null) {
+                currentRollDiv.style.display = 'none';
+                return;
+            }
+
+            const eventData = eventDefinitions[currentEventForAnalysis];
+            document.getElementById('currentRollOutcome').textContent = `Current Roll: (${dice1Value}, ${dice2Value})`;
+
+            const isFavorableNow = eventData.isFavorable(dice1Value, dice2Value);
+            document.getElementById('currentRollEventCheck').innerHTML =
+                `Does this roll satisfy event '${eventData.name}'? <strong>${isFavorableNow ? 'Yes ✓' : 'No ✗'}</strong>`;
+
+            currentRollDiv.style.display = 'block';
+        }
+
+        function updateAnalysisDisplay() {
+            if (!currentEventForAnalysis) { // Don't display if no event is selected
+                document.getElementById('experimentalResults').style.display = 'none';
+                return;
+            }
+            document.getElementById('experimentalResults').style.display = 'block';
+
+            const eventData = eventDefinitions[currentEventForAnalysis];
+            const trialsForCurrentEvent = rollHistory.length;
+
+            document.getElementById('trialCount').textContent = `Total Rolls Recorded: ${trialsForCurrentEvent}`;
+
+            if (trialsForCurrentEvent === 0) {
+                document.getElementById('eventOccurrences').textContent = `Occurrences of '${eventData.name}': 0`;
+                document.getElementById('experimentalProbability').innerHTML = `Experimental $P(${eventData.name}) = 0/0 = \\text{N/A}$`;
+                return;
+            }
+
+            const eventOccurrencesCount = rollHistory.filter(roll => eventData.isFavorable(roll[0], roll[1])).length;
+
+            document.getElementById('eventOccurrences').textContent = `Occurrences of '${eventData.name}': ${eventOccurrencesCount}`;
+
+            const experimentalProbValue = (eventOccurrencesCount / trialsForCurrentEvent);
+            document.getElementById('experimentalProbability').innerHTML =
+                `Experimental $P(${eventData.name}) = \\frac{${eventOccurrencesCount}}{${trialsForCurrentEvent}} \\approx ${experimentalProbValue.toFixed(3)}$`;
+                
+            // Re-render MathJax for the experimental results
+            if (window.MathJax) {
+                MathJax.typesetPromise([document.getElementById('experimentalResults')]).catch((err) => console.log(err.message));
+            }
+        }
+
+        // Initialize the sample space grid on load
+        window.onload = initializeTool;
+    </script>
+    
+    <section class="card">
+        <h2>Chapter 3: Probability</h2>
+        <p>Building on our foundation of descriptive statistics from Chapter 2, we now explore probability—the mathematical framework for quantifying uncertainty. Understanding probability is essential for making statistical inferences, as it allows us to determine how likely our sample results are under different assumptions about the population.</p>
+        
+        <div class="chapter-sections">
+            <div class="chapter-section">
+                <h3><span class="section-number">3.1</span> Events, Sample Spaces, and Probability</h3>
+                <p>Fundamental concepts: experiments, sample points, sample spaces, and probability assignments</p>
+            </div>
+            
+            <div class="chapter-section">
+                <h3><span class="section-number">3.2</span> Unions and Intersections</h3>
+                <p>Compound events: combining events using "or" (union) and "and" (intersection)</p>
+            </div>
+            
+            <div class="chapter-section">
+                <h3><span class="section-number">3.3</span> Complementary Events</h3>
+                <p>The complement rule: P(A) + P(A^c) = 1, useful for calculating "at least one" problems</p>
+            </div>
+            
+            <div class="chapter-section">
+                <h3><span class="section-number">3.4</span> Additive Rule and Mutually Exclusive Events</h3>
+                <p>Addition rule for unions: P(A ∪ B) = P(A) + P(B) - P(A ∩ B)</p>
+            </div>
+            
+            <div class="chapter-section">
+                <h3><span class="section-number">3.5</span> Conditional Probability</h3>
+                <p>Probability of events given that other events have occurred: P(A|B)</p>
+            </div>
+            
+            <div class="chapter-section">
+                <h3><span class="section-number">3.6</span> Multiplicative Rule and Independent Events</h3>
+                <p>Multiplication rule for intersections and the concept of statistical independence</p>
+            </div>
+            
+            <div class="chapter-section">
+                <h3><span class="section-number">3.7</span> Additional Counting Rules</h3>
+                <p>Permutations, combinations, and other counting techniques for complex probability problems</p>
+            </div>
+            
+            <div class="chapter-section">
+                <h3><span class="section-number">3.8</span> Bayes' Rule</h3>
+                <p>Updating probabilities based on new evidence: the foundation of Bayesian inference</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="card">
+        <h2>Learning Objectives</h2>
+        <button class="objectives-toggle">View Learning Objectives</button>
+        <div class="objectives-content">
+            <p>By the end of this week, you should be able to:</p>
+            <ul>
+                <li>Define experiments, sample spaces, events, and assign probabilities to sample points (3.1)</li>
+                <li>Use counting rules (combinations) to determine the number of sample points in complex experiments (3.1)</li>
+                <li>Calculate probabilities of compound events using unions and intersections (3.2)</li>
+                <li>Apply the rule of complements to solve "at least one" probability problems (3.3)</li>
+                <li>Use the additive rule and identify mutually exclusive events (3.4)</li>
+                <li>Calculate and interpret conditional probabilities in real-world contexts (3.5)</li>
+                <li>Apply the multiplicative rule and determine when events are independent (3.6)</li>
+                <li>Use advanced counting rules (permutations, combinations) for complex scenarios (3.7)</li>
+                <li>Apply Bayes' Rule to update probabilities based on new information (3.8)</li>
+            </ul>
+        </div>
+    </section>
+    
+    <section class="card">
+        <h2>This Week's Deadlines</h2>
+        <ul class="deadline-list">
+            <li>
+                <div class="deadline-icon">📚</div>
+                <div class="deadline-content">
+                    <strong>Homework #3 in MyMathLab:</strong> Chapter 3 probability problems
+                </div>
+                <div class="deadline-date">Due: Friday, June 6</div>
+            </li>
+            <li>
+                <div class="deadline-icon">💬</div>
+                <div class="deadline-content">
+                    <strong>Weekly Discussion Post:</strong> Chapter 3 discussion participation
+                </div>
+                <div class="deadline-date">Due: Friday, June 6</div>
+            </li>
+            <li>
+                <div class="deadline-icon">✅</div>
+                <div class="deadline-content">
+                    <strong>Chapter 3 Test in MyMathLab:</strong> Assessment covering probability concepts
+                </div>
+                <div class="deadline-date">Due: Monday, June 9</div>
+            </li>
+        </ul>
+    </section>
+    
+    <div class="tip">
+        <h3>Mastering Probability Concepts</h3>
+        <p>Probability can be challenging at first, but these strategies will help:</p>
+        <ul>
+            <li><strong>Draw Venn diagrams</strong> for compound events to visualize unions and intersections</li>
+            <li><strong>Use tree diagrams</strong> for multi-stage experiments and conditional probability</li>
+            <li><strong>Practice the complement rule</strong> for "at least one" problems—often much easier!</li>
+            <li><strong>Check your work</strong> by ensuring all probabilities are between 0 and 1</li>
+            <li><strong>Relate to real examples</strong> like medical testing, quality control, or games of chance</li>
+        </ul>
+    </div>
+    
+    <div class="resources-section">
+        <div class="tip">
+            <h3>Additional Resources</h3>
+            <p>Enhance your probability learning with these supplementary materials:</p>
+            <div class="resource-list">
+                <div class="resource-item">
+                    <div class="resource-icon">🎯</div>
+                    <div><a href="https://www.mathgptpro.com/app/calculator/probability-calculator" target="_blank">Mathos AI - Interactive Probability Calculator</a></div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-icon">📊</div>
+                    <div><a href="https://www.interactivenn.net/" target="_blank">InteractiVenn - Venn Diagram Generator</a></div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-icon">🌳</div>
+                    <div><a href="https://www.geogebra.org/t/tree-diagrams?lang=en" target="_blank">GeoGebra - Tree Diagram Tools</a></div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-icon">🧮</div>
+                    <div><a href="https://www.r-bloggers.com/2019/06/learning-r-permutations-and-combinations-with-base-r/" target="_blank">R Bloggers - Permutations and Combinations in R</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="warning">
+        <h3>Success Tips for Week 3</h3>
+        <ul>
+            <li>Start with simple experiments (coins, dice) before tackling complex scenarios</li>
+            <li>Master the basic probability rules—they're the foundation for everything else</li>
+            <li>Don't memorize formulas without understanding—focus on the logic</li>
+            <li>Practice identifying when events are mutually exclusive vs. independent</li>
+            <li>Work through the oil drilling and card shuffling examples from the chapter introduction</li>
+            <li>Use the interactive tools above to build intuition about probability calculations</li>
+        </ul>
+    </div>
+    
+    <script>
+        // Toggle learning objectives
+        const objectivesToggle = document.querySelector('.objectives-toggle');
+        const objectivesContent = document.querySelector('.objectives-content');
+        
+        objectivesToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            if (objectivesContent.classList.contains('show')) {
+                objectivesContent.classList.remove('show');
+            } else {
+                objectivesContent.classList.add('show');
+            }
+        });
+    </script>
+</body>
+</html>

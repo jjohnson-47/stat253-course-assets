@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 3.1: Events, Sample Spaces, and Probability</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <style>
+        :root {
+            --primary: #0466c8;
+            --primary-light: #e0f2fe;
+            --accent: #0353a4;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --info: #4361ee;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: var(--dark);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 1.6rem;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+        
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .definition-box {
+            background-color: var(--primary-light);
+            border-left: 5px solid var(--primary);
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .example-box {
+            background-color: #fff8e6;
+            border-left: 5px solid var(--warning);
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .motivation-box {
+            background-color: #fff5f5;
+            border-left: 5px solid #dc3545;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        .data-table th,
+        .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .data-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .question-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .question-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .question-header:hover {
+            background-color: var(--accent);
+        }
+        
+        .question-header::after {
+            content: "▼";
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .question-header.active::after {
+            transform: rotate(180deg);
+        }
+        
+        .question-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            background-color: var(--light);
+        }
+        
+        .question-content.show {
+            padding: 20px;
+            max-height: 800px;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .key-terms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .term-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--info);
+        }
+        
+        .term-title {
+            font-weight: bold;
+            color: var(--info);
+            margin-bottom: 8px;
+        }
+
+        .tree-diagram {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .tree-level {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .tree-node {
+            background: var(--primary);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 50%;
+            font-weight: bold;
+            min-width: 40px;
+        }
+
+        .tree-branch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .branch-label {
+            font-size: 0.8em;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .sample-point {
+            background: var(--success);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .probability-explorer {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .experiment-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .exp-btn {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .exp-btn:hover {
+            background: var(--accent);
+        }
+
+        .experiment-result {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid var(--success);
+            display: none;
+        }
+
+        .counting-calculator {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .calc-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .calc-input input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 80px;
+        }
+
+        .calc-result {
+            background: var(--primary-light);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Section 3.1: Events, Sample Spaces, and Probability</h1>
+    
+    <div class="card">
+        <h2>Why Probability Matters</h2>
+        <div class="motivation-box">
+            <p><strong>Probability is the reverse of statistics:</strong> Instead of making inferences about populations from samples, we use our knowledge of populations to predict the likelihood of sample outcomes.</p>
+        </div>
+        
+        <h3>🛢️ Real-World Motivation: Making Decisions Under Uncertainty</h3>
+        
+        <div class="example-box">
+            <h4>Example 1: Oil Drilling Investment</h4>
+            <p>An oil exploration company has drilled 10 wells in the past year. <strong>All 10 came up dry.</strong></p>
+            <p><strong>Question:</strong> If the company claims to hit oil 50% of the time, would you invest?</p>
+            <p><strong>Answer:</strong> Probably not! Getting 10 dry wells when the success rate should be 50% is extremely improbable if their claim is true.</p>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="https://verlyn13.github.io/stat253-course-assets/stat253/images/binomial_oil_wells_plot.png" 
+                     alt="Binomial probability distribution showing likelihood of getting 0-10 successes out of 10 trials with p=0.5" 
+                     style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+            </div>
+            
+            <p><strong>Mathematical Analysis:</strong> The probability of getting 0 successes out of 10 trials when the true success rate is 50% is only $P(X = 0) = \binom{10}{0}(0.5)^{10} = \frac{1}{1024} \approx 0.001$ or about 0.1%!</p>
+        </div>
+        
+        <div class="example-box">
+            <h4>Example 2: Suspicious Card Game</h4>
+            <p>You're playing poker. In three consecutive hands, one player gets four aces each time.</p>
+            <p><strong>Question:</strong> Are the cards properly shuffled?</p>
+            <p><strong>Answer:</strong> Almost certainly not! This outcome is so improbable with fair shuffling that you should suspect cheating.</p>
+        </div>
+        
+        <p><strong>The Key Insight:</strong> We need probability theory to determine when observed results are "too improbable" to believe they occurred by chance.</p>
+    </div>
+    
+    <div class="card">
+        <h2>📚 Essential Definitions</h2>
+        
+        <div class="key-terms">
+            <div class="term-card">
+                <div class="term-title">Experiment</div>
+                <p>An act or process of observation that leads to a single outcome that cannot be predicted with certainty.</p>
+                <p><em>Examples:</em> Toss a coin, roll a die, survey a voter, measure dissolved oxygen</p>
+            </div>
+            
+            <div class="term-card">
+                <div class="term-title">Sample Point</div>
+                <p>The most basic outcome of an experiment—cannot be decomposed further.</p>
+                <p><em>Examples:</em> H, T (coin); 1,2,3,4,5,6 (die); HH, HT, TH, TT (two coins)</p>
+            </div>
+            
+            <div class="term-card">
+                <div class="term-title">Sample Space ($S$)</div>
+                <p>The set of all possible sample points for an experiment.</p>
+                <p><em>Notation:</em> $S = \{H, T\}$ or $S = \{1, 2, 3, 4, 5, 6\}$</p>
+            </div>
+            
+            <div class="term-card">
+                <div class="term-title">Event ($A$)</div>
+                <p>Any collection (subset) of one or more sample points in $S$.</p>
+                <p><em>Example:</em> $A = \{\text{even number}\} = \{2, 4, 6\}$</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🎲 Interactive Experiment Explorer</h2>
+        <p style="text-align: center; color: #666;">
+            Explore different experiments and see their sample spaces
+        </p>
+        
+        <div class="probability-explorer">
+            <div class="experiment-buttons">
+                <button class="exp-btn" onclick="showExperiment('coin')">Single Coin</button>
+                <button class="exp-btn" onclick="showExperiment('die')">Single Die</button>
+                <button class="exp-btn" onclick="showExperiment('twoCoins')">Two Coins</button>
+                <button class="exp-btn" onclick="showExperiment('business')">Business Venture</button>
+            </div>
+            
+            <div id="experimentResult" class="experiment-result">
+                <h4 id="expTitle"></h4>
+                <p><strong>Experiment:</strong> <span id="expDescription"></span></p>
+                <p><strong>Sample Space $S$:</strong> <span id="expSampleSpace"></span></p>
+                <p><strong>Number of Sample Points:</strong> <span id="expCount"></span></p>
+                <div id="expTree"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🌳 Understanding Sample Points: Two Coins Example</h2>
+        <p>Let's carefully analyze tossing two coins to understand why order matters:</p>
+        
+        <div class="tree-diagram">
+            <h4>Tree Diagram for Two Coin Tosses</h4>
+            <div class="tree-level">
+                <div class="tree-node">Start</div>
+            </div>
+            <div class="tree-level">
+                <div class="tree-branch">
+                    <div class="branch-label">Coin 1: H</div>
+                    <div class="tree-node">H</div>
+                </div>
+                <div class="tree-branch">
+                    <div class="branch-label">Coin 1: T</div>
+                    <div class="tree-node">T</div>
+                </div>
+            </div>
+            <div class="tree-level">
+                <div class="tree-branch">
+                    <div class="branch-label">Coin 2: H</div>
+                    <div class="sample-point">HH</div>
+                </div>
+                <div class="tree-branch">
+                    <div class="branch-label">Coin 2: T</div>
+                    <div class="sample-point">HT</div>
+                </div>
+                <div class="tree-branch">
+                    <div class="branch-label">Coin 2: H</div>
+                    <div class="sample-point">TH</div>
+                </div>
+                <div class="tree-branch">
+                    <div class="branch-label">Coin 2: T</div>
+                    <div class="sample-point">TT</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="definition-box">
+            <p><strong>Why Four Sample Points?</strong></p>
+            <p>Even though the coins look identical, we must distinguish between them. HT means "Head on coin 1, Tail on coin 2" while TH means "Tail on coin 1, Head on coin 2." These are different outcomes!</p>
+            <p><strong>Sample Space:</strong> $S = \{HH, HT, TH, TT\}$ with $n(S) = 4$</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🧮 Counting Sample Points: Essential Rules</h2>
+        
+        <h3>Multiplication Rule</h3>
+        <div class="formula-box">
+            <p>If an experiment has $k$ stages with $n_1, n_2, \ldots, n_k$ possible outcomes at each stage, then:</p>
+            $$\text{Total Sample Points} = n_1 \times n_2 \times \cdots \times n_k$$
+        </div>
+        
+        <div class="example-box">
+            <h4>Examples Using Multiplication Rule:</h4>
+            <ul>
+                <li><strong>Two coin tosses:</strong> $2 \times 2 = 4$ sample points</li>
+                <li><strong>Rolling two dice:</strong> $6 \times 6 = 36$ sample points</li>
+                <li><strong>Three coin tosses:</strong> $2 \times 2 \times 2 = 8$ sample points</li>
+            </ul>
+        </div>
+        
+        <h3>Combinations Rule</h3>
+        <div class="formula-box">
+            <p>Number of ways to choose $n$ objects from $N$ objects (without replacement):</p>
+            $$\binom{N}{n} = \frac{N!}{n!(N-n)!}$$
+            <p>where $n! = n \times (n-1) \times (n-2) \times \cdots \times 2 \times 1$</p>
+        </div>
+        
+        <div class="counting-calculator">
+            <h4>🧮 Interactive Combinations Calculator</h4>
+            <div class="calc-input">
+                <label>Choose <input type="number" id="nInput" value="2" min="0"> objects from <input type="number" id="NInput" value="4" min="0"> total objects</label>
+                <button onclick="calculateCombination()" class="exp-btn">Calculate</button>
+            </div>
+            <div id="calcResult" class="calc-result" style="display: none;"></div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🎯 Real-World Application: AAMFT Divorce Study</h2>
+        <div class="example-box">
+            <p><strong>Research Question:</strong> The American Association for Marriage and Family Therapy studied 100 divorced couples and classified them into relationship types.</p>
+            
+            <table class="data-table">
+                <tr>
+                    <th>Relationship Type</th>
+                    <th>Description</th>
+                    <th>Proportion</th>
+                </tr>
+                <tr>
+                    <td>Perfect Pals (PP)</td>
+                    <td>Joint-custody parents who get along well</td>
+                    <td>0.12</td>
+                </tr>
+                <tr>
+                    <td>Cooperative Colleagues (CC)</td>
+                    <td>Occasional conflict, likely to be remarried</td>
+                    <td>0.38</td>
+                </tr>
+                <tr>
+                    <td>Angry Associates (AA)</td>
+                    <td>Cooperate on children-related issues only</td>
+                    <td>0.25</td>
+                </tr>
+                <tr>
+                    <td>Fiery Foes (FF)</td>
+                    <td>Communicate only through children, hostile</td>
+                    <td>0.25</td>
+                </tr>
+            </table>
+            
+            <p><strong>Sample Space:</strong> $S = \{PP, CC, AA, FF\}$</p>
+            <p><strong>Sample Point Probabilities:</strong> Must sum to 1.0</p>
+            <p><strong>Event Example:</strong> $A = \{\text{Some conflict}\} = \{CC, AA, FF\}$</p>
+            <p><strong>Probability Calculation:</strong> $P(A) = 0.38 + 0.25 + 0.25 = 0.88$</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>📊 Probability Rules for Sample Points</h2>
+        <div class="definition-box">
+            <h3>Fundamental Rules</h3>
+            <p>Let $p_i$ represent the probability of sample point $i$. Then:</p>
+            <ol>
+                <li><strong>Range Rule:</strong> $0 \leq p_i \leq 1$ for all sample points</li>
+                <li><strong>Sum Rule:</strong> $\sum p_i = 1$ (all probabilities must sum to 1)</li>
+            </ol>
+        </div>
+        
+        <div class="formula-box">
+            <h3>Probability of an Event</h3>
+            <p>The probability of event $A$ is the sum of probabilities of all sample points in $A$:</p>
+            $$P(A) = \sum_{\text{sample points in } A} p_i$$
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🤔 Check Your Understanding</h2>
+        
+        <div class="question-card">
+            <div class="question-header">
+                What's the difference between a sample point and an event?
+            </div>
+            <div class="question-content">
+                <p><strong>Sample Point:</strong> The most basic, indivisible outcome of an experiment.</p>
+                <p><strong>Event:</strong> A collection of one or more sample points.</p>
+                <p><strong>Example:</strong> Rolling a die</p>
+                <ul>
+                    <li><strong>Sample Points:</strong> 1, 2, 3, 4, 5, 6 (six individual outcomes)</li>
+                    <li><strong>Event:</strong> "Roll an even number" = {2, 4, 6} (three sample points combined)</li>
+                </ul>
+                <p><strong>Key Insight:</strong> Every sample point is an event, but not every event is a sample point!</p>
+            </div>
+        </div>
+        
+        <div class="question-card">
+            <div class="question-header">
+                Why do we use combinations instead of just counting by hand?
+            </div>
+            <div class="question-content">
+                <p>For simple cases, counting by hand works fine. But consider these scenarios:</p>
+                <ul>
+                    <li><strong>Choose 5 marines from 1,000:</strong> $\binom{1000}{5} = 8.25 \times 10^{13}$ ways!</li>
+                    <li><strong>Choose 5 movies from 20:</strong> $\binom{20}{5} = 15,504$ ways</li>
+                    <li><strong>DNA sequences:</strong> Millions of possible arrangements</li>
+                </ul>
+                <p><strong>The combinations formula gives us exact counts for complex scenarios where listing each possibility would be impossible.</strong></p>
+            </div>
+        </div>
+        
+        <div class="question-card">
+            <div class="question-header">
+                How do we assign probabilities to sample points?
+            </div>
+            <div class="question-content">
+                <p><strong>Method 1: Equal Likelihood (Classical Approach)</strong></p>
+                <p>For fair coins, dice, etc.: Each sample point gets equal probability</p>
+                <p>Example: Fair die → $P(\text{each face}) = \frac{1}{6}$</p>
+                
+                <p><strong>Method 2: Relative Frequency (Empirical Approach)</strong></p>
+                <p>Based on observed data or historical records</p>
+                <p>Example: AAMFT study → $P(PP) = 0.12$ based on 12% of 100 couples</p>
+                
+                <p><strong>Method 3: Subjective Assessment</strong></p>
+                <p>Expert judgment for unique situations</p>
+                <p>Example: Business venture → $P(\text{Success}) = 0.8$ based on market analysis</p>
+            </div>
+        </div>
+        
+        <div class="question-card">
+            <div class="question-header">
+                Practice Problem: Marine Selection
+            </div>
+            <div class="question-content">
+                <p><strong>Problem:</strong> How many ways can we choose 2 marines from a group of 4 for a dangerous mission?</p>
+                <p><strong>Solution Using Combinations:</strong></p>
+                <p>$\binom{4}{2} = \frac{4!}{2!(4-2)!} = \frac{4!}{2! \cdot 2!} = \frac{24}{2 \cdot 2} = 6$ ways</p>
+                
+                <p><strong>Let's verify by listing them:</strong></p>
+                <p>If marines are M₁, M₂, M₃, M₄, the 6 ways are:</p>
+                <p>{M₁,M₂}, {M₁,M₃}, {M₁,M₄}, {M₂,M₃}, {M₂,M₄}, {M₃,M₄}</p>
+                
+                <p><strong>✓ The formula gives the correct count!</strong></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>📹 Additional Learning Resources</h2>
+        <div class="example-box">
+            <h3>🎓 TrevTutor: Sample Spaces and Events</h3>
+            <p><strong>High-quality video explanation</strong> covering sample spaces, events, unions, complements, and intersections with practical problem-solving examples.</p>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <iframe width="480" height="270" src="https://www.youtube.com/embed/PamWL2WN-to?si=PVvpU3pygWwKza9M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"></iframe>
+            </div>
+            
+            <p><strong>What you'll learn:</strong></p>
+            <ul>
+                <li>Clear explanation of sample spaces and events</li>
+                <li>Union of events (A ∪ B) with visual examples</li>
+                <li>Complement of events (A^c) and their applications</li>
+                <li>Intersection of events (A ∩ B) and overlapping outcomes</li>
+                <li>Step-by-step problem-solving techniques</li>
+            </ul>
+            
+            <p><em>This video perfectly complements the interactive examples above and provides additional practice problems to reinforce your understanding.</em></p>
+        </div>
+    </div>
+    
+    <script>
+        const experiments = {
+            coin: {
+                title: "Single Coin Toss",
+                description: "Toss one fair coin and observe the up face",
+                sampleSpace: "{H, T}",
+                count: "2",
+                tree: "H ← Start → T"
+            },
+            die: {
+                title: "Single Die Roll",
+                description: "Roll one fair six-sided die and observe the up face",
+                sampleSpace: "{1, 2, 3, 4, 5, 6}",
+                count: "6",
+                tree: "1, 2, 3, 4, 5, 6 ← Start"
+            },
+            twoCoins: {
+                title: "Two Coin Tosses",
+                description: "Toss two fair coins and observe both up faces",
+                sampleSpace: "{HH, HT, TH, TT}",
+                count: "4",
+                tree: "Start → H: {HH, HT}, T: {TH, TT}"
+            },
+            business: {
+                title: "Business Venture",
+                description: "Invest in a business venture and observe the outcome",
+                sampleSpace: "{Success, Failure}",
+                count: "2",
+                tree: "Success ← Investment → Failure"
+            }
+        };
+
+        function showExperiment(type) {
+            const exp = experiments[type];
+            document.getElementById('expTitle').textContent = exp.title;
+            document.getElementById('expDescription').textContent = exp.description;
+            document.getElementById('expSampleSpace').textContent = exp.sampleSpace;
+            document.getElementById('expCount').textContent = exp.count;
+            document.getElementById('expTree').textContent = exp.tree;
+            document.getElementById('experimentResult').style.display = 'block';
+            
+            // Re-render MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise([document.getElementById('experimentResult')]).catch((err) => console.log(err.message));
+            }
+        }
+
+        function calculateCombination() {
+            const n = parseInt(document.getElementById('nInput').value);
+            const N = parseInt(document.getElementById('NInput').value);
+            
+            if (n > N || n < 0 || N < 0) {
+                document.getElementById('calcResult').innerHTML = "Error: Invalid input (n must be ≤ N, both ≥ 0)";
+                document.getElementById('calcResult').style.display = 'block';
+                return;
+            }
+            
+            const factorial = (num) => {
+                if (num <= 1) return 1;
+                return num * factorial(num - 1);
+            };
+            
+            const combinations = factorial(N) / (factorial(n) * factorial(N - n));
+            
+            document.getElementById('calcResult').innerHTML = 
+                `$\\binom{${N}}{${n}} = \\frac{${N}!}{${n}!(${N}-${n})!} = ${combinations}$ ways`;
+            document.getElementById('calcResult').style.display = 'block';
+            
+            // Re-render MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise([document.getElementById('calcResult')]).catch((err) => console.log(err.message));
+            }
+        }
+
+        // Add interactivity to question cards
+        document.querySelectorAll('.question-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const isActive = this.classList.contains('active');
+                
+                // Close all other questions
+                document.querySelectorAll('.question-header').forEach(h => {
+                    h.classList.remove('active');
+                    h.nextElementSibling.classList.remove('show');
+                });
+                
+                // Toggle current question
+                if (!isActive) {
+                    this.classList.add('active');
+                    content.classList.add('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
