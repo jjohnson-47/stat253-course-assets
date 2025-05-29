@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Section 3.1: Events, Sample Spaces, and Probability</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
@@ -24,81 +27,176 @@
             --success: #38b000;
             --warning: #ffbe0b;
             --info: #4361ee;
+            --danger: #dc3545;
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
+        }
+        
+        /* Global font and layout setup */
+        html {
+            font-size: 100%;
+            box-sizing: border-box;
+        }
+        
+        *, *::before, *::after {
+            box-sizing: inherit;
         }
         
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-family: 'Open Sans', Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
             line-height: 1.6;
-            color: #333;
-            max-width: 900px;
+            color: #333333;
+            max-width: 1000px;
+            width: 100%;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
+            padding: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
         }
         
-        h1, h2, h3 {
-            color: var(--dark);
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
+        /* Heading styles */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Open Sans', Arial, sans-serif;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+            color: #222222;
         }
         
         h1 {
-            font-size: 2.2rem;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10px;
+            font-size: 2.25rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-align: center;
+            margin-bottom: 2rem;
+            padding: 20px 0;
+            margin-top: 0;
         }
         
-        h2 {
-            font-size: 1.6rem;
-            border-bottom: 2px solid var(--primary-light);
-            padding-bottom: 5px;
-        }
+        h2 { font-size: 1.875rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+        h5 { font-size: 1.125rem; }
+        h6 { font-size: 1rem; }
         
-        h3 {
-            font-size: 1.3rem;
-            color: var(--primary);
-        }
-        
-        .card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-        
-        .definition-box {
-            background-color: var(--primary-light);
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
             border-left: 5px solid var(--primary);
-            border-radius: 5px;
-            padding: 20px;
-            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
-        .example-box {
-            background-color: #fff8e6;
-            border-left: 5px solid var(--warning);
-            border-radius: 5px;
-            padding: 20px;
-            margin: 20px 0;
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
         }
         
-        .formula-box {
-            background-color: #f8f9fa;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        }
+        
+        .step-card h2 {
+            font-size: 1.875rem;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        .action-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
             padding: 20px;
-            margin: 15px 0;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .sub-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--info);
+        }
+        
+        .sub-section h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .sub-section h4 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 1.25rem;
+        }
+        
+        .highlight-confirmed {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
             text-align: center;
         }
         
-        .motivation-box {
-            background-color: #fff5f5;
-            border-left: 5px solid #dc3545;
-            border-radius: 5px;
+        .highlight-insight {
+            background: linear-gradient(135deg, #cce7ff, #b3d9ff);
+            border: 2px solid var(--info);
+            border-radius: 12px;
             padding: 20px;
             margin: 20px 0;
+        }
+        
+        .highlight-warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .highlight-danger {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border: 2px solid var(--danger);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .formula-display {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         .data-table {
@@ -106,22 +204,36 @@
             border-collapse: collapse;
             margin: 20px 0;
             font-size: 0.9em;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 20px 0;
         }
         
         .data-table th,
         .data-table td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 12px;
             text-align: center;
         }
         
         .data-table th {
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--dark), #34495e);
             color: white;
+            font-weight: bold;
         }
         
         .data-table tr:nth-child(even) {
             background-color: #f9f9f9;
+        }
+        
+        .data-table tr:hover {
+            background-color: #e9ecef;
         }
         
         .question-card {
@@ -243,6 +355,56 @@
             font-size: 0.9em;
         }
 
+        .step-sequence {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+        
+        .step-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(4, 102, 200, 0.3);
+        }
+        
+        .step-content {
+            flex: 1;
+            font-size: 1rem;
+        }
+        
+        .step-content h4 {
+            font-size: 1.25rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            margin-top: 0;
+        }
+        
         .probability-explorer {
             background: #f8f9fa;
             border-radius: 10px;
@@ -259,13 +421,17 @@
         }
 
         .exp-btn {
-            padding: 10px 20px;
+            padding: 12px 20px;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            font-size: 0.9rem;
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
         }
 
         .exp-btn:hover {
@@ -294,13 +460,24 @@
             gap: 10px;
             align-items: center;
             margin: 10px 0;
+            flex-wrap: wrap;
         }
 
         .calc-input input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             width: 80px;
+            font-size: 1rem;
+            min-height: 44px;
+            touch-action: manipulation;
+        }
+        
+        .calc-input button {
+            padding: 12px 20px;
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
         }
 
         .calc-result {
@@ -310,21 +487,200 @@
             margin: 10px 0;
             font-weight: bold;
         }
+        
+        /* Code and monospace styling */
+        pre, code {
+            font-family: 'Roboto Mono', "Courier New", monospace;
+            font-size: 0.9375rem;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+        }
+        
+        code {
+            padding: 0.2em 0.4em;
+        }
+        
+        pre {
+            padding: 1em;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+        }
+        
+        /* Links */
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive images and media */
+        img, video, iframe {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Paragraphs and content width for readability */
+        p, ul, ol, dl, blockquote {
+            margin-bottom: 1em;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+        
+        /* Math rendering compatibility */
+        .katex {
+            font-size: 1.1em !important;
+        }
+        
+        /* Touch-friendly interactive elements */
+        button, .exp-btn, input[type="button"], input[type="submit"] {
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.2);
+        }
+        
+        /* Ensure step cards are touch-friendly */
+        .step-item {
+            touch-action: manipulation;
+        }
+        
+        .step-item:hover {
+            transform: none;
+        }
+        
+        /* Mobile-first responsive design */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+                padding: 15px 0;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+            }
+            
+            .step-card {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .step-card h2 {
+                font-size: 1.4rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .action-box {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .sub-section {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .data-table {
+                font-size: 0.75rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 8px 4px;
+            }
+            
+            .experiment-buttons {
+                gap: 8px;
+            }
+            
+            .exp-btn {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+                flex: 1;
+                min-width: 120px;
+            }
+            
+            .calc-input {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .calc-input input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .formula-display {
+                padding: 15px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 768px) and (min-width: 481px) {
+            body {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.875rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .step-card {
+                padding: 18px;
+            }
+            
+            .data-table {
+                font-size: 0.8rem;
+            }
+            
+            .exp-btn {
+                flex: 1;
+                min-width: 100px;
+            }
+        }
+        
+        @media (hover: none) and (pointer: coarse) {
+            .step-card:hover {
+                transform: none;
+            }
+            
+            .step-item:hover {
+                transform: none;
+                background: #f8f9fa;
+            }
+            
+            .exp-btn:hover {
+                background: var(--primary);
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>🎯 Section 3.1: Events, Sample Spaces, and Probability</h1>
+    <h1>Section 3.1: Events, Sample Spaces, and Probability</h1>
     
-    <div class="card">
-        <h2>Why Probability Matters</h2>
-        <div class="motivation-box">
-            <p><strong>Probability is the reverse of statistics:</strong> Instead of making inferences about populations from samples, we use our knowledge of populations to predict the likelihood of sample outcomes.</p>
+    <div class="step-card">
+        <h2>🎯 Why Probability Matters</h2>
+        
+        <div class="action-box">
+            <p><strong>Core Concept:</strong> Probability is the reverse of statistics - we use our knowledge of populations to predict the likelihood of sample outcomes</p>
         </div>
         
-        <h3>🛢️ Real-World Motivation: Making Decisions Under Uncertainty</h3>
-        
-        <div class="example-box">
-            <h4>Example 1: Oil Drilling Investment</h4>
+        <div class="sub-section">
+            <h3>🛢️ Real-World Application: Oil Drilling Investment</h3>
             <p>An oil exploration company has drilled 10 wells in the past year. <strong>All 10 came up dry.</strong></p>
             <p><strong>Question:</strong> If the company claims to hit oil 50% of the time, would you invest?</p>
             <p><strong>Answer:</strong> Probably not! Getting 10 dry wells when the success rate should be 50% is extremely improbable if their claim is true.</p>
@@ -345,11 +701,16 @@
                 </div>
             </div>
             
-            <p><strong>Mathematical Analysis:</strong> The probability of getting 0 successes out of 10 trials when the true success rate is 50% is only $P(X = 0) = \binom{10}{0}(0.5)^{10} = \frac{1}{1024} \approx 0.001$ or about 0.1%!</p>
+            <div class="formula-display">
+                <h4>Mathematical Analysis</h4>
+                <p>The probability of getting 0 successes out of 10 trials when the true success rate is 50%:</p>
+                $$P(X = 0) = \binom{10}{0}(0.5)^{10} = \frac{1}{1024} \approx 0.001$$
+                <p><strong>Only 0.1% chance!</strong> This suggests the company's claim is false.</p>
+            </div>
         </div>
         
-        <div class="example-box">
-            <h4>Example 2: Suspicious Card Game</h4>
+        <div class="sub-section">
+            <h3>🃏 Suspicious Card Game Analysis</h3>
             <p>You're playing poker. In three consecutive hands, one player gets four aces each time.</p>
             <p><strong>Question:</strong> Are the cards properly shuffled?</p>
             <p><strong>Answer:</strong> Almost certainly not! This outcome is so improbable with fair shuffling that you should suspect cheating.</p>
@@ -370,45 +731,72 @@
                 </div>
             </div>
             
-            <p><strong>Mathematical Analysis:</strong> The probability of getting four aces in a single 5-card hand is approximately $\frac{48}{270,725} \approx 0.00018$. Getting this three times in a row has probability around $2.4 \times 10^{-11}$ - essentially impossible!</p>
+            <div class="formula-display">
+                <h4>Mathematical Analysis</h4>
+                <p>Single hand: $P(\text{four aces}) \approx \frac{48}{270,725} \approx 0.00018$</p>
+                <p>Three consecutive hands: $(0.00018)^3 \approx 2.4 \times 10^{-11}$</p>
+                <p><strong>Essentially impossible!</strong> Strong evidence of cheating.</p>
+            </div>
         </div>
         
-        <p><strong>The Key Insight:</strong> We need probability theory to determine when observed results are "too improbable" to believe they occurred by chance.</p>
+        <div class="highlight-confirmed">
+            <h3>🎯 Key Insight</h3>
+            <p>We need probability theory to determine when observed results are "too improbable" to believe they occurred by chance. This is the foundation of statistical hypothesis testing!</p>
+        </div>
     </div>
     
-    <div class="card">
+    <div class="step-card">
         <h2>📚 Essential Definitions</h2>
         
-        <div class="definition-box">
-            <h3>Experiment</h3>
-            <p><strong>Definition:</strong> An act or process of observation that leads to a single outcome that cannot be predicted with certainty.</p>
-            <p><strong>Examples:</strong> Toss a coin, roll a die, survey a voter, measure dissolved oxygen</p>
+        <div class="action-box">
+            <p><strong>Building Blocks:</strong> Master these four fundamental concepts to understand probability</p>
         </div>
         
-        <div class="definition-box">
-            <h3>Sample Point</h3>
-            <p><strong>Definition:</strong> The most basic outcome of an experiment—cannot be decomposed further.</p>
-            <p><strong>Examples:</strong> H, T (coin); 1,2,3,4,5,6 (die); HH, HT, TH, TT (two coins)</p>
-        </div>
-        
-        <div class="definition-box">
-            <h3>Sample Space ($S$)</h3>
-            <p><strong>Definition:</strong> The set of all possible sample points for an experiment.</p>
-            <p><strong>Notation:</strong> $S = \{H, T\}$ or $S = \{1, 2, 3, 4, 5, 6\}$</p>
-        </div>
-        
-        <div class="definition-box">
-            <h3>Event ($A$)</h3>
-            <p><strong>Definition:</strong> Any collection (subset) of one or more sample points in $S$.</p>
-            <p><strong>Example:</strong> $A = \{\text{even number}\} = \{2, 4, 6\}$</p>
+        <div class="step-sequence">
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Experiment</h4>
+                    <p><strong>Definition:</strong> An act or process of observation that leads to a single outcome that cannot be predicted with certainty.</p>
+                    <p><strong>Examples:</strong> Toss a coin, roll a die, survey a voter, measure dissolved oxygen</p>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Sample Point</h4>
+                    <p><strong>Definition:</strong> The most basic outcome of an experiment—cannot be decomposed further.</p>
+                    <p><strong>Examples:</strong> H, T (coin); 1,2,3,4,5,6 (die); HH, HT, TH, TT (two coins)</p>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Sample Space ($S$)</h4>
+                    <p><strong>Definition:</strong> The set of all possible sample points for an experiment.</p>
+                    <p><strong>Notation:</strong> $S = \{H, T\}$ or $S = \{1, 2, 3, 4, 5, 6\}$</p>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>Event ($A$)</h4>
+                    <p><strong>Definition:</strong> Any collection (subset) of one or more sample points in $S$.</p>
+                    <p><strong>Example:</strong> $A = \{\text{even number}\} = \{2, 4, 6\}$</p>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="card">
+    <div class="step-card">
         <h2>🎲 Interactive Experiment Explorer</h2>
-        <p style="text-align: center; color: #666;">
-            Explore different experiments and see their sample spaces
-        </p>
+        
+        <div class="action-box">
+            <p><strong>Hands-On Learning:</strong> Explore different experiments and see their sample spaces in action</p>
+        </div>
         
         <div class="probability-explorer">
             <div class="experiment-buttons">
@@ -428,9 +816,13 @@
         </div>
     </div>
     
-    <div class="card">
+    <div class="step-card">
         <h2>🌳 Understanding Sample Points: Two Coins Example</h2>
-        <p>Let's carefully analyze tossing two coins to understand why order matters:</p>
+        
+        <div class="highlight-insight">
+            <h4>🔍 Why Order Matters</h4>
+            <p>Let's carefully analyze tossing two coins to understand why we get four sample points instead of three</p>
+        </div>
         
         <div class="tree-diagram">
             <h4>Tree Diagram for Two Coin Tosses</h4>
@@ -467,23 +859,27 @@
             </div>
         </div>
         
-        <div class="definition-box">
-            <p><strong>Why Four Sample Points?</strong></p>
+        <div class="highlight-confirmed">
+            <h3>✅ Why Four Sample Points?</h3>
             <p>Even though the coins look identical, we must distinguish between them. HT means "Head on coin 1, Tail on coin 2" while TH means "Tail on coin 1, Head on coin 2." These are different outcomes!</p>
             <p><strong>Sample Space:</strong> $S = \{HH, HT, TH, TT\}$ with $n(S) = 4$</p>
         </div>
     </div>
     
-    <div class="card">
+    <div class="step-card">
         <h2>🧮 Counting Sample Points: Essential Rules</h2>
         
-        <h3>Multiplication Rule</h3>
-        <div class="formula-box">
-            <p>If an experiment has $k$ stages with $n_1, n_2, \ldots, n_k$ possible outcomes at each stage, then:</p>
-            $$\text{Total Sample Points} = n_1 \times n_2 \times \cdots \times n_k$$
+        <div class="action-box">
+            <p><strong>Strategic Counting:</strong> Use these powerful rules to count sample points efficiently</p>
         </div>
         
-        <div class="example-box">
+        <div class="sub-section">
+            <h3>Multiplication Rule</h3>
+            <div class="formula-display">
+                <p>If an experiment has $k$ stages with $n_1, n_2, \ldots, n_k$ possible outcomes at each stage:</p>
+                $$\text{Total Sample Points} = n_1 \times n_2 \times \cdots \times n_k$$
+            </div>
+            
             <h4>Examples Using Multiplication Rule:</h4>
             <ul>
                 <li><strong>Two coin tosses:</strong> $2 \times 2 = 4$ sample points</li>
@@ -492,11 +888,13 @@
             </ul>
         </div>
         
-        <h3>Combinations Rule</h3>
-        <div class="formula-box">
-            <p>Number of ways to choose $n$ objects from $N$ objects (without replacement):</p>
-            $$\binom{N}{n} = \frac{N!}{n!(N-n)!}$$
-            <p>where $n! = n \times (n-1) \times (n-2) \times \cdots \times 2 \times 1$</p>
+        <div class="sub-section">
+            <h3>Combinations Rule</h3>
+            <div class="formula-display">
+                <p>Number of ways to choose $n$ objects from $N$ objects (without replacement):</p>
+                $$\binom{N}{n} = \frac{N!}{n!(N-n)!}$$
+                <p>where $n! = n \times (n-1) \times (n-2) \times \cdots \times 2 \times 1$</p>
+            </div>
         </div>
         
         <div class="counting-calculator">
@@ -509,9 +907,15 @@
         </div>
     </div>
     
-    <div class="card">
+    <div class="step-card">
         <h2>🎯 Real-World Application: AAMFT Divorce Study</h2>
-        <div class="example-box">
+        
+        <div class="action-box">
+            <p><strong>Research Application:</strong> See how probability theory applies to real psychological research</p>
+        </div>
+        
+        <div class="sub-section">
+            <h3>Study Overview</h3>
             <p><strong>Research Question:</strong> The American Association for Marriage and Family Therapy studied 100 divorced couples and classified them into relationship types.</p>
             
             <table class="data-table">
@@ -542,29 +946,40 @@
                 </tr>
             </table>
             
-            <p><strong>Sample Space:</strong> $S = \{PP, CC, AA, FF\}$</p>
-            <p><strong>Sample Point Probabilities:</strong> Must sum to 1.0</p>
-            <p><strong>Event Example:</strong> $A = \{\text{Some conflict}\} = \{CC, AA, FF\}$</p>
-            <p><strong>Probability Calculation:</strong> $P(A) = 0.38 + 0.25 + 0.25 = 0.88$</p>
+            <div class="formula-display">
+                <h4>Probability Analysis</h4>
+                <p><strong>Sample Space:</strong> $S = \{PP, CC, AA, FF\}$</p>
+                <p><strong>Sample Point Probabilities:</strong> Must sum to 1.0</p>
+                <p><strong>Event Example:</strong> $A = \{\text{Some conflict}\} = \{CC, AA, FF\}$</p>
+                <p><strong>Probability Calculation:</strong> $P(A) = 0.38 + 0.25 + 0.25 = 0.88$</p>
+            </div>
         </div>
     </div>
     
-    <div class="card">
+    <div class="step-card">
         <h2>📹 Video: Sample Spaces and Events</h2>
-        <div class="example-box">
-            <p>This video covers the fundamental concepts of sample spaces, events, and their relationships including unions, intersections, and complements.</p>
-            
-            <div style="text-align: center; margin: 20px 0;">
-                <iframe width="480" height="270" src="https://www.youtube.com/embed/PamWL2WN-to?si=PVvpU3pygWwKza9M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"></iframe>
-            </div>
-            
+        
+        <div class="action-box">
+            <p><strong>Video Learning:</strong> Watch the fundamental concepts come to life with clear explanations and examples</p>
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; max-width: 800px; margin: 0 auto;">\n                <iframe src="https://www.youtube.com/embed/PamWL2WN-to?si=PVvpU3pygWwKza9M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></iframe>\n            </div>
+        </div>
+        
+        <div class="sub-section">
             <p><strong>Key Topics:</strong> Sample space definition, event relationships (A ∪ B, A ∩ B, A^c), and practical problem-solving with probability calculations.</p>
         </div>
     </div>
     
-    <div class="card">
+    <div class="step-card">
         <h2>📊 Probability Rules for Sample Points</h2>
-        <div class="definition-box">
+        
+        <div class="action-box">
+            <p><strong>Mathematical Foundation:</strong> These rules govern all probability calculations</p>
+        </div>
+        
+        <div class="sub-section">
             <h3>Fundamental Rules</h3>
             <p>Let $p_i$ represent the probability of sample point $i$. Then:</p>
             <ol>
@@ -573,15 +988,19 @@
             </ol>
         </div>
         
-        <div class="formula-box">
+        <div class="formula-display">
             <h3>Probability of an Event</h3>
             <p>The probability of event $A$ is the sum of probabilities of all sample points in $A$:</p>
             $$P(A) = \sum_{\text{sample points in } A} p_i$$
         </div>
     </div>
     
-    <div class="card">
+    <div class="step-card">
         <h2>🤔 Check Your Understanding</h2>
+        
+        <div class="action-box">
+            <p><strong>Self-Assessment:</strong> Test your understanding with these conceptual questions</p>
+        </div>
         
         <div class="question-card">
             <div class="question-header">
@@ -595,7 +1014,10 @@
                     <li><strong>Sample Points:</strong> 1, 2, 3, 4, 5, 6 (six individual outcomes)</li>
                     <li><strong>Event:</strong> "Roll an even number" = {2, 4, 6} (three sample points combined)</li>
                 </ul>
-                <p><strong>Key Insight:</strong> Every sample point is an event, but not every event is a sample point!</p>
+                <div class="highlight-insight">
+                    <h4>💡 Key Insight</h4>
+                    <p>Every sample point is an event, but not every event is a sample point!</p>
+                </div>
             </div>
         </div>
         
@@ -610,7 +1032,9 @@
                     <li><strong>Choose 5 movies from 20:</strong> $\binom{20}{5} = 15,504$ ways</li>
                     <li><strong>DNA sequences:</strong> Millions of possible arrangements</li>
                 </ul>
-                <p><strong>The combinations formula gives us exact counts for complex scenarios where listing each possibility would be impossible.</strong></p>
+                <div class="highlight-confirmed">
+                    <p>The combinations formula gives us exact counts for complex scenarios where listing each possibility would be impossible.</p>
+                </div>
             </div>
         </div>
         
@@ -646,7 +1070,9 @@
                 <p>If marines are M₁, M₂, M₃, M₄, the 6 ways are:</p>
                 <p>{M₁,M₂}, {M₁,M₃}, {M₁,M₄}, {M₂,M₃}, {M₂,M₄}, {M₃,M₄}</p>
                 
-                <p><strong>✓ The formula gives the correct count!</strong></p>
+                <div class="highlight-confirmed">
+                    <p><strong>✓ The formula gives the correct count!</strong></p>
+                </div>
             </div>
         </div>
     </div>

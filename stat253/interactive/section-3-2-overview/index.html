@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Section 3.2: Unions and Intersections of Events</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
@@ -27,38 +30,66 @@
             --danger: #dc3545;
         }
         
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
+        /* Global font and layout setup */
+        html {
+            font-size: 100%;
+            box-sizing: border-box;
         }
         
-        h1, h2, h3 {
-            color: var(--dark);
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+        
+        body {
+            font-family: 'Open Sans', Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #333333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Heading styles */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Open Sans', Arial, sans-serif;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-top: 1.5em;
+            margin-bottom: 0.75em;
+            color: #222222;
         }
         
         h1 {
-            font-size: 2.2rem;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10px;
+            font-size: 2.25rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-align: center;
+            margin-bottom: 2rem;
+            padding: 20px 0;
+            margin-top: 0;
         }
         
-        h2 {
-            font-size: 1.6rem;
-            border-bottom: 2px solid var(--primary-light);
-            padding-bottom: 5px;
-        }
+        h2 { font-size: 1.875rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+        h5 { font-size: 1.125rem; }
+        h6 { font-size: 1rem; }
         
-        h3 {
-            font-size: 1.3rem;
-            color: var(--primary);
+        /* Responsive media elements */
+        img, video, iframe {
+            max-width: 100%;
+            height: auto;
+            display: block;
         }
         
         .card {
@@ -205,13 +236,24 @@
             flex-wrap: wrap;
         }
         
+        /* Table wrapper for horizontal scrolling */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 20px 0;
+        }
+        
         .btn {
-            padding: 10px 20px;
+            padding: 12px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s ease;
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.2);
         }
         
         .btn-primary {
@@ -290,6 +332,123 @@
             stroke-width: 2px;
             stroke: var(--primary);
         }
+        
+        /* Code and monospace styling */
+        pre, code {
+            font-family: 'Roboto Mono', "Courier New", monospace;
+            font-size: 0.9375rem;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+        }
+        
+        code {
+            padding: 0.2em 0.4em;
+        }
+        
+        pre {
+            padding: 1em;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+        }
+        
+        /* Links */
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Paragraphs and content width for readability */
+        p, ul, ol, dl, blockquote {
+            margin-bottom: 1em;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+        
+        /* Math rendering compatibility */
+        .katex {
+            font-size: 1.1em !important;
+        }
+        
+        /* Mobile-first responsive design */
+        @media (max-width: 480px) {
+            body {
+                font-size: 0.9rem;
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+            }
+            
+            h3 {
+                font-size: 1.2rem;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .venn-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .venn-diagram-simple {
+                min-width: 200px;
+            }
+            
+            .control-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .control-buttons .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .data-table {
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) and (min-width: 481px) {
+            h1 {
+                font-size: 1.875rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .venn-container {
+                flex-direction: column;
+            }
+            
+            .venn-diagram-simple {
+                min-width: 250px;
+            }
+            
+            .card {
+                padding: 18px;
+            }
+        }
+        
+        @media (hover: none) and (pointer: coarse) {
+            .die-number:hover,
+            .btn:hover,
+            .venn-area:hover {
+                transform: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -300,8 +459,8 @@
         <div class="example-box">
             <p>This video covers unions, intersections, complements, mutually exclusive events, and the addition rule. It demonstrates these concepts through die rolling and population health examples with clear Venn diagram illustrations.</p>
             
-            <div style="text-align: center; margin: 20px 0;">
-                <iframe width="800" height="450" src="https://www.youtube.com/embed/B1v9OeCTlu0?si=mtKgcmoe-pAf32y-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); max-width: 800px;"></iframe>
+            <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; max-width: 800px; margin: 0 auto;">
+                <iframe src="https://www.youtube.com/embed/B1v9OeCTlu0?si=mtKgcmoe-pAf32y-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></iframe>
             </div>
         </div>
     </div>
@@ -436,7 +595,8 @@
         <div class="example-box">
             <p><strong>Study:</strong> <em>Family Planning Perspectives</em> analyzed over 200,000 births in New Jersey, investigating the link between mother's race and age at birth.</p>
             
-            <table class="data-table" id="birthTable">
+            <div class="table-container">
+                <table class="data-table" id="birthTable">
                 <tr>
                     <th rowspan="2">Maternal Age</th>
                     <th colspan="2">Race</th>
@@ -465,7 +625,8 @@
                     <td class="cell" data-event="A">33%</td>
                     <td class="cell" data-event="">5%</td>
                 </tr>
-            </table>
+                </table>
+            </div>
             
             <p><strong>Define Events:</strong></p>
             <p><strong>A:</strong> Birth mother is white</p>
@@ -554,6 +715,11 @@
                 <li><strong>Venn Diagrams:</strong> Visual tools to avoid counting errors</li>
                 <li><strong>Two-Way Tables:</strong> Organize complex probability scenarios</li>
             </ul>
+        </div>
+        
+        <div class="highlight-insight">
+            <h4>🚀 Next Steps</h4>
+            <p>Now that you understand unions and intersections, you're ready to explore complementary events in Section 3.3, where we'll learn how "what doesn't happen" can simplify complex probability calculations!</p>
         </div>
     </div>
     
