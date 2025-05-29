@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 3.1 Part B: Counting Rules and Probability Calculations</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <style>
+        :root {
+            --primary: #0466c8;
+            --primary-light: #e0f2fe;
+            --accent: #0353a4;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --info: #4361ee;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: var(--dark);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 1.6rem;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+        
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .definition-box {
+            background-color: var(--primary-light);
+            border-left: 5px solid var(--primary);
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .example-box {
+            background-color: #fff8e6;
+            border-left: 5px solid var(--warning);
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        .data-table th,
+        .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .data-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .question-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .question-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .question-header:hover {
+            background-color: var(--accent);
+        }
+        
+        .question-header::after {
+            content: "▼";
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .question-header.active::after {
+            transform: rotate(180deg);
+        }
+        
+        .question-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            background-color: var(--light);
+        }
+        
+        .question-content.show {
+            padding: 20px;
+            max-height: 800px;
+        }
+        
+        .counting-calculator {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .calc-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .calc-input input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 80px;
+        }
+
+        .calc-result {
+            background: var(--primary-light);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .prev-section {
+            background: linear-gradient(135deg, var(--success), #28a745);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .prev-section a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .prev-section a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="prev-section">
+        <h3>Continuing from Section 3.1 Part A</h3>
+        <p>This section covers advanced counting rules, probability calculations, and detailed applications.</p>
+        <a href="../section-3-1-part-a/">← Back to Part A</a>
+    </div>
+
+    <h1>🧮 Section 3.1 Part B: Counting Rules and Probability Calculations</h1>
+    
+    <div class="card">
+        <h2>🧮 Counting Sample Points: Essential Rules</h2>
+        
+        <h3>Multiplication Rule</h3>
+        <div class="formula-box">
+            <p>If an experiment has $k$ stages with $n_1, n_2, \ldots, n_k$ possible outcomes at each stage, then:</p>
+            $$\text{Total Sample Points} = n_1 \times n_2 \times \cdots \times n_k$$
+        </div>
+        
+        <div class="example-box">
+            <h4>Examples Using Multiplication Rule:</h4>
+            <ul>
+                <li><strong>Two coin tosses:</strong> $2 \times 2 = 4$ sample points</li>
+                <li><strong>Rolling two dice:</strong> $6 \times 6 = 36$ sample points</li>
+                <li><strong>Three coin tosses:</strong> $2 \times 2 \times 2 = 8$ sample points</li>
+            </ul>
+        </div>
+        
+        <h3>Combinations Rule</h3>
+        <div class="formula-box">
+            <p>Number of ways to choose $n$ objects from $N$ objects (without replacement):</p>
+            $$\binom{N}{n} = \frac{N!}{n!(N-n)!}$$
+            <p>where $n! = n \times (n-1) \times (n-2) \times \cdots \times 2 \times 1$</p>
+        </div>
+        
+        <div class="counting-calculator">
+            <h4>🧮 Interactive Combinations Calculator</h4>
+            <div class="calc-input">
+                <label>Choose <input type="number" id="nInput" value="2" min="0"> objects from <input type="number" id="NInput" value="4" min="0"> total objects</label>
+                <button onclick="calculateCombination()" style="padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;">Calculate</button>
+            </div>
+            <div id="calcResult" class="calc-result" style="display: none;"></div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🎯 Real-World Application: AAMFT Divorce Study</h2>
+        <div class="example-box">
+            <p><strong>Research Question:</strong> The American Association for Marriage and Family Therapy studied 100 divorced couples and classified them into relationship types.</p>
+            
+            <table class="data-table">
+                <tr>
+                    <th>Relationship Type</th>
+                    <th>Description</th>
+                    <th>Proportion</th>
+                </tr>
+                <tr>
+                    <td>Perfect Pals (PP)</td>
+                    <td>Joint-custody parents who get along well</td>
+                    <td>0.12</td>
+                </tr>
+                <tr>
+                    <td>Cooperative Colleagues (CC)</td>
+                    <td>Occasional conflict, likely to be remarried</td>
+                    <td>0.38</td>
+                </tr>
+                <tr>
+                    <td>Angry Associates (AA)</td>
+                    <td>Cooperate on children-related issues only</td>
+                    <td>0.25</td>
+                </tr>
+                <tr>
+                    <td>Fiery Foes (FF)</td>
+                    <td>Communicate only through children, hostile</td>
+                    <td>0.25</td>
+                </tr>
+            </table>
+            
+            <p><strong>Sample Space:</strong> $S = \{PP, CC, AA, FF\}$</p>
+            <p><strong>Sample Point Probabilities:</strong> Must sum to 1.0</p>
+            <p><strong>Event Example:</strong> $A = \{\text{Some conflict}\} = \{CC, AA, FF\}$</p>
+            <p><strong>Probability Calculation:</strong> $P(A) = 0.38 + 0.25 + 0.25 = 0.88$</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>📊 Probability Rules for Sample Points</h2>
+        <div class="definition-box">
+            <h3>Fundamental Rules</h3>
+            <p>Let $p_i$ represent the probability of sample point $i$. Then:</p>
+            <ol>
+                <li><strong>Range Rule:</strong> $0 \leq p_i \leq 1$ for all sample points</li>
+                <li><strong>Sum Rule:</strong> $\sum p_i = 1$ (all probabilities must sum to 1)</li>
+            </ol>
+        </div>
+        
+        <div class="formula-box">
+            <h3>Probability of an Event</h3>
+            <p>The probability of event $A$ is the sum of probabilities of all sample points in $A$:</p>
+            $$P(A) = \sum_{\text{sample points in } A} p_i$$
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🤔 Check Your Understanding</h2>
+        
+        <div class="question-card">
+            <div class="question-header">
+                What's the difference between a sample point and an event?
+            </div>
+            <div class="question-content">
+                <p><strong>Sample Point:</strong> The most basic, indivisible outcome of an experiment.</p>
+                <p><strong>Event:</strong> A collection of one or more sample points.</p>
+                <p><strong>Example:</strong> Rolling a die</p>
+                <ul>
+                    <li><strong>Sample Points:</strong> 1, 2, 3, 4, 5, 6 (six individual outcomes)</li>
+                    <li><strong>Event:</strong> "Roll an even number" = {2, 4, 6} (three sample points combined)</li>
+                </ul>
+                <p><strong>Key Insight:</strong> Every sample point is an event, but not every event is a sample point!</p>
+            </div>
+        </div>
+        
+        <div class="question-card">
+            <div class="question-header">
+                Why do we use combinations instead of just counting by hand?
+            </div>
+            <div class="question-content">
+                <p>For simple cases, counting by hand works fine. But consider these scenarios:</p>
+                <ul>
+                    <li><strong>Choose 5 marines from 1,000:</strong> $\binom{1000}{5} = 8.25 \times 10^{13}$ ways!</li>
+                    <li><strong>Choose 5 movies from 20:</strong> $\binom{20}{5} = 15,504$ ways</li>
+                    <li><strong>DNA sequences:</strong> Millions of possible arrangements</li>
+                </ul>
+                <p><strong>The combinations formula gives us exact counts for complex scenarios where listing each possibility would be impossible.</strong></p>
+            </div>
+        </div>
+        
+        <div class="question-card">
+            <div class="question-header">
+                How do we assign probabilities to sample points?
+            </div>
+            <div class="question-content">
+                <p><strong>Method 1: Equal Likelihood (Classical Approach)</strong></p>
+                <p>For fair coins, dice, etc.: Each sample point gets equal probability</p>
+                <p>Example: Fair die → $P(\text{each face}) = \frac{1}{6}$</p>
+                
+                <p><strong>Method 2: Relative Frequency (Empirical Approach)</strong></p>
+                <p>Based on observed data or historical records</p>
+                <p>Example: AAMFT study → $P(PP) = 0.12$ based on 12% of 100 couples</p>
+                
+                <p><strong>Method 3: Subjective Assessment</strong></p>
+                <p>Expert judgment for unique situations</p>
+                <p>Example: Business venture → $P(\text{Success}) = 0.8$ based on market analysis</p>
+            </div>
+        </div>
+        
+        <div class="question-card">
+            <div class="question-header">
+                Practice Problem: Marine Selection
+            </div>
+            <div class="question-content">
+                <p><strong>Problem:</strong> How many ways can we choose 2 marines from a group of 4 for a dangerous mission?</p>
+                <p><strong>Solution Using Combinations:</strong></p>
+                <p>$\binom{4}{2} = \frac{4!}{2!(4-2)!} = \frac{4!}{2! \cdot 2!} = \frac{24}{2 \cdot 2} = 6$ ways</p>
+                
+                <p><strong>Let's verify by listing them:</strong></p>
+                <p>If marines are M₁, M₂, M₃, M₄, the 6 ways are:</p>
+                <p>{M₁,M₂}, {M₁,M₃}, {M₁,M₄}, {M₂,M₃}, {M₂,M₄}, {M₃,M₄}</p>
+                
+                <p><strong>✓ The formula gives the correct count!</strong></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function calculateCombination() {
+            const n = parseInt(document.getElementById('nInput').value);
+            const N = parseInt(document.getElementById('NInput').value);
+            
+            if (n > N || n < 0 || N < 0) {
+                document.getElementById('calcResult').innerHTML = "Error: Invalid input (n must be ≤ N, both ≥ 0)";
+                document.getElementById('calcResult').style.display = 'block';
+                return;
+            }
+            
+            const factorial = (num) => {
+                if (num <= 1) return 1;
+                return num * factorial(num - 1);
+            };
+            
+            const combinations = factorial(N) / (factorial(n) * factorial(N - n));
+            
+            document.getElementById('calcResult').innerHTML = 
+                `$\\binom{${N}}{${n}} = \\frac{${N}!}{${n}!(${N}-${n})!} = ${combinations}$ ways`;
+            document.getElementById('calcResult').style.display = 'block';
+            
+            // Re-render MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise([document.getElementById('calcResult')]).catch((err) => console.log(err.message));
+            }
+        }
+
+        // Add interactivity to question cards
+        document.querySelectorAll('.question-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const isActive = this.classList.contains('active');
+                
+                // Close all other questions
+                document.querySelectorAll('.question-header').forEach(h => {
+                    h.classList.remove('active');
+                    h.nextElementSibling.classList.remove('show');
+                });
+                
+                // Toggle current question
+                if (!isActive) {
+                    this.classList.add('active');
+                    content.classList.add('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
