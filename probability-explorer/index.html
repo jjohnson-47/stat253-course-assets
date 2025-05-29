@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Probability Card Explorer</title>
+    <script type="module" crossorigin src="./assets/index-BrOVYVME.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DMXHfsQL.css">
+  </head>
+  <body>
+    <div id="app">
+      <main>
+        <h1>🎴 Probability Card Explorer</h1>
+        
+        <section class="controls">
+          <div class="event-selectors">
+            <div class="selector-group">
+              <label for="event-a">Event A:</label>
+              <select id="event-a">
+                <option value="">Select an event...</option>
+              </select>
+            </div>
+            <div class="selector-group">
+              <label for="event-b">Event B:</label>
+              <select id="event-b">
+                <option value="">Select an event...</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="visualization">
+          <div class="prob-panel">
+            <div id="prob-panel">
+              <p>Select two events to see probability calculations</p>
+            </div>
+          </div>
+          
+          <div class="visual-container">
+            <svg id="venn-svg" width="400" height="300"></svg>
+          </div>
+        </section>
+
+        <section class="deck-display">
+          <h3>Card Deck</h3>
+          <div id="card-grid"></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

@@ -417,6 +417,56 @@
     </div>
     
     <div class="card">
+        <h2>🎴 Probability Card Explorer</h2>
+        
+        <div class="example-box">
+            <h4>Interactive Learning Tool</h4>
+            <p>Experiment with mutually exclusive and independent events using a real 52-card deck. This tool helps you understand the difference between these important concepts through hands-on exploration.</p>
+            
+            <h4>📋 Learning Challenge</h4>
+            <p>Use the tool below to find:</p>
+            <ol>
+                <li><strong>One pair that is mutually exclusive</strong> (events that cannot happen together)</li>
+                <li><strong>One pair that is independent</strong> (P(A∩B) = P(A)×P(B))</li>
+                <li><strong>One pair that is neither</strong> (overlapping but not independent)</li>
+            </ol>
+            <p><em>Take a screenshot of each case and note which events you selected!</em></p>
+        </div>
+        
+        <div style="background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 10px; padding: 15px; margin: 20px 0;">
+            <iframe 
+                src="https://jjohnson-47.github.io/stat253-course-assets/probability-explorer/" 
+                width="100%" 
+                height="600" 
+                style="border: none; border-radius: 8px;"
+                title="Probability Card Explorer: Explore mutually exclusive and independent events"
+                loading="lazy">
+            </iframe>
+        </div>
+        
+        <div class="insight-box">
+            <h4>💡 How to Use the Tool:</h4>
+            <ol>
+                <li><strong>Select Event A and Event B</strong> from the dropdown menus</li>
+                <li><strong>Watch the visualization:</strong>
+                    <ul>
+                        <li>Two separate circles → Events are <em>mutually exclusive</em></li>
+                        <li>Overlapping rectangles → Events can occur together</li>
+                    </ul>
+                </li>
+                <li><strong>Check the probability panel:</strong>
+                    <ul>
+                        <li>Shows P(A), P(B), and P(A∩B)</li>
+                        <li>✅ indicates events are independent</li>
+                        <li>❌ indicates events are not independent</li>
+                    </ul>
+                </li>
+                <li><strong>Hover over highlighted cards</strong> to see which outcomes belong to each event</li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="card">
         <h2>✅ Key Takeaways</h2>
         
         <div class="definition-box">
@@ -427,6 +477,7 @@
                 <li><strong>Recognition:</strong> Ask "Can these events happen simultaneously?"</li>
                 <li><strong>Strategy:</strong> Breaking "at least" problems into mutually exclusive pieces</li>
                 <li><strong>Caution:</strong> Never use simple addition unless events are mutually exclusive</li>
+                <li><strong>Independence vs. Exclusivity:</strong> These are different concepts—use the tool to explore!</li>
             </ol>
         </div>
         
