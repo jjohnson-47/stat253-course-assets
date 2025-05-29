@@ -237,42 +237,52 @@
         
         <div class="venn-container">
             <div class="venn-diagram">
-                <h4>Overlapping Events</h4>
-                <svg width="280" height="180" viewBox="0 0 280 180">
+                <h4 style="text-align: center; margin-bottom: 15px;">Overlapping Events</h4>
+                <svg width="280" height="160" viewBox="0 0 280 160">
+                    <defs>
+                        <clipPath id="circleA">
+                            <circle cx="100" cy="80" r="45"/>
+                        </clipPath>
+                        <clipPath id="circleB">
+                            <circle cx="180" cy="80" r="45"/>
+                        </clipPath>
+                    </defs>
                     <!-- Background rectangle -->
-                    <rect x="20" y="20" width="240" height="140" fill="none" stroke="black" stroke-width="2" rx="8"/>
-                    <!-- Circle A -->
-                    <circle cx="100" cy="90" r="50" fill="#ffcccc" stroke="black" stroke-width="2"/>
-                    <!-- Circle B -->
-                    <circle cx="180" cy="90" r="50" fill="#ccffcc" stroke="black" stroke-width="2"/>
-                    <!-- Intersection highlighting -->
-                    <path d="M 140 90 A 50 50 0 0 1 140 140 A 50 50 0 0 1 140 90" fill="#ffcc99" stroke="black" stroke-width="2"/>
-                    <path d="M 140 90 A 50 50 0 0 0 140 40 A 50 50 0 0 0 140 90" fill="#ffcc99" stroke="black" stroke-width="2"/>
+                    <rect x="15" y="15" width="250" height="130" fill="none" stroke="black" stroke-width="2" rx="8"/>
+                    <!-- Sample space label -->
+                    <text x="140" y="30" text-anchor="middle" font-size="12" font-weight="bold" fill="black">Sample Space S</text>
+                    <!-- Circle A (red) -->
+                    <circle cx="100" cy="80" r="45" fill="#ffcccc" stroke="black" stroke-width="2"/>
+                    <!-- Circle B (green) -->
+                    <circle cx="180" cy="80" r="45" fill="#ccffcc" stroke="black" stroke-width="2"/>
+                    <!-- Intersection (orange) -->
+                    <circle cx="180" cy="80" r="45" fill="#ffcc99" stroke="none" clip-path="url(#circleA)"/>
                     <!-- Labels -->
-                    <text x="80" y="95" font-size="16" font-weight="bold" fill="black">A</text>
-                    <text x="200" y="95" font-size="16" font-weight="bold" fill="black">B</text>
-                    <text x="140" y="95" font-size="12" font-weight="bold" fill="black">A∩B</text>
-                    <text x="140" y="35" font-size="12" font-weight="bold" fill="black">Sample Space S</text>
+                    <text x="75" y="85" text-anchor="middle" font-size="16" font-weight="bold" fill="black">A</text>
+                    <text x="205" y="85" text-anchor="middle" font-size="16" font-weight="bold" fill="black">B</text>
+                    <text x="140" y="85" text-anchor="middle" font-size="12" font-weight="bold" fill="black">A∩B</text>
                 </svg>
-                <p><strong>NOT Mutually Exclusive:</strong><br/>$P(A \cap B) > 0$</p>
+                <p style="text-align: center; margin-top: 15px;"><strong>NOT Mutually Exclusive:</strong><br/>$P(A \cap B) > 0$</p>
             </div>
             
             <div class="venn-diagram">
-                <h4>Mutually Exclusive Events</h4>
-                <svg width="280" height="180" viewBox="0 0 280 180">
+                <h4 style="text-align: center; margin-bottom: 15px;">Mutually Exclusive Events</h4>
+                <svg width="280" height="160" viewBox="0 0 280 160">
                     <!-- Background rectangle -->
-                    <rect x="20" y="20" width="240" height="140" fill="none" stroke="black" stroke-width="2" rx="8"/>
-                    <!-- Circle A -->
-                    <circle cx="80" cy="90" r="40" fill="#ffcccc" stroke="black" stroke-width="2"/>
-                    <!-- Circle B -->
-                    <circle cx="200" cy="90" r="40" fill="#ccffcc" stroke="black" stroke-width="2"/>
+                    <rect x="15" y="15" width="250" height="130" fill="none" stroke="black" stroke-width="2" rx="8"/>
+                    <!-- Sample space label -->
+                    <text x="140" y="30" text-anchor="middle" font-size="12" font-weight="bold" fill="black">Sample Space S</text>
+                    <!-- Circle A (red) -->
+                    <circle cx="90" cy="80" r="35" fill="#ffcccc" stroke="black" stroke-width="2"/>
+                    <!-- Circle B (green) -->
+                    <circle cx="190" cy="80" r="35" fill="#ccffcc" stroke="black" stroke-width="2"/>
                     <!-- Labels -->
-                    <text x="80" y="95" font-size="16" font-weight="bold" fill="black">A</text>
-                    <text x="200" y="95" font-size="16" font-weight="bold" fill="black">B</text>
-                    <text x="140" y="35" font-size="12" font-weight="bold" fill="black">Sample Space S</text>
-                    <text x="140" y="130" font-size="10" fill="black">No overlap: A ∩ B = ∅</text>
+                    <text x="90" y="85" text-anchor="middle" font-size="16" font-weight="bold" fill="black">A</text>
+                    <text x="190" y="85" text-anchor="middle" font-size="16" font-weight="bold" fill="black">B</text>
+                    <!-- No overlap annotation -->
+                    <text x="140" y="130" text-anchor="middle" font-size="10" fill="black">No overlap: A ∩ B = ∅</text>
                 </svg>
-                <p><strong>Mutually Exclusive:</strong><br/>$P(A \cap B) = 0$</p>
+                <p style="text-align: center; margin-top: 15px;"><strong>Mutually Exclusive:</strong><br/>$P(A \cap B) = 0$</p>
             </div>
         </div>
     </div>
