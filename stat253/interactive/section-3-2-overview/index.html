@@ -325,6 +325,36 @@
         .results-panel.show {
             display: block;
         }
+        
+        /* Venn diagram styles */
+        .venn-explorer svg {
+            width: 100%;
+            height: auto;
+            max-width: 500px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .highlight path {
+            fill: #ffcc4d !important;
+            stroke: #333;
+            stroke-width: 2px;
+        }
+        
+        .dimmed path {
+            fill: #e0e0e0 !important;
+            stroke: #bbb;
+            stroke-width: 1px;
+        }
+        
+        .venn-area {
+            cursor: pointer;
+        }
+        
+        .venn-area:hover path {
+            stroke-width: 2px;
+            stroke: var(--primary);
+        }
     </style>
 </head>
 <body>
@@ -499,6 +529,32 @@
     </div>
     
     <div class="card">
+        <h2>🎯 Advanced Venn Diagram Explorer</h2>
+        <p>Explore more complex probability scenarios with three sets. Click any region or use the dropdown to highlight different intersections and unions.</p>
+        
+        <div class="interactive-venn-container" style="background: #f8f9fa; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <div id="venn-explorer"></div>
+            
+            <label for="region-selector" style="display: block; margin-top: 1rem; font-weight: 600; color: var(--dark);">Select region to highlight:</label>
+            <select id="region-selector" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ddd; border-radius: 5px; margin-top: 0.5rem;">
+                <option value="" disabled selected>— choose a region —</option>
+                <option value="A">Event A only</option>
+                <option value="B">Event B only</option>
+                <option value="C">Event C only</option>
+                <option value="A&B">A ∩ B (A and B only)</option>
+                <option value="A&C">A ∩ C (A and C only)</option>
+                <option value="B&C">B ∩ C (B and C only)</option>
+                <option value="A&B&C">A ∩ B ∩ C (All three events)</option>
+            </select>
+            
+            <div id="region-info" style="background: white; border-radius: 8px; padding: 15px; margin: 15px 0; border-left: 4px solid var(--info); display: none;">
+                <h4 id="region-title" style="margin: 0 0 10px 0; color: var(--primary);"></h4>
+                <p id="region-description" style="margin: 0; color: #333;"></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
         <h2>🔧 Key Strategies for Finding Unions and Intersections</h2>
         
         <div class="definition-box">
@@ -581,6 +637,128 @@
                 }
             });
         }
+
+        // Region information for the 3-set Venn diagram
+        const regionInfo = {
+            'A': {
+                title: 'Event A Only',
+                description: 'Elements that belong to event A but not to events B or C. This represents outcomes that satisfy only condition A.'
+            },
+            'B': {
+                title: 'Event B Only', 
+                description: 'Elements that belong to event B but not to events A or C. This represents outcomes that satisfy only condition B.'
+            },
+            'C': {
+                title: 'Event C Only',
+                description: 'Elements that belong to event C but not to events A or B. This represents outcomes that satisfy only condition C.'
+            },
+            'A&B': {
+                title: 'Intersection A ∩ B',
+                description: 'Elements that belong to both events A and B, but not to C. These outcomes satisfy both conditions A and B simultaneously.'
+            },
+            'A&C': {
+                title: 'Intersection A ∩ C', 
+                description: 'Elements that belong to both events A and C, but not to B. These outcomes satisfy both conditions A and C simultaneously.'
+            },
+            'B&C': {
+                title: 'Intersection B ∩ C',
+                description: 'Elements that belong to both events B and C, but not to A. These outcomes satisfy both conditions B and C simultaneously.'
+            },
+            'A&B&C': {
+                title: 'Intersection A ∩ B ∩ C',
+                description: 'Elements that belong to all three events A, B, and C. These are outcomes that satisfy all three conditions simultaneously.'
+            }
+        };
+
+        // Initialize the 3-set Venn diagram
+        function initVennDiagram() {
+            // Check if d3 and venn are loaded
+            if (typeof d3 === 'undefined' || typeof venn === 'undefined') {
+                console.warn('d3 or venn.js not loaded yet, retrying...');
+                setTimeout(initVennDiagram, 100);
+                return;
+            }
+
+            const sets = [
+                {sets: ['A'], size: 12},
+                {sets: ['B'], size: 12}, 
+                {sets: ['C'], size: 12},
+                {sets: ['A','B'], size: 4},
+                {sets: ['A','C'], size: 4},
+                {sets: ['B','C'], size: 4},
+                {sets: ['A','B','C'], size: 2}
+            ];
+
+            const chart = venn.VennDiagram().width(500).height(400);
+            const holder = d3.select("#venn-explorer").datum(sets).call(chart);
+
+            // Map each region key to its SVG group
+            function key(area) { return area.sets.join('&'); }
+            const areaMap = {};
+            holder.selectAll(".venn-area").each(function(d) {
+                areaMap[key(d)] = d3.select(this);
+            });
+
+            // Dropdown-driven highlighting
+            const regionSelector = document.getElementById('region-selector');
+            regionSelector.addEventListener('change', () => {
+                const selectedRegion = regionSelector.value;
+                highlightRegion(selectedRegion);
+                showRegionInfo(selectedRegion);
+            });
+
+            // Click-driven highlighting  
+            holder.selectAll(".venn-area").on('click', function(event, d) {
+                const k = key(d);
+                regionSelector.value = k;
+                highlightRegion(k);
+                showRegionInfo(k);
+            });
+
+            // Highlight helper
+            function highlightRegion(chosen) {
+                holder.selectAll(".venn-area")
+                      .classed('highlight', false)
+                      .classed('dimmed', chosen !== "");
+
+                if (!chosen) return;
+                Object.entries(areaMap).forEach(([k, node]) => {
+                    if (k === chosen) {
+                        node.classed('highlight', true).classed('dimmed', false);
+                    }
+                });
+            }
+
+            // Show region information
+            function showRegionInfo(region) {
+                const infoPanel = document.getElementById('region-info');
+                const titleElement = document.getElementById('region-title');
+                const descElement = document.getElementById('region-description');
+
+                if (region && regionInfo[region]) {
+                    titleElement.textContent = regionInfo[region].title;
+                    descElement.textContent = regionInfo[region].description;
+                    infoPanel.style.display = 'block';
+                } else {
+                    infoPanel.style.display = 'none';
+                }
+            }
+        }
+
+        // Load external dependencies and initialize
+        function loadScript(src, callback) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = callback;
+            document.head.appendChild(script);
+        }
+
+        // Load d3 first, then venn.js, then initialize
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js', function() {
+            loadScript('https://cdnjs.cloudflare.com/ajax/libs/venn.js/0.2.14/venn.min.js', function() {
+                initVennDiagram();
+            });
+        });
     </script>
 </body>
 </html>
