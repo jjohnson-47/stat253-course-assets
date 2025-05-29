@@ -27,154 +27,288 @@
             --danger: #dc3545;
             --independent-color: #38b000;
             --dependent-color: #dc3545;
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
         }
         
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             line-height: 1.6;
             color: #333;
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f9f9f9;
-        }
-        
-        h1, h2, h3 {
-            color: var(--dark);
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
         }
         
         h1 {
-            font-size: 2.2rem;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10px;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-align: center;
+            margin-bottom: 2rem;
+            padding: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         
-        h2 {
-            font-size: 1.6rem;
-            border-bottom: 2px solid var(--primary-light);
-            padding-bottom: 5px;
-        }
-        
-        h3 {
-            font-size: 1.3rem;
-            color: var(--primary);
-        }
-        
-        .card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-        
-        .definition-box {
-            background-color: var(--primary-light);
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
             border-left: 5px solid var(--primary);
-            border-radius: 5px;
-            padding: 20px;
-            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
-        .example-box {
-            background-color: #fff8e6;
-            border-left: 5px solid var(--warning);
-            border-radius: 5px;
-            padding: 20px;
-            margin: 20px 0;
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
         }
         
-        .formula-box {
-            background-color: #f8f9fa;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        }
+        
+        .step-card h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+        }
+        
+        .action-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
             padding: 20px;
-            margin: 15px 0;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .sub-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--info);
+        }
+        
+        .sub-section h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .sub-section h4 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .step-sequence {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+        
+        .step-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(4, 102, 200, 0.3);
+        }
+        
+        .step-content {
+            flex: 1;
+            font-size: 1rem;
+        }
+        
+        .highlight-confirmed {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
             text-align: center;
         }
         
-        .insight-box {
-            background-color: #f0f8ff;
-            border-left: 5px solid var(--info);
-            border-radius: 5px;
+        .highlight-insight {
+            background: linear-gradient(135deg, #cce7ff, #b3d9ff);
+            border: 2px solid var(--info);
+            border-radius: 12px;
             padding: 20px;
             margin: 20px 0;
         }
         
-        .comparison-container {
+        .highlight-warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .highlight-danger {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border: 2px solid var(--danger);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .formula-display {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .download-button {
+            background: linear-gradient(135deg, var(--success), #28a745);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .download-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .visualization-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .viz-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .viz-item:hover {
+            transform: scale(1.02);
+        }
+        
+        .viz-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .viz-item h4 {
+            color: var(--primary);
+            margin: 15px 0 10px 0;
+        }
+        
+        .comparison-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             margin: 20px 0;
         }
         
-        .comparison-box {
+        .comparison-item {
             background: white;
-            border: 2px solid #ddd;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 20px;
             text-align: center;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
-        .independent-box {
-            border-color: var(--independent-color);
-            background-color: #f0fff0;
+        .comparison-item.independent {
+            border-left: 5px solid var(--success);
         }
         
-        .dependent-box {
-            border-color: var(--dependent-color);
-            background-color: #fff5f5;
-        }
-        
-        .step-by-step {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .step {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            border-left: 4px solid var(--info);
-        }
-        
-        .step-number {
-            background: var(--info);
-            color: white;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 10px;
+        .comparison-item.dependent {
+            border-left: 5px solid var(--danger);
         }
         
         .card-deck {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 8px;
             margin: 20px 0;
             padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            max-width: 600px;
+            margin: 20px auto;
         }
         
         .card-visual {
             background: white;
             border: 2px solid #333;
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 6px;
+            padding: 8px;
             text-align: center;
             font-weight: bold;
+            font-size: 0.9rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .card-visual:hover {
+            transform: translateY(-2px);
         }
         
         .card-red {
@@ -185,442 +319,432 @@
             color: #333;
         }
         
-        .highlight-event {
-            background-color: #fff2cc !important;
-            border-color: var(--warning) !important;
+        .interactive-demo {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            color: white;
         }
         
-        .probability-tree {
-            background-color: #f8f9fa;
-            border-radius: 10px;
+        .code-instructions {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 12px;
             padding: 20px;
             margin: 20px 0;
-            text-align: center;
+            font-family: 'Courier New', monospace;
         }
         
-        .tree-level {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-            align-items: center;
+        .code-instructions ol {
+            margin: 0;
+            padding-left: 20px;
         }
         
-        .tree-node {
-            background: white;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        .code-instructions li {
+            margin: 10px 0;
         }
         
-        .tree-branch {
-            flex-grow: 1;
-            height: 2px;
-            background-color: var(--primary);
-            margin: 0 10px;
+        .code-instructions code {
+            background: #4a5568;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #90cdf4;
         }
         
-        .branch-label {
-            background: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            border: 1px solid var(--primary);
-            font-size: 0.9em;
-            margin: 0 10px;
+        @media (max-width: 768px) {
+            .visualization-showcase,
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-deck {
+                grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
     <h1>Section 3.6: Multiplicative Rule and Independent Events</h1>
     
-    <div class="card">
-        <h2>📹 Video: Independent Events</h2>
-        <div class="example-box">
-            <p>This video explains independent events using clear examples and demonstrates how to test for independence. It shows the key difference between independent and dependent events and how this affects probability calculations.</p>
-            
-            <div style="text-align: center; margin: 20px 0;">
-                <iframe width="800" height="450" src="https://www.youtube.com/embed/1wuRV5z0PPE?si=MVWOjOplJpBrdMhk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); max-width: 800px;"></iframe>
-            </div>
+    <div class="step-card">
+        <h2>📹 Video Introduction</h2>
+        <div class="action-box">
+            <p><strong>Start Here:</strong> Watch this clear explanation of independent events with practical examples</p>
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <iframe width="100%" height="450" src="https://www.youtube.com/embed/1wuRV5z0PPE?si=MVWOjOplJpBrdMhk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); max-width: 800px;"></iframe>
         </div>
     </div>
-    
-    <div class="card">
+
+    <div class="step-card">
         <h2>⚡ The Multiplicative Rule</h2>
         
-        <div class="definition-box">
-            <h3>Multiplicative Rule of Probability</h3>
-            <p><strong>Purpose:</strong> Calculate the probability of the intersection of two events (both events occurring)</p>
-            <p><strong>Formula:</strong></p>
+        <div class="sub-section">
+            <h3>Core Concept</h3>
+            <p>Calculate the probability of <strong>both events occurring</strong> (intersection) using conditional probability.</p>
+        </div>
+        
+        <div class="formula-display">
+            <h3>Multiplicative Rule Formula</h3>
             $$P(A \cap B) = P(A) \cdot P(B \mid A) = P(B) \cdot P(A \mid B)$$
-            <p><em>This is just a rearrangement of the conditional probability formula!</em></p>
+            <p><em>This comes from rearranging the conditional probability formula!</em></p>
         </div>
         
-        <div class="formula-box">
-            <h3>Key Insight</h3>
-            <p>Starting from: $P(B \mid A) = \frac{P(A \cap B)}{P(A)}$</p>
-            <p>Multiply both sides by $P(A)$:</p>
-            $$P(A \cap B) = P(A) \cdot P(B \mid A)$$
-            <p><strong>Translation:</strong> "Probability of both" = "Probability of first" × "Probability of second given first"</p>
+        <div class="highlight-insight">
+            <h4>💡 Key Insight</h4>
+            <p><strong>Translation:</strong> "Probability of both" = "Probability of first" × "Probability of second given first occurred"</p>
         </div>
     </div>
-    
-    <div class="card">
-        <h2>🃏 Card Drawing Example: Testing Independence</h2>
+
+    <div class="step-card">
+        <h2>🃏 Step-by-Step Example: Card Independence Test</h2>
         
-        <div class="example-box">
-            <h4>The Setup</h4>
-            <p>You draw one card from a standard 52-card deck. Consider these events:</p>
+        <div class="sub-section">
+            <h3>The Setup</h3>
+            <p>Draw one card from a standard 52-card deck. Test if these events are independent:</p>
             <ul>
-                <li><strong>A:</strong> Card is red (hearts or diamonds)</li>
-                <li><strong>B:</strong> Card is a face card (Jack, Queen, King)</li>
+                <li><strong>Event A:</strong> Card is red (hearts or diamonds)</li>
+                <li><strong>Event B:</strong> Card is a face card (Jack, Queen, King)</li>
             </ul>
-            <p><strong>Question:</strong> Are events A and B independent?</p>
         </div>
-        
-        <div class="card-deck">
-            <div class="card-visual card-red">J♥</div>
-            <div class="card-visual card-red">Q♥</div>
-            <div class="card-visual card-red">K♥</div>
-            <div class="card-visual card-black">J♠</div>
-            <div class="card-visual card-black">Q♠</div>
-            <div class="card-visual card-black">K♠</div>
-            <div class="card-visual card-red">J♦</div>
-            <div class="card-visual card-red">Q♦</div>
-            <div class="card-visual card-red">K♦</div>
-            <div class="card-visual card-black">J♣</div>
-            <div class="card-visual card-black">Q♣</div>
-            <div class="card-visual card-black">K♣</div>
-        </div>
-        
-        <div class="step-by-step">
-            <h4>📝 Independence Test</h4>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Calculate P(A):</strong><br/>
-                P(red card) = 26/52 = 1/2
-            </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Calculate P(B):</strong><br/>
-                P(face card) = 12/52 = 3/13
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Calculate P(A ∩ B):</strong><br/>
-                P(red AND face card) = 6/52 = 3/26<br/>
-                <em>(6 red face cards: J♥, Q♥, K♥, J♦, Q♦, K♦)</em>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Test independence:</strong><br/>
-                If independent: P(A ∩ B) should equal P(A) × P(B)<br/>
-                P(A) × P(B) = (1/2) × (3/13) = 3/26 ✓<br/>
-                P(A ∩ B) = 3/26 ✓
+
+        <div class="sub-section">
+            <h4>Visual: All Face Cards</h4>
+            <div class="card-deck">
+                <div class="card-visual card-red">J♥</div>
+                <div class="card-visual card-red">Q♥</div>
+                <div class="card-visual card-red">K♥</div>
+                <div class="card-visual card-black">J♠</div>
+                <div class="card-visual card-black">Q♠</div>
+                <div class="card-visual card-black">K♠</div>
+                <div class="card-visual card-red">J♦</div>
+                <div class="card-visual card-red">Q♦</div>
+                <div class="card-visual card-red">K♦</div>
+                <div class="card-visual card-black">J♣</div>
+                <div class="card-visual card-black">Q♣</div>
+                <div class="card-visual card-black">K♣</div>
             </div>
         </div>
         
-        <div class="comparison-container">
-            <div class="comparison-box independent-box">
-                <h4>✅ Independence Confirmed!</h4>
-                <p><strong>P(A ∩ B) = P(A) × P(B)</strong></p>
-                <p>3/26 = 3/26</p>
-                <p><em>Knowing a card is red doesn't change the probability it's a face card</em></p>
+        <div class="step-sequence">
+            <h3>📊 Independence Test Process</h3>
+            
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <strong>Calculate P(A):</strong><br/>
+                    P(red card) = 26/52 = 0.5000
+                </div>
             </div>
             
-            <div class="comparison-box">
-                <h4>🧠 Alternative Check</h4>
-                <p><strong>P(B | A) = P(B)?</strong></p>
-                <p>P(face | red) = (3/26)/(1/2) = 3/13</p>
-                <p>P(face) = 3/13 ✓</p>
-                <p><em>Same result: they're independent!</em></p>
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <strong>Calculate P(B):</strong><br/>
+                    P(face card) = 12/52 = 0.2308
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <strong>Calculate P(A ∩ B):</strong><br/>
+                    P(red AND face card) = 6/52 = 0.1154<br/>
+                    <em>(6 red face cards: J♥, Q♥, K♥, J♦, Q♦, K♦)</em>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <strong>Test independence:</strong><br/>
+                    If independent: P(A ∩ B) should equal P(A) × P(B)<br/>
+                    P(A) × P(B) = 0.5000 × 0.2308 = 0.1154 ✓<br/>
+                    P(A ∩ B) = 0.1154 ✓
+                </div>
             </div>
         </div>
         
-        <div class="insight-box">
-            <h4>💡 Why These Events Are Independent</h4>
-            <p>In a standard deck, face cards are evenly distributed between red and black suits. Knowing the color doesn't give you any information about whether it's a face card, and vice versa.</p>
+        <div class="highlight-confirmed">
+            <h3>✅ Independence Confirmed!</h3>
+            <p><strong>P(A ∩ B) = P(A) × P(B)</strong></p>
+            <p>0.1154 = 0.1154</p>
+            <p><em>Knowing a card is red doesn't change the probability it's a face card!</em></p>
         </div>
     </div>
-    
-    <div class="card">
-        <h2>📊 R Simulation: Visualizing Independence</h2>
+
+    <div class="step-card">
+        <h2>📊 R Simulation: See Independence in Action!</h2>
         
-        <div class="example-box">
-            <h4>🎯 Interactive Learning with R</h4>
-            <p>Want to see independence in action? Run our R simulation to generate visualizations that demonstrate the mathematical concepts!</p>
-            
-            <h4>📥 Download and Run the Code</h4>
-            <ol>
-                <li><strong>Download the R script:</strong> 
-                    <a href="https://raw.githubusercontent.com/jjohnson-47/stat253-course-assets/main/r-code/independence_visualization.R" 
-                       download="independence_visualization.R" 
-                       style="color: #0466c8; font-weight: bold;">independence_visualization.R</a>
-                </li>
-                <li><strong>Open your terminal/command prompt</strong></li>
-                <li><strong>Navigate to the download folder:</strong> <code>cd Downloads</code></li>
-                <li><strong>Run the script:</strong> <code>Rscript independence_visualization.R</code></li>
-            </ol>
-            
-            <p><strong>What you'll get:</strong> Four beautiful visualizations showing convergence, contingency tables, and independence vs dependence comparisons!</p>
+        <div class="action-box">
+            <h3>🎯 Interactive Learning Experience</h3>
+            <p>Run 10,000 card simulations and generate professional visualizations that prove independence!</p>
         </div>
         
-        <div class="step-by-step">
-            <h4>🖼️ Generated Visualizations</h4>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Convergence Plot:</strong> Shows how 10,000 simulations converge to the theoretical independence relationship P(A ∩ B) = P(A) × P(B)
+        <div class="sub-section">
+            <h3>🚀 Try It Yourself</h3>
+            <div class="code-instructions">
+                <h4>Quick Start Guide:</h4>
+                <ol>
+                    <li><strong>Download:</strong> <a href="https://raw.githubusercontent.com/jjohnson-47/stat253-course-assets/main/stat253/r-code/independence_visualization.R" class="download-button">independence_visualization.R</a></li>
+                    <li><strong>Open terminal:</strong> Navigate to download folder</li>
+                    <li><strong>Run:</strong> <code>Rscript independence_visualization.R</code></li>
+                    <li><strong>View:</strong> Four amazing visualizations will be generated!</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="visualization-showcase">
+            <div class="viz-item">
+                <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/independence_convergence.png" alt="Convergence Plot" loading="lazy">
+                <h4>Convergence Analysis</h4>
+                <p>Watch 10,000 simulations converge to theoretical independence</p>
             </div>
             
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Contingency Table:</strong> Visual heatmap of the 2×2 table showing equal distribution of face cards across colors
+            <div class="viz-item">
+                <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/independence_contingency_table.png" alt="Contingency Table" loading="lazy">
+                <h4>Visual Contingency Table</h4>
+                <p>See the equal distribution that proves independence</p>
             </div>
             
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Dependence Comparison:</strong> Contrasts independent events (color vs face) with dependent events (drawing without replacement)
+            <div class="viz-item">
+                <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/dependence_comparison.png" alt="Dependence Comparison" loading="lazy">
+                <h4>Independence vs Dependence</h4>
+                <p>Compare with dependent events (drawing without replacement)</p>
             </div>
             
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Combined Analysis:</strong> Side-by-side overview perfect for presentations or study materials
+            <div class="viz-item">
+                <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/independence_combined_analysis.png" alt="Combined Analysis" loading="lazy">
+                <h4>Complete Analysis</h4>
+                <p>Side-by-side overview of all concepts</p>
             </div>
         </div>
         
-        <div class="formula-box">
-            <h4>🎲 Simulation Results</h4>
-            <p><strong>Theoretical:</strong> P(Red ∩ Face) = 6/52 = 0.1154</p>
-            <p><strong>Theoretical:</strong> P(Red) × P(Face) = (26/52) × (12/52) = 0.1154</p>
-            <p><strong>Simulation:</strong> 10,000 card draws confirm independence within 0.003 accuracy</p>
-            <p><em>The simulation validates our mathematical analysis!</em></p>
-        </div>
-        
-        <div class="insight-box">
-            <h4>💻 Why Learn with R?</h4>
+        <div class="highlight-insight">
+            <h4>🎲 What the Simulation Proves</h4>
             <ul>
-                <li><strong>Verification:</strong> See theory match practice with large-scale simulations</li>
-                <li><strong>Exploration:</strong> Modify the code to test different scenarios</li>
-                <li><strong>Visualization:</strong> Transform abstract concepts into clear graphics</li>
-                <li><strong>Real Skills:</strong> Learn statistical programming used in research and industry</li>
+                <li><strong>Theoretical:</strong> P(Red ∩ Face) = 6/52 = 0.1154</li>
+                <li><strong>Theoretical:</strong> P(Red) × P(Face) = 0.5000 × 0.2308 = 0.1154</li>
+                <li><strong>Simulation:</strong> 10,000 draws confirm independence within 0.003 accuracy</li>
+                <li><strong>Conclusion:</strong> Mathematics matches reality!</li>
             </ul>
-            <p><em>Note: Requires R installation. Visit <a href="https://cran.r-project.org/" style="color: #0466c8;">cran.r-project.org</a> for setup instructions.</em></p>
         </div>
     </div>
-    
-    <div class="card">
-        <h2>🔬 Scientific Example: Milgram Psychology Study</h2>
+
+    <div class="step-card">
+        <h2>🔬 Scientific Application: Milgram Psychology Study</h2>
         
-        <div class="example-box">
-            <h4>Classic Psychology Research</h4>
-            <p>In Stanley Milgram's famous obedience experiments from the 1960s, researchers studied teacher behavior when asked to shock learners for wrong answers. Define these events:</p>
-            <ul>
-                <li><strong>A:</strong> Teacher applies severe shock (450 volts)</li>
-                <li><strong>B:</strong> Learner protests verbally before receiving shock</li>
-            </ul>
+        <div class="sub-section">
+            <h3>Research Context</h3>
+            <p>Stanley Milgram's famous 1960s obedience experiments studied teacher behavior when asked to shock learners for wrong answers.</p>
             
-            <p><strong>Research findings:</strong></p>
-            <ul>
-                <li>P(B) = 0.5 (50% of learners protest verbally)</li>
-                <li>P(A | B) = 0.7 (70% of teachers still apply severe shock even when learner protests)</li>
-            </ul>
-            
-            <p><strong>Research Question:</strong> What's the probability that both events occur (learner protests AND teacher applies severe shock)?</p>
-        </div>
-        
-        <div class="step-by-step">
-            <h4>📊 Applying the Multiplicative Rule</h4>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Identify what we want:</strong><br/>
-                We need P(A ∩ B) = P(learner protests AND teacher shocks)
-            </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Apply multiplicative rule:</strong><br/>
-                P(A ∩ B) = P(B) × P(A | B)<br/>
-                P(A ∩ B) = 0.5 × 0.7 = 0.35
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Interpret the result:</strong><br/>
-                About 35% of the time, learners will protest verbally AND teachers will still apply severe shock
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                <p><strong>Events of Interest:</strong></p>
+                <ul>
+                    <li><strong>Event A:</strong> Teacher applies severe shock (450 volts)</li>
+                    <li><strong>Event B:</strong> Learner protests verbally before shock</li>
+                </ul>
+                <p><strong>Research Data:</strong> P(B) = 0.5, P(A | B) = 0.7</p>
             </div>
         </div>
         
-        <div class="formula-box">
-            <h4>🎯 Key Finding: 35% of cases involve both protest and severe shock</h4>
-            <p>This demonstrates the disturbing tendency for authority figures to persist even when subjects show distress.</p>
+        <div class="step-sequence">
+            <h3>📈 Applying the Multiplicative Rule</h3>
+            
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <strong>Research Question:</strong><br/>
+                    What's P(learner protests AND teacher applies severe shock)?
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <strong>Apply Multiplicative Rule:</strong><br/>
+                    P(A ∩ B) = P(B) × P(A | B)<br/>
+                    P(A ∩ B) = 0.5 × 0.7 = 0.35
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <strong>Interpretation:</strong><br/>
+                    35% of cases involve both verbal protest AND severe shock application
+                </div>
+            </div>
         </div>
         
-        <div class="insight-box">
-            <h4>🔍 Why This Matters</h4>
-            <p>The multiplicative rule helps researchers quantify the co-occurrence of behaviors in controlled experiments. This particular result was crucial in understanding obedience to authority and ethical considerations in research.</p>
+        <div class="highlight-warning">
+            <h4>🚨 Key Scientific Finding</h4>
+            <p><strong>35% of interactions show disturbing obedience:</strong> Even when learners protest, teachers still apply severe shocks over one-third of the time.</p>
+            <p><em>This quantifies the psychological tendency to obey authority figures despite moral concerns.</em></p>
         </div>
     </div>
-    
-    <div class="card">
-        <h2>🎯 Understanding Independence</h2>
+
+    <div class="step-card">
+        <h2>🎯 Independence: The Complete Picture</h2>
         
-        <div class="definition-box">
-            <h3>Independent Events</h3>
-            <p><strong>Definition:</strong> Events A and B are independent if the occurrence of one does not affect the probability of the other.</p>
-            <p><strong>Mathematical test:</strong> A and B are independent if and only if:</p>
+        <div class="formula-display">
+            <h3>Independence Definition</h3>
+            <p>Events A and B are <strong>independent</strong> if:</p>
             $$P(A \mid B) = P(A) \text{ and } P(B \mid A) = P(B)$$
-            <p><strong>Equivalent condition:</strong></p>
+            <p><strong>Equivalent test:</strong></p>
             $$P(A \cap B) = P(A) \times P(B)$$
         </div>
         
-        <div class="comparison-container">
-            <div class="comparison-box independent-box">
+        <div class="comparison-grid">
+            <div class="comparison-item independent">
                 <h4>✅ Independent Events</h4>
                 <p><strong>Examples:</strong></p>
-                <ul>
+                <ul style="text-align: left;">
                     <li>Coin tosses</li>
-                    <li>Card color & face card status</li>
-                    <li>Medical test results on different patients</li>
+                    <li>Card color & face status</li>
+                    <li>Medical test results (different patients)</li>
                     <li>Rolling dice multiple times</li>
                 </ul>
-                <p><strong>Formula:</strong> P(A ∩ B) = P(A) × P(B)</p>
+                <div class="formula-display">
+                    <strong>Formula:</strong> P(A ∩ B) = P(A) × P(B)
+                </div>
             </div>
             
-            <div class="comparison-box dependent-box">
+            <div class="comparison-item dependent">
                 <h4>❌ Dependent Events</h4>
                 <p><strong>Examples:</strong></p>
-                <ul>
+                <ul style="text-align: left;">
                     <li>Drawing cards without replacement</li>
                     <li>Weather on consecutive days</li>
-                    <li>Sports performance ("hot" streaks)</li>
+                    <li>Sports "hot" streaks</li>
                     <li>Stock prices over time</li>
                 </ul>
-                <p><strong>Formula:</strong> P(A ∩ B) = P(A) × P(B | A)</p>
+                <div class="formula-display">
+                    <strong>Formula:</strong> P(A ∩ B) = P(A) × P(B | A)
+                </div>
             </div>
-        </div>
-        
-        <div class="insight-box">
-            <h4>🧠 Key Insights About Independence</h4>
-            <ol>
-                <li><strong>Can't be determined from Venn diagrams:</strong> You must calculate!</li>
-                <li><strong>Mutually exclusive events are dependent:</strong> If A and B can't both occur, then P(A|B) = 0 ≠ P(A)</li>
-                <li><strong>Independence simplifies calculations:</strong> P(A ∩ B) = P(A) × P(B)</li>
-                <li><strong>Common misconception:</strong> Independent ≠ mutually exclusive</li>
-                <li><strong>Practical importance:</strong> Many statistical methods assume independence</li>
-            </ol>
         </div>
     </div>
-    
-    <div class="card">
-        <h2>🎲 Counter-Example: Dependent Card Drawing</h2>
+
+    <div class="step-card">
+        <h2>⚠️ Counter-Example: Dependent Events</h2>
         
-        <div class="example-box">
-            <h4>Drawing Without Replacement</h4>
-            <p>Now consider drawing two cards from a deck WITHOUT replacing the first card:</p>
+        <div class="sub-section">
+            <h3>Drawing Without Replacement</h3>
+            <p>Consider drawing two cards WITHOUT replacing the first:</p>
             <ul>
-                <li><strong>A:</strong> First card is an Ace</li>
-                <li><strong>B:</strong> Second card is an Ace</li>
+                <li><strong>Event A:</strong> First card is an Ace</li>
+                <li><strong>Event B:</strong> Second card is an Ace</li>
             </ul>
-            <p><strong>Question:</strong> Are these events independent?</p>
         </div>
         
-        <div class="step-by-step">
-            <h4>📝 Dependence Analysis</h4>
+        <div class="step-sequence">
+            <h3>🔍 Dependence Analysis</h3>
             
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Calculate P(A):</strong><br/>
-                P(first card is Ace) = 4/52 = 1/13
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <strong>P(A):</strong> P(first Ace) = 4/52 = 0.0769
+                </div>
             </div>
             
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Calculate P(B | A):</strong><br/>
-                P(second Ace | first was Ace) = 3/51<br/>
-                <em>(3 Aces left in 51 remaining cards)</em>
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <strong>P(B | A):</strong> P(second Ace | first was Ace) = 3/51 = 0.0588<br/>
+                    <em>(3 Aces left in 51 remaining cards)</em>
+                </div>
             </div>
             
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Calculate P(B | A^c):</strong><br/>
-                P(second Ace | first was not Ace) = 4/51<br/>
-                <em>(4 Aces left in 51 remaining cards)</em>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Test independence:</strong><br/>
-                P(B | A) = 3/51 ≠ P(B | A^c) = 4/51<br/>
-                Since these conditional probabilities are different, A and B are dependent!
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <strong>P(B | A^c):</strong> P(second Ace | first not Ace) = 4/51 = 0.0784<br/>
+                    <em>(4 Aces left in 51 remaining cards)</em>
+                </div>
             </div>
         </div>
         
-        <div class="comparison-box dependent-box">
+        <div class="highlight-danger">
             <h4>❌ Clear Dependence</h4>
             <p><strong>The first draw affects the second!</strong></p>
-            <p>If first card is an Ace: P(second Ace) = 3/51 ≈ 0.059</p>
-            <p>If first card is not an Ace: P(second Ace) = 4/51 ≈ 0.078</p>
-            <p><em>Knowing the first result changes the probability of the second</em></p>
+            <p>P(B | A) = 0.0588 ≠ P(B | A^c) = 0.0784</p>
+            <p><em>Different conditional probabilities prove dependence</em></p>
         </div>
     </div>
-    
-    <div class="card">
-        <h2>⚠️ Common Mistakes and Misconceptions</h2>
+
+    <div class="step-card">
+        <h2>🚫 Common Mistakes to Avoid</h2>
         
-        <div class="example-box">
-            <h4>🚫 What NOT to confuse:</h4>
+        <div class="highlight-warning">
+            <h4>⚠️ Don't Confuse These Concepts:</h4>
             <ul>
                 <li><strong>Independent ≠ Mutually Exclusive:</strong> Independent events CAN occur together</li>
-                <li><strong>P(A ∩ B) ≠ P(A | B):</strong> Intersection probability vs. conditional probability</li>
+                <li><strong>P(A ∩ B) ≠ P(A | B):</strong> Intersection vs conditional probability</li>
                 <li><strong>P(A | B) ≠ P(B | A):</strong> Order matters in conditional probability</li>
-                <li><strong>Independence ≠ Causation:</strong> Independence doesn't mean one causes the other</li>
+                <li><strong>Independence ≠ Causation:</strong> Independence doesn't imply causation</li>
             </ul>
         </div>
         
-        <div class="definition-box">
+        <div class="step-sequence">
             <h3>✅ Problem-Solving Strategy</h3>
-            <ol>
-                <li><strong>Identify the events clearly</strong></li>
-                <li><strong>Check if independence is stated or must be tested</strong></li>
-                <li><strong>For independent events:</strong> Use P(A ∩ B) = P(A) × P(B)</li>
-                <li><strong>For dependent events:</strong> Use P(A ∩ B) = P(A) × P(B | A)</li>
-                <li><strong>Always interpret results in context</strong></li>
-            </ol>
+            
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">Clearly define both events</div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">Check if independence is given or must be tested</div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">For independent: use P(A ∩ B) = P(A) × P(B)</div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">For dependent: use P(A ∩ B) = P(A) × P(B | A)</div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">5</div>
+                <div class="step-content">Always interpret results in context</div>
+            </div>
         </div>
     </div>
-    
-    <div class="card">
-        <h2>✅ Key Takeaways</h2>
+
+    <div class="step-card">
+        <h2>✅ Master These Key Concepts</h2>
         
-        <div class="definition-box">
-            <h3>Master These Concepts:</h3>
-            <ol>
-                <li><strong>Multiplicative Rule:</strong> P(A ∩ B) = P(A) × P(B | A)</li>
-                <li><strong>Independence test:</strong> P(A ∩ B) = P(A) × P(B)</li>
-                <li><strong>Independence meaning:</strong> One event doesn't affect the other</li>
-                <li><strong>Simplification:</strong> Independence makes calculations easier</li>
-                <li><strong>Real applications:</strong> Medical trials, quality control, scientific experiments</li>
-                <li><strong>Common patterns:</strong> Sampling with/without replacement</li>
-                <li><strong>Verification:</strong> Always check your independence assumptions</li>
-            </ol>
+        <div class="highlight-confirmed">
+            <h3>Essential Knowledge Checklist</h3>
+            <div style="text-align: left;">
+                <p>✓ <strong>Multiplicative Rule:</strong> P(A ∩ B) = P(A) × P(B | A)</p>
+                <p>✓ <strong>Independence Test:</strong> P(A ∩ B) = P(A) × P(B)</p>
+                <p>✓ <strong>Independence Meaning:</strong> One event doesn't affect the other</p>
+                <p>✓ <strong>Simplification:</strong> Independence makes calculations easier</p>
+                <p>✓ <strong>Real Applications:</strong> Medical trials, quality control, experiments</p>
+                <p>✓ <strong>Verification:</strong> Always check independence assumptions</p>
+                <p>✓ <strong>R Simulation:</strong> Use code to validate mathematical concepts</p>
+            </div>
         </div>
         
-        <div class="formula-box">
-            <h3>Formula Reference Card</h3>
-            <p><strong>General multiplicative rule:</strong> P(A ∩ B) = P(A) × P(B | A)</p>
-            <p><strong>For independent events:</strong> P(A ∩ B) = P(A) × P(B)</p>
-            <p><strong>Independence test:</strong> Check if P(A | B) = P(A)</p>
-            <p><strong>Multiple events:</strong> P(A ∩ B ∩ C) = P(A) × P(B) × P(C) if all independent</p>
+        <div class="formula-display">
+            <h3>Quick Reference Card</h3>
+            <p><strong>General:</strong> P(A ∩ B) = P(A) × P(B | A)</p>
+            <p><strong>Independent:</strong> P(A ∩ B) = P(A) × P(B)</p>
+            <p><strong>Test:</strong> Check if P(A | B) = P(A)</p>
+            <p><strong>Multiple:</strong> P(A ∩ B ∩ C) = P(A) × P(B) × P(C) if all independent</p>
         </div>
     </div>
 </body>
