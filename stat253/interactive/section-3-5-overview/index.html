@@ -455,6 +455,45 @@
     </div>
     
     <div class="card">
+        <h2>🎲 Interactive Game: Monty Hall Problem</h2>
+        
+        <div class="example-box">
+            <h4>🏆 Test Your Understanding</h4>
+            <p>Ready to apply conditional probability in a famous game show scenario? The Monty Hall Problem perfectly demonstrates how additional information changes probabilities in unexpected ways!</p>
+            
+            <h4>🎯 Learning Goals</h4>
+            <ul>
+                <li><strong>Experience conditional probability</strong> in action</li>
+                <li><strong>See notation in context:</strong> $P(\text{car} \mid H)$ where $H$ = "host opens goat door"</li>
+                <li><strong>Track statistics</strong> to verify the theoretical predictions</li>
+                <li><strong>Overcome intuition</strong> with mathematical reasoning</li>
+            </ul>
+        </div>
+        
+        <div style="background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 10px; padding: 15px; margin: 20px 0;">
+            <iframe 
+                src="https://jjohnson-47.github.io/stat253-course-assets/monty-hall-game/" 
+                width="100%" 
+                height="800" 
+                style="border: none; border-radius: 8px;"
+                title="Monty Hall Game: Conditional Probability Demo"
+                loading="lazy">
+            </iframe>
+        </div>
+        
+        <div class="insight-box">
+            <h4>🧠 Why This Matters for Conditional Probability</h4>
+            <p>The Monty Hall Problem shows how the host's action (opening a goat door) provides new information that changes the probability landscape:</p>
+            <ul>
+                <li><strong>Before host acts:</strong> Each door has probability 1/3</li>
+                <li><strong>After host acts:</strong> Original door still 1/3, other door becomes 2/3</li>
+                <li><strong>Key insight:</strong> The host's knowledge creates conditional probability</li>
+            </ul>
+            <p><em>Play multiple rounds and watch your switching win rate approach 67%!</em></p>
+        </div>
+    </div>
+    
+    <div class="card">
         <h2>✅ Key Takeaways</h2>
         
         <div class="definition-box">
@@ -464,8 +503,9 @@
                 <li><strong>Interpretation:</strong> "What fraction of B also contains A?"</li>
                 <li><strong>Reduced sample space:</strong> Additional information changes the effective sample space</li>
                 <li><strong>Two-way tables:</strong> Cell value divided by row/column total</li>
-                <li><strong>Real applications:</strong> Medical studies, quality control, risk assessment</li>
+                <li><strong>Real applications:</strong> Medical studies, quality control, risk assessment, game shows!</li>
                 <li><strong>Order sensitivity:</strong> P(A|B) and P(B|A) are generally different</li>
+                <li><strong>Counterintuitive results:</strong> Sometimes math contradicts initial intuition</li>
             </ol>
         </div>
         
@@ -476,6 +516,7 @@
             <p><strong>✓</strong> Calculate the probability of the given event</p>
             <p><strong>✓</strong> Apply the formula: intersection ÷ given</p>
             <p><strong>✓</strong> Interpret the result in context</p>
+            <p><strong>✓</strong> Question intuition when math suggests otherwise</p>
         </div>
     </div>
 </body>

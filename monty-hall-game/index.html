@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monty Hall Game: Conditional Probability Demo</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+    };
+</script>
+<style>
+    :root{
+        --door-w:140px;
+        --door-h:220px;
+        --goat-color:#128001;
+        --car-color:#c90f02;
+        --primary:#0466c8;
+        --success:#38b000;
+        --warning:#ffbe0b;
+        font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif;
+    }
+    
+    body{
+        margin:0;
+        padding:2rem;
+        background:#f9f9f9;
+        color:#333;
+        line-height:1.6;
+    }
+    
+    .container{
+        max-width:800px;
+        margin:0 auto;
+        background:#fff;
+        border-radius:15px;
+        box-shadow:0 8px 32px rgba(0,0,0,0.1);
+        padding:2rem;
+    }
+    
+    h1{
+        text-align:center;
+        margin-top:0;
+        color:var(--primary);
+        font-size:2.2rem;
+        border-bottom:3px solid var(--primary);
+        padding-bottom:10px;
+    }
+    
+    .intro-box{
+        background:#e0f2fe;
+        border-left:5px solid var(--primary);
+        border-radius:5px;
+        padding:20px;
+        margin:20px 0;
+    }
+    
+    .board{
+        display:flex;
+        justify-content:center;
+        gap:2rem;
+        margin:2rem auto;
+        max-width:600px;
+        flex-wrap:wrap;
+    }
+    
+    .door{
+        position:relative;
+        cursor:pointer;
+        width:var(--door-w);
+        height:var(--door-h);
+        background:#deb887;
+        border-radius:8px;
+        border:4px solid #754c24;
+        transition:all .3s ease;
+        box-shadow:0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .door:hover{
+        transform:scale(1.05);
+        box-shadow:0 6px 12px rgba(0,0,0,0.3);
+    }
+    
+    .door.selected{
+        outline:4px solid var(--primary);
+        transform:scale(1.05);
+    }
+    
+    .panel{
+        position:absolute;
+        inset:0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:4rem;
+        border-radius:4px;
+    }
+    
+    .hidden{
+        background:#754c24;
+        color:#754c24;
+    }
+    
+    .goat{
+        background:#fff;
+        color:var(--goat-color);
+        animation:reveal 0.5s ease-out;
+    }
+    
+    .car{
+        background:#fff;
+        color:var(--car-color);
+        animation:reveal 0.5s ease-out;
+    }
+    
+    @keyframes reveal {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    
+    button{
+        padding:12px 24px;
+        margin:8px;
+        border:none;
+        border-radius:8px;
+        background:var(--primary);
+        color:#fff;
+        font-weight:600;
+        cursor:pointer;
+        font-size:1rem;
+        transition:all 0.3s ease;
+        box-shadow:0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    button:hover{
+        background:#0353a4;
+        transform:translateY(-2px);
+        box-shadow:0 4px 8px rgba(0,0,0,0.3);
+    }
+    
+    button.switch-btn{
+        background:var(--success);
+    }
+    
+    button.switch-btn:hover{
+        background:#2d8700;
+    }
+    
+    #controls{
+        text-align:center;
+        margin:1.5rem 0;
+    }
+    
+    .info-section{
+        background:#f8f9fa;
+        border-radius:10px;
+        padding:20px;
+        margin:20px 0;
+    }
+    
+    .probability-display{
+        background:#fff;
+        border:2px solid #dee2e6;
+        border-radius:8px;
+        padding:20px;
+        margin:15px 0;
+        text-align:center;
+        font-size:1.1rem;
+    }
+    
+    .game-message{
+        text-align:center;
+        font-size:1.2rem;
+        font-weight:600;
+        color:var(--primary);
+        margin:20px 0;
+    }
+    
+    .result-message{
+        text-align:center;
+        font-weight:700;
+        font-size:1.3rem;
+        margin:20px 0;
+        padding:15px;
+        border-radius:8px;
+    }
+    
+    .win{
+        background:#d4edda;
+        color:#155724;
+        border:1px solid #c3e6cb;
+    }
+    
+    .lose{
+        background:#f8d7da;
+        color:#721c24;
+        border:1px solid #f5c6cb;
+    }
+    
+    .stats-tracker{
+        background:#e9ecef;
+        border-radius:8px;
+        padding:15px;
+        margin:20px 0;
+        text-align:center;
+    }
+    
+    .stats-row{
+        display:flex;
+        justify-content:space-around;
+        margin:10px 0;
+        flex-wrap:wrap;
+    }
+    
+    .stat-item{
+        text-align:center;
+        margin:5px;
+    }
+    
+    .stat-number{
+        font-size:1.5rem;
+        font-weight:bold;
+        color:var(--primary);
+    }
+    
+    .door-label{
+        position:absolute;
+        bottom:-25px;
+        left:50%;
+        transform:translateX(-50%);
+        font-size:0.9rem;
+        font-weight:bold;
+        color:#666;
+    }
+    
+    .probability-explanation{
+        background:#fff8e6;
+        border-left:5px solid var(--warning);
+        border-radius:5px;
+        padding:20px;
+        margin:20px 0;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>🏆 Monty Hall Game: Conditional Probability Demo</h1>
+    
+    <div class="intro-box">
+        <h3>🎯 The Challenge</h3>
+        <p>You're on a game show! Behind one of three doors is a car 🚗, behind the other two are goats 🐐. You pick a door, then the host (who knows what's behind each door) opens one of the remaining doors to reveal a goat. Should you stick with your original choice or switch to the other unopened door?</p>
+        <p><strong>This game demonstrates how conditional probability affects our decisions!</strong></p>
+    </div>
+    
+    <div class="game-message" id="gameMessage">Pick a door, any door!</div>
+    
+    <div class="board" id="board"></div>
+    
+    <div id="controls"></div>
+    
+    <div class="info-section">
+        <h3>🧮 Probability Analysis</h3>
+        <div class="probability-display" id="probabilityDisplay">
+            <p><strong>Initial Situation:</strong></p>
+            <p>$P(\text{car behind each door}) = \frac{1}{3}$</p>
+            <p><em>Each door has an equal 1/3 chance of hiding the car</em></p>
+        </div>
+        
+        <div class="probability-explanation" id="conditionalExplanation" style="display:none;">
+            <h4>🔍 After Host Opens Goat Door (Event H):</h4>
+            <p><strong>Key insight:</strong> The host's action gives us new information that changes the probabilities!</p>
+            <div class="probability-display">
+                <p>$P(\text{car behind original door} \mid H) = \frac{1}{3}$</p>
+                <p>$P(\text{car behind other unopened door} \mid H) = \frac{2}{3}$</p>
+            </div>
+            <p><strong>Why?</strong> Your original door still has its initial 1/3 probability, but now ALL the remaining probability (2/3) is concentrated on the other unopened door!</p>
+        </div>
+    </div>
+    
+    <div class="result-message" id="resultMessage"></div>
+    
+    <div class="stats-tracker" id="statsTracker">
+        <h4>📊 Your Game Statistics</h4>
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-number" id="totalGames">0</div>
+                <div>Total Games</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="stayWins">0</div>
+                <div>Stay Wins</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="switchWins">0</div>
+                <div>Switch Wins</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="switchRate">0%</div>
+                <div>Switch Win Rate</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="info-section">
+        <h3>🎓 Learning Objectives</h3>
+        <ul>
+            <li><strong>Conditional Probability:</strong> How new information changes probability calculations</li>
+            <li><strong>Notation:</strong> Understanding $P(A \mid B)$ means "probability of A given B"</li>
+            <li><strong>Counterintuitive Results:</strong> Why switching is better than staying</li>
+            <li><strong>Real-world Applications:</strong> Making decisions with partial information</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+(() => {
+    /* ======= Game State ======= */
+    const board = document.getElementById("board");
+    const controls = document.getElementById("controls");
+    const gameMessage = document.getElementById("gameMessage");
+    const probabilityDisplay = document.getElementById("probabilityDisplay");
+    const conditionalExplanation = document.getElementById("conditionalExplanation");
+    const resultMessage = document.getElementById("resultMessage");
+    
+    let state = "pick"; // pick → reveal → decide → done
+    let carDoor, chosenDoor, openDoor, finalChoice;
+    
+    // Statistics tracking
+    let stats = {
+        totalGames: 0,
+        stayWins: 0,
+        switchWins: 0
+    };
+    
+    /* ======= Initialize Game ======= */
+    createDoors();
+    updateMessage("Pick a door, any door!");
+    
+    /* ======= Door Creation ======= */
+    function createDoors() {
+        board.innerHTML = "";
+        for (let i = 0; i < 3; i++) {
+            const doorContainer = document.createElement("div");
+            doorContainer.style.position = "relative";
+            
+            const door = document.createElement("div");
+            door.className = "door";
+            door.dataset.index = i;
+            door.innerHTML = '<div class="panel hidden">🚪</div>';
+            door.onclick = () => doorClick(i, door);
+            
+            const label = document.createElement("div");
+            label.className = "door-label";
+            label.textContent = `Door ${i + 1}`;
+            
+            doorContainer.appendChild(door);
+            doorContainer.appendChild(label);
+            board.appendChild(doorContainer);
+        }
+        
+        // Randomly place the car
+        carDoor = Math.floor(Math.random() * 3);
+    }
+    
+    /* ======= Game Flow ======= */
+    function doorClick(i, el) {
+        if (state !== "pick") return;
+        
+        chosenDoor = i;
+        highlightChoice(el);
+        updateMessage(`You chose Door ${i + 1}!`);
+        
+        setTimeout(() => {
+            hostOpens();
+        }, 1000);
+    }
+    
+    function hostOpens() {
+        // Host picks a goat door ≠ chosenDoor ≠ carDoor
+        const candidates = [0, 1, 2].filter(x => x !== chosenDoor && x !== carDoor);
+        openDoor = candidates[Math.floor(Math.random() * candidates.length)];
+        
+        flip(openDoor, "goat", "🐐");
+        state = "decide";
+        
+        updateMessage(`Host opened Door ${openDoor + 1} with a goat! Now what?`);
+        showConditionalProbability();
+        showDecisionButtons();
+    }
+    
+    function showConditionalProbability() {
+        conditionalExplanation.style.display = "block";
+        
+        // Update probability display with conditional info
+        probabilityDisplay.innerHTML = `
+            <p><strong>After Host Opens Goat Door:</strong></p>
+            <p>Your Door ${chosenDoor + 1}: $P(\\text{car} \\mid H) = \\frac{1}{3}$</p>
+            <p>Other Door ${getOtherDoor()}: $P(\\text{car} \\mid H) = \\frac{2}{3}$</p>
+            <p><em>The host's action concentrates the probability!</em></p>
+        `;
+        
+        // Re-render MathJax
+        if (window.MathJax) {
+            MathJax.typesetPromise([probabilityDisplay, conditionalExplanation]).catch((err) => console.log(err.message));
+        }
+    }
+    
+    function showDecisionButtons() {
+        controls.innerHTML = "";
+        
+        const stayBtn = document.createElement("button");
+        stayBtn.textContent = `Stay with Door ${chosenDoor + 1}`;
+        stayBtn.onclick = () => decide("stay");
+        
+        const switchBtn = document.createElement("button");
+        switchBtn.className = "switch-btn";
+        switchBtn.textContent = `Switch to Door ${getOtherDoor()}`;
+        switchBtn.onclick = () => decide("switch");
+        
+        controls.appendChild(stayBtn);
+        controls.appendChild(switchBtn);
+    }
+    
+    function decide(choice) {
+        state = "done";
+        controls.innerHTML = "";
+        
+        finalChoice = choice;
+        if (choice === "switch") {
+            chosenDoor = getOtherDoor() - 1; // Convert to 0-indexed
+        }
+        
+        revealAll();
+    }
+    
+    function revealAll() {
+        // Reveal the car
+        flip(carDoor, "car", "🚗");
+        
+        // Reveal remaining goats
+        [0, 1, 2].forEach(i => {
+            if (i !== carDoor && i !== openDoor) {
+                flip(i, "goat", "🐐");
+            }
+        });
+        
+        // Determine win/loss and update stats
+        const won = chosenDoor === carDoor;
+        updateStats(won, finalChoice);
+        showResult(won, finalChoice);
+        showResetButton();
+    }
+    
+    /* ======= Helper Functions ======= */
+    function flip(idx, cls, emoji) {
+        const doorContainer = board.children[idx];
+        const door = doorContainer.querySelector('.door');
+        const panel = door.firstChild;
+        panel.className = "panel " + cls;
+        panel.textContent = emoji;
+    }
+    
+    function highlightChoice(el) {
+        // Remove previous selections
+        document.querySelectorAll('.door').forEach(d => d.classList.remove("selected"));
+        el.classList.add("selected");
+    }
+    
+    function updateMessage(text) {
+        gameMessage.textContent = text;
+    }
+    
+    function getOtherDoor() {
+        return [1, 2, 3].find(x => (x - 1) !== chosenDoor && (x - 1) !== openDoor);
+    }
+    
+    function showResult(won, choice) {
+        const strategyText = choice === "switch" ? "switched" : "stayed";
+        const message = won ? 
+            `🎉 Congratulations! You won the car by ${strategyText === "switched" ? "switching" : "staying"}!` :
+            `😢 Sorry! You got a goat. You ${strategyText}.`;
+        
+        resultMessage.textContent = message;
+        resultMessage.className = `result-message ${won ? 'win' : 'lose'}`;
+        
+        updateMessage(won ? "You won! 🎉" : "Better luck next time! 😢");
+    }
+    
+    function updateStats(won, choice) {
+        stats.totalGames++;
+        if (won) {
+            if (choice === "switch") {
+                stats.switchWins++;
+            } else {
+                stats.stayWins++;
+            }
+        }
+        
+        // Update display
+        document.getElementById('totalGames').textContent = stats.totalGames;
+        document.getElementById('stayWins').textContent = stats.stayWins;
+        document.getElementById('switchWins').textContent = stats.switchWins;
+        
+        const switchGames = stats.totalGames - stats.stayWins;
+        const switchRate = switchGames > 0 ? Math.round((stats.switchWins / switchGames) * 100) : 0;
+        document.getElementById('switchRate').textContent = switchRate + '%';
+    }
+    
+    function showResetButton() {
+        const resetBtn = document.createElement("button");
+        resetBtn.textContent = "Play Again";
+        resetBtn.onclick = resetGame;
+        controls.appendChild(resetBtn);
+    }
+    
+    function resetGame() {
+        state = "pick";
+        resultMessage.textContent = "";
+        resultMessage.className = "result-message";
+        conditionalExplanation.style.display = "none";
+        controls.innerHTML = "";
+        
+        // Reset probability display
+        probabilityDisplay.innerHTML = `
+            <p><strong>Initial Situation:</strong></p>
+            <p>$P(\\text{car behind each door}) = \\frac{1}{3}$</p>
+            <p><em>Each door has an equal 1/3 chance of hiding the car</em></p>
+        `;
+        
+        createDoors();
+        updateMessage("Pick a door, any door!");
+        
+        // Re-render MathJax
+        if (window.MathJax) {
+            MathJax.typesetPromise([probabilityDisplay]).catch((err) => console.log(err.message));
+        }
+    }
+})();
+</script>
+</body>
+</html>
