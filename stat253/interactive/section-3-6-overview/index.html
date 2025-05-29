@@ -353,6 +353,85 @@
             color: #90cdf4;
         }
         
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .modal-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            color: #333;
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .modal-explanation {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .viz-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .viz-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .click-hint {
+            font-size: 0.9em;
+            color: var(--primary);
+            font-style: italic;
+            margin-top: 8px;
+        }
+        
         @media (max-width: 768px) {
             .visualization-showcase,
             .comparison-grid {
@@ -489,41 +568,60 @@
         </div>
         
         <div class="sub-section">
-            <h3>🚀 Try It Yourself</h3>
+            <h3>🚀 Try It Yourself in RStudio</h3>
             <div class="code-instructions">
-                <h4>Quick Start Guide:</h4>
+                <h4>RStudio Instructions:</h4>
                 <ol>
-                    <li><strong>Download:</strong> <a href="https://raw.githubusercontent.com/jjohnson-47/stat253-course-assets/main/stat253/r-code/independence_visualization.R" class="download-button">independence_visualization.R</a></li>
-                    <li><strong>Open terminal:</strong> Navigate to download folder</li>
-                    <li><strong>Run:</strong> <code>Rscript independence_visualization.R</code></li>
-                    <li><strong>View:</strong> Four amazing visualizations will be generated!</li>
+                    <li><strong>Download the R script:</strong> 
+                        <a href="https://raw.githubusercontent.com/jjohnson-47/stat253-course-assets/main/stat253/r-code/independence_visualization.R" class="download-button">independence_visualization.R</a>
+                    </li>
+                    <li><strong>Open RStudio</strong> (local installation or Posit Cloud)</li>
+                    <li><strong>Open the script:</strong> File → Open File → Select the downloaded <code>independence_visualization.R</code></li>
+                    <li><strong>Install packages if needed:</strong> The script will automatically install required packages</li>
+                    <li><strong>Run the entire script:</strong> 
+                        <ul>
+                            <li>Click <strong>"Source"</strong> button (top right of script pane), OR</li>
+                            <li>Select all text (Ctrl+A / Cmd+A) and click <strong>"Run"</strong>, OR</li>
+                            <li>Use keyboard shortcut: <strong>Ctrl+Shift+Enter</strong> (Windows) / <strong>Cmd+Shift+Enter</strong> (Mac)</li>
+                        </ul>
+                    </li>
+                    <li><strong>View results:</strong> Four PNG files will appear in your Files pane (bottom right)</li>
+                    <li><strong>Click on any PNG file</strong> in the Files pane to view the visualization!</li>
                 </ol>
+                
+                <div style="background: #4a5568; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #90cdf4; margin: 0;"><strong>💡 RStudio Tip:</strong> Watch the Console (bottom left) for progress updates and results summary!</p>
+                </div>
             </div>
         </div>
 
         <div class="visualization-showcase">
-            <div class="viz-item">
+            <div class="viz-item" onclick="openModal('modal1')">
                 <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/independence_convergence.png" alt="Convergence Plot" loading="lazy">
                 <h4>Convergence Analysis</h4>
                 <p>Watch 10,000 simulations converge to theoretical independence</p>
+                <p class="click-hint">Click to view larger and learn more</p>
             </div>
             
-            <div class="viz-item">
+            <div class="viz-item" onclick="openModal('modal2')">
                 <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/independence_contingency_table.png" alt="Contingency Table" loading="lazy">
                 <h4>Visual Contingency Table</h4>
                 <p>See the equal distribution that proves independence</p>
+                <p class="click-hint">Click to view larger and learn more</p>
             </div>
             
-            <div class="viz-item">
+            <div class="viz-item" onclick="openModal('modal3')">
                 <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/dependence_comparison.png" alt="Dependence Comparison" loading="lazy">
                 <h4>Independence vs Dependence</h4>
                 <p>Compare with dependent events (drawing without replacement)</p>
+                <p class="click-hint">Click to view larger and learn more</p>
             </div>
             
-            <div class="viz-item">
+            <div class="viz-item" onclick="openModal('modal4')">
                 <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/independence_combined_analysis.png" alt="Combined Analysis" loading="lazy">
                 <h4>Complete Analysis</h4>
                 <p>Side-by-side overview of all concepts</p>
+                <p class="click-hint">Click to view larger and learn more</p>
             </div>
         </div>
         
@@ -747,5 +845,143 @@
             <p><strong>Multiple:</strong> P(A ∩ B ∩ C) = P(A) × P(B) × P(C) if all independent</p>
         </div>
     </div>
+
+    <!-- Modal dialogs for enlarged visualizations -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('modal1')">&times;</span>
+            <h2>📈 Convergence Analysis</h2>
+            <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/independence_convergence.png" alt="Convergence Plot" class="modal-image">
+            
+            <div class="modal-explanation">
+                <h3>What This Graph Shows:</h3>
+                <ul>
+                    <li><strong>Red Line:</strong> Observed P(Red ∩ Face) from simulation - the actual proportion of cards that are both red AND face cards</li>
+                    <li><strong>Blue Line:</strong> P(Red) × P(Face) - the product of individual probabilities</li>
+                    <li><strong>Convergence:</strong> As we draw more cards, both lines approach the same value (≈0.1154)</li>
+                    <li><strong>Independence Proof:</strong> The lines converge to the same value, confirming P(A ∩ B) = P(A) × P(B)</li>
+                </ul>
+                
+                <h3>Key Insight:</h3>
+                <p>This demonstrates the <strong>Law of Large Numbers</strong> in action! With enough trials, our simulation matches the theoretical mathematics perfectly. The small difference between the lines (≈0.003) shows that card color and face status are truly independent events.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('modal2')">&times;</span>
+            <h2>📊 Visual Contingency Table</h2>
+            <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/independence_contingency_table.png" alt="Contingency Table" class="modal-image">
+            
+            <div class="modal-explanation">
+                <h3>What This Heatmap Shows:</h3>
+                <ul>
+                    <li><strong>Four Categories:</strong> All combinations of color (Red/Black) and type (Face/Number)</li>
+                    <li><strong>Equal Proportions:</strong> Face cards are equally distributed between red and black suits</li>
+                    <li><strong>Red Face Cards:</strong> 6 cards (11.5%) - J♥, Q♥, K♥, J♦, Q♦, K♦</li>
+                    <li><strong>Black Face Cards:</strong> 6 cards (11.5%) - J♠, Q♠, K♠, J♣, Q♣, K♣</li>
+                </ul>
+                
+                <h3>Independence Evidence:</h3>
+                <p>The equal distribution proves independence! If these events were dependent, we'd see uneven proportions. For example, if red cards were more likely to be face cards, the "Red Face Card" cell would be much larger than 11.5%.</p>
+                
+                <h3>Mathematical Connection:</h3>
+                <p>P(Red ∩ Face) = 6/52 = 0.1154<br/>
+                P(Red) × P(Face) = (26/52) × (12/52) = 0.1154 ✓</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('modal3')">&times;</span>
+            <h2>⚖️ Independence vs Dependence Comparison</h2>
+            <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/dependence_comparison.png" alt="Dependence Comparison" class="modal-image">
+            
+            <div class="modal-explanation">
+                <h3>What This Bar Chart Shows:</h3>
+                <ul>
+                    <li><strong>Scenario 1:</strong> First card is an Ace - P(second Ace) ≈ 0.042</li>
+                    <li><strong>Scenario 2:</strong> First card is not an Ace - P(second Ace) ≈ 0.074</li>
+                    <li><strong>Overall:</strong> Without knowing first card - P(second Ace) ≈ 0.071</li>
+                </ul>
+                
+                <h3>Why This Shows Dependence:</h3>
+                <p><strong>Different conditional probabilities!</strong> The probability of drawing a second Ace changes dramatically based on what the first card was:</p>
+                <ul>
+                    <li>If first was an Ace: Only 3 Aces left in 51 cards = lower probability</li>
+                    <li>If first wasn't an Ace: Still 4 Aces left in 51 cards = higher probability</li>
+                </ul>
+                
+                <h3>Contrast with Independence:</h3>
+                <p>For independent events (like our card color/face example), conditional probabilities would be equal. Here, they're clearly different, proving dependence when drawing without replacement.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal4" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('modal4')">&times;</span>
+            <h2>🔬 Complete Analysis Overview</h2>
+            <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/independence_combined_analysis.png" alt="Combined Analysis" class="modal-image">
+            
+            <div class="modal-explanation">
+                <h3>What This Combined View Shows:</h3>
+                <p><strong>Left Panel:</strong> Contingency table showing equal distribution of face cards across colors</p>
+                <p><strong>Right Panel:</strong> Dependent events comparison showing unequal conditional probabilities</p>
+                
+                <h3>Side-by-Side Learning:</h3>
+                <ul>
+                    <li><strong>Independence (Left):</strong> Equal proportions in all cells demonstrate that knowing color doesn't affect face card probability</li>
+                    <li><strong>Dependence (Right):</strong> Different bar heights show that knowing the first card DOES affect the second card probability</li>
+                </ul>
+                
+                <h3>Key Teaching Points:</h3>
+                <ol>
+                    <li><strong>Visual Independence Test:</strong> Look for equal proportions in contingency tables</li>
+                    <li><strong>Mathematical Test:</strong> Check if P(A ∩ B) = P(A) × P(B)</li>
+                    <li><strong>Conditional Test:</strong> Verify if P(A | B) = P(A)</li>
+                    <li><strong>Context Matters:</strong> Sampling with/without replacement changes independence</li>
+                </ol>
+                
+                <h3>Real-World Application:</h3>
+                <p>This analysis technique applies to medical studies, quality control, survey research, and any situation where you need to determine if two factors influence each other.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+            document.body.style.overflow = "hidden"; // Prevent background scrolling
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+            document.body.style.overflow = "auto"; // Restore scrolling
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = "auto";
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
