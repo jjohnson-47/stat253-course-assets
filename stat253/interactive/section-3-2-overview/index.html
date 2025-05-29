@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 3.2: Unions and Intersections of Events</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <style>
+        :root {
+            --primary: #0466c8;
+            --primary-light: #e0f2fe;
+            --accent: #0353a4;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --info: #4361ee;
+            --danger: #dc3545;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: var(--dark);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 1.6rem;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+        
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .definition-box {
+            background-color: var(--primary-light);
+            border-left: 5px solid var(--primary);
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .example-box {
+            background-color: #fff8e6;
+            border-left: 5px solid var(--warning);
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .formula-box {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .venn-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .venn-diagram {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            width: 300px;
+            height: 200px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .venn-circles {
+            position: relative;
+            width: 200px;
+            height: 120px;
+            margin: 10px 0;
+        }
+        
+        .circle {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 3px solid;
+            border-radius: 50%;
+        }
+        
+        .circle-a {
+            left: 20px;
+            top: 10px;
+            border-color: var(--primary);
+            background: rgba(4, 102, 200, 0.2);
+        }
+        
+        .circle-b {
+            right: 20px;
+            top: 10px;
+            border-color: var(--success);
+            background: rgba(56, 176, 0, 0.2);
+        }
+        
+        .union .circle-a, .union .circle-b {
+            background: rgba(255, 190, 11, 0.3);
+        }
+        
+        .intersection .circle-a {
+            background: rgba(4, 102, 200, 0.1);
+        }
+        
+        .intersection .circle-b {
+            background: rgba(56, 176, 0, 0.1);
+        }
+        
+        .intersection .circle-a::after {
+            content: '';
+            position: absolute;
+            left: 50px;
+            top: 0;
+            width: 50px;
+            height: 100px;
+            background: rgba(255, 190, 11, 0.6);
+            border-radius: 0 50px 50px 0;
+        }
+        
+        .circle-label {
+            position: absolute;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .label-a {
+            left: 30px;
+            top: 50px;
+            color: var(--primary);
+        }
+        
+        .label-b {
+            right: 30px;
+            top: 50px;
+            color: var(--success);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        .data-table th,
+        .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .data-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .highlight-union {
+            background-color: rgba(255, 190, 11, 0.3) !important;
+        }
+        
+        .highlight-intersection {
+            background-color: rgba(255, 190, 11, 0.6) !important;
+        }
+        
+        .interactive-die {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .die-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .die-number {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .die-number:hover {
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        .in-a {
+            background-color: rgba(4, 102, 200, 0.3) !important;
+            border-color: var(--primary) !important;
+        }
+        
+        .in-b {
+            background-color: rgba(56, 176, 0, 0.3) !important;
+            border-color: var(--success) !important;
+        }
+        
+        .in-both {
+            background-color: rgba(255, 190, 11, 0.6) !important;
+            border-color: var(--warning) !important;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .results-panel {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid var(--info);
+            display: none;
+        }
+        
+        .results-panel.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔗 Section 3.2: Unions and Intersections of Events</h1>
+    
+    <div class="card">
+        <h2>🎯 Compound Events: Building Complex Events from Simple Ones</h2>
+        <p>Events can often be viewed as compositions of two or more other events. These are called <strong>compound events</strong>, and they can be formed in two fundamental ways.</p>
+        
+        <div class="definition-box">
+            <h3>Union of Events ($A \cup B$)</h3>
+            <p><strong>Definition:</strong> The event that occurs if <em>either A or B (or both)</em> occurs on a single performance of the experiment.</p>
+            <p><strong>In other words:</strong> $A \cup B$ consists of all sample points that belong to A or B or both.</p>
+        </div>
+        
+        <div class="definition-box">
+            <h3>Intersection of Events ($A \cap B$)</h3>
+            <p><strong>Definition:</strong> The event that occurs if <em>both A and B</em> occur on a single performance of the experiment.</p>
+            <p><strong>In other words:</strong> $A \cap B$ consists of all sample points belonging to both A and B.</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>📊 Venn Diagrams: Visualizing Unions and Intersections</h2>
+        <div class="venn-container">
+            <div class="venn-diagram union">
+                <h4>Union: $A \cup B$</h4>
+                <div class="venn-circles">
+                    <div class="circle circle-a"></div>
+                    <div class="circle circle-b"></div>
+                    <div class="circle-label label-a">A</div>
+                    <div class="circle-label label-b">B</div>
+                </div>
+                <p><strong>Shaded:</strong> All points in A or B</p>
+            </div>
+            
+            <div class="venn-diagram intersection">
+                <h4>Intersection: $A \cap B$</h4>
+                <div class="venn-circles">
+                    <div class="circle circle-a"></div>
+                    <div class="circle circle-b"></div>
+                    <div class="circle-label label-a">A</div>
+                    <div class="circle-label label-b">B</div>
+                </div>
+                <p><strong>Shaded:</strong> Only points in both A and B</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🎲 Interactive Example: Die Toss</h2>
+        <p>Let's explore unions and intersections with a concrete example involving a fair six-sided die.</p>
+        
+        <div class="example-box">
+            <h4>Define the Events:</h4>
+            <p><strong>Event A:</strong> Toss an even number = $\{2, 4, 6\}$</p>
+            <p><strong>Event B:</strong> Toss a number ≤ 3 = $\{1, 2, 3\}$</p>
+        </div>
+        
+        <div class="interactive-die">
+            <h4>🎯 Interactive Die Explorer</h4>
+            <p>Click the buttons below to see which numbers belong to each event:</p>
+            
+            <div class="control-buttons">
+                <button class="btn btn-primary" onclick="showEvent('A')">Show Event A (Even)</button>
+                <button class="btn btn-success" onclick="showEvent('B')">Show Event B (≤ 3)</button>
+                <button class="btn btn-warning" onclick="showEvent('union')">Show A ∪ B</button>
+                <button class="btn btn-warning" onclick="showEvent('intersection')">Show A ∩ B</button>
+                <button class="btn btn-secondary" onclick="showEvent('clear')">Clear All</button>
+            </div>
+            
+            <div class="die-grid">
+                <div class="die-number" data-number="1">1</div>
+                <div class="die-number" data-number="2">2</div>
+                <div class="die-number" data-number="3">3</div>
+                <div class="die-number" data-number="4">4</div>
+                <div class="die-number" data-number="5">5</div>
+                <div class="die-number" data-number="6">6</div>
+            </div>
+            
+            <div id="results" class="results-panel">
+                <h4 id="resultTitle"></h4>
+                <p id="resultDescription"></p>
+                <p id="resultProbability"></p>
+            </div>
+        </div>
+        
+        <div class="formula-box">
+            <h4>Solution:</h4>
+            <p><strong>Union:</strong> $A \cup B = \{1, 2, 3, 4, 6\}$ with $P(A \cup B) = \frac{5}{6}$</p>
+            <p><strong>Intersection:</strong> $A \cap B = \{2\}$ with $P(A \cap B) = \frac{1}{6}$</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>📋 Real-World Application: Birth Mother Study</h2>
+        <div class="example-box">
+            <p><strong>Study:</strong> <em>Family Planning Perspectives</em> analyzed over 200,000 births in New Jersey, investigating the link between mother's race and age at birth.</p>
+            
+            <table class="data-table" id="birthTable">
+                <tr>
+                    <th rowspan="2">Maternal Age</th>
+                    <th colspan="2">Race</th>
+                </tr>
+                <tr>
+                    <th>White</th>
+                    <th>Black</th>
+                </tr>
+                <tr>
+                    <td>≤ 17 years</td>
+                    <td class="cell" data-event="A B">2%</td>
+                    <td class="cell" data-event="B">2%</td>
+                </tr>
+                <tr>
+                    <td>18-19 years</td>
+                    <td class="cell" data-event="A B">3%</td>
+                    <td class="cell" data-event="B">2%</td>
+                </tr>
+                <tr>
+                    <td>20-29 years</td>
+                    <td class="cell" data-event="A">41%</td>
+                    <td class="cell" data-event="">12%</td>
+                </tr>
+                <tr>
+                    <td>≥ 30 years</td>
+                    <td class="cell" data-event="A">33%</td>
+                    <td class="cell" data-event="">5%</td>
+                </tr>
+            </table>
+            
+            <p><strong>Define Events:</strong></p>
+            <p><strong>A:</strong> Birth mother is white</p>
+            <p><strong>B:</strong> Mother was a teenager (≤ 19 years) when giving birth</p>
+            
+            <div class="control-buttons">
+                <button class="btn btn-primary" onclick="highlightTable('A')">Highlight Event A</button>
+                <button class="btn btn-success" onclick="highlightTable('B')">Highlight Event B</button>
+                <button class="btn btn-warning" onclick="highlightTable('union')">Highlight A ∪ B</button>
+                <button class="btn btn-warning" onclick="highlightTable('intersection')">Highlight A ∩ B</button>
+                <button class="btn btn-secondary" onclick="highlightTable('clear')">Clear Highlights</button>
+            </div>
+        </div>
+        
+        <div class="formula-box">
+            <h4>Probability Calculations:</h4>
+            <p><strong>P(A):</strong> Sum all "White" percentages = 2% + 3% + 41% + 33% = <strong>79%</strong></p>
+            <p><strong>P(B):</strong> Sum all "Teenager" percentages = 2% + 3% + 2% + 2% = <strong>9%</strong></p>
+            <p><strong>P(A ∪ B):</strong> White OR Teenager = 2% + 3% + 41% + 33% + 2% + 2% = <strong>83%</strong></p>
+            <p><strong>P(A ∩ B):</strong> White AND Teenager = 2% + 3% = <strong>5%</strong></p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>🔧 Key Strategies for Finding Unions and Intersections</h2>
+        
+        <div class="definition-box">
+            <h3>Step-by-Step Approach:</h3>
+            <ol>
+                <li><strong>Identify the Sample Space:</strong> List all possible outcomes</li>
+                <li><strong>Define Each Event:</strong> Determine which sample points belong to each event</li>
+                <li><strong>For Union (A ∪ B):</strong> Include sample points in A, B, or both</li>
+                <li><strong>For Intersection (A ∩ B):</strong> Include only sample points in both A and B</li>
+                <li><strong>Calculate Probability:</strong> Sum the probabilities of relevant sample points</li>
+            </ol>
+        </div>
+        
+        <div class="example-box">
+            <h4>💡 Key Insights:</h4>
+            <ul>
+                <li><strong>Union = "OR":</strong> At least one event occurs</li>
+                <li><strong>Intersection = "AND":</strong> Both events occur simultaneously</li>
+                <li><strong>Venn Diagrams:</strong> Visual tools to avoid counting errors</li>
+                <li><strong>Two-Way Tables:</strong> Organize complex probability scenarios</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        const eventDefinitions = {
+            A: { numbers: [2, 4, 6], color: 'in-a', name: 'Event A (Even Numbers)', description: 'Numbers: {2, 4, 6}', probability: '3/6 = 1/2' },
+            B: { numbers: [1, 2, 3], color: 'in-b', name: 'Event B (≤ 3)', description: 'Numbers: {1, 2, 3}', probability: '3/6 = 1/2' },
+            union: { numbers: [1, 2, 3, 4, 6], color: 'in-a', name: 'Union: A ∪ B', description: 'Numbers: {1, 2, 3, 4, 6}', probability: '5/6 ≈ 0.833' },
+            intersection: { numbers: [2], color: 'in-both', name: 'Intersection: A ∩ B', description: 'Numbers: {2}', probability: '1/6 ≈ 0.167' }
+        };
+
+        function showEvent(eventType) {
+            // Clear all highlights
+            document.querySelectorAll('.die-number').forEach(num => {
+                num.className = 'die-number';
+            });
+            
+            const resultsPanel = document.getElementById('results');
+            
+            if (eventType === 'clear') {
+                resultsPanel.classList.remove('show');
+                return;
+            }
+            
+            const event = eventDefinitions[eventType];
+            
+            // Highlight relevant numbers
+            event.numbers.forEach(num => {
+                const element = document.querySelector(`[data-number="${num}"]`);
+                element.classList.add(event.color);
+            });
+            
+            // Show results
+            document.getElementById('resultTitle').textContent = event.name;
+            document.getElementById('resultDescription').textContent = event.description;
+            document.getElementById('resultProbability').textContent = `Probability: ${event.probability}`;
+            resultsPanel.classList.add('show');
+        }
+
+        function highlightTable(eventType) {
+            // Clear all highlights
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.classList.remove('highlight-union', 'highlight-intersection');
+            });
+            
+            if (eventType === 'clear') return;
+            
+            document.querySelectorAll('.cell').forEach(cell => {
+                const events = cell.dataset.event;
+                
+                if (eventType === 'A' && events.includes('A')) {
+                    cell.classList.add('highlight-union');
+                } else if (eventType === 'B' && events.includes('B')) {
+                    cell.classList.add('highlight-union');
+                } else if (eventType === 'union' && (events.includes('A') || events.includes('B'))) {
+                    cell.classList.add('highlight-union');
+                } else if (eventType === 'intersection' && events.includes('A') && events.includes('B')) {
+                    cell.classList.add('highlight-intersection');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
