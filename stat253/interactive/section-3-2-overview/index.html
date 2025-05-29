@@ -100,92 +100,17 @@
             align-items: center;
             margin: 30px 0;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 30px;
         }
         
-        .venn-diagram {
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 30px;
+        .venn-diagram-simple {
             text-align: center;
-            width: 300px;
-            height: 200px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            flex: 1;
+            min-width: 280px;
         }
         
-        .venn-circles {
-            position: relative;
-            width: 200px;
-            height: 120px;
-            margin: 10px 0;
-        }
-        
-        .circle {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            border: 3px solid;
-            border-radius: 50%;
-        }
-        
-        .circle-a {
-            left: 20px;
-            top: 10px;
-            border-color: var(--primary);
-            background: rgba(4, 102, 200, 0.2);
-        }
-        
-        .circle-b {
-            right: 20px;
-            top: 10px;
-            border-color: var(--success);
-            background: rgba(56, 176, 0, 0.2);
-        }
-        
-        .union .circle-a, .union .circle-b {
-            background: rgba(255, 190, 11, 0.3);
-        }
-        
-        .intersection .circle-a {
-            background: rgba(4, 102, 200, 0.1);
-        }
-        
-        .intersection .circle-b {
-            background: rgba(56, 176, 0, 0.1);
-        }
-        
-        .intersection .circle-a::after {
-            content: '';
-            position: absolute;
-            left: 50px;
-            top: 0;
-            width: 50px;
-            height: 100px;
-            background: rgba(255, 190, 11, 0.6);
-            border-radius: 0 50px 50px 0;
-        }
-        
-        .circle-label {
-            position: absolute;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        
-        .label-a {
-            left: 30px;
-            top: 50px;
-            color: var(--primary);
-        }
-        
-        .label-b {
-            right: 30px;
-            top: 50px;
-            color: var(--success);
+        .simple-venn {
+            margin: 15px 0;
         }
         
         .data-table {
@@ -203,7 +128,7 @@
         }
         
         .data-table th {
-            background-color: var(--primary);
+            background-color: #2c3e50;
             color: white;
         }
         
@@ -308,6 +233,16 @@
             color: white;
         }
         
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
         .btn-secondary {
             background: #6c757d;
             color: white;
@@ -358,7 +293,18 @@
     </style>
 </head>
 <body>
-    <h1>🔗 Section 3.2: Unions and Intersections of Events</h1>
+    <h1>Section 3.2: Unions and Intersections of Events</h1>
+    
+    <div class="card">
+        <h2>📹 Video: Unions, Intersections, and Complements</h2>
+        <div class="example-box">
+            <p>This video covers unions, intersections, complements, mutually exclusive events, and the addition rule. It demonstrates these concepts through die rolling and population health examples with clear Venn diagram illustrations.</p>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <iframe width="720" height="405" src="https://www.youtube.com/embed/B1v9OeCTlu0?si=mtKgcmoe-pAf32y-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); max-width: 100%; height: auto;"></iframe>
+            </div>
+        </div>
+    </div>
     
     <div class="card">
         <h2>🎯 Compound Events: Building Complex Events from Simple Ones</h2>
@@ -380,24 +326,54 @@
     <div class="card">
         <h2>📊 Venn Diagrams: Visualizing Unions and Intersections</h2>
         <div class="venn-container">
-            <div class="venn-diagram union">
+            <div class="venn-diagram-simple">
                 <h4>Union: $A \cup B$</h4>
-                <div class="venn-circles">
-                    <div class="circle circle-a"></div>
-                    <div class="circle circle-b"></div>
-                    <div class="circle-label label-a">A</div>
-                    <div class="circle-label label-b">B</div>
+                <div class="simple-venn">
+                    <svg width="250" height="150" viewBox="0 0 250 150">
+                        <defs>
+                            <clipPath id="unionClip">
+                                <circle cx="85" cy="75" r="50"/>
+                                <circle cx="165" cy="75" r="50"/>
+                            </clipPath>
+                        </defs>
+                        <!-- Background rectangle -->
+                        <rect x="20" y="20" width="210" height="110" fill="none" stroke="black" stroke-width="2" rx="8"/>
+                        <!-- Union shading -->
+                        <rect x="20" y="20" width="210" height="110" fill="#ffcccc" clip-path="url(#unionClip)"/>
+                        <!-- Circles -->
+                        <circle cx="85" cy="75" r="50" fill="none" stroke="black" stroke-width="2"/>
+                        <circle cx="165" cy="75" r="50" fill="none" stroke="black" stroke-width="2"/>
+                        <!-- Labels -->
+                        <text x="60" y="80" font-size="18" font-weight="bold" fill="black">A</text>
+                        <text x="190" y="80" font-size="18" font-weight="bold" fill="black">B</text>
+                    </svg>
                 </div>
                 <p><strong>Shaded:</strong> All points in A or B</p>
             </div>
             
-            <div class="venn-diagram intersection">
+            <div class="venn-diagram-simple">
                 <h4>Intersection: $A \cap B$</h4>
-                <div class="venn-circles">
-                    <div class="circle circle-a"></div>
-                    <div class="circle circle-b"></div>
-                    <div class="circle-label label-a">A</div>
-                    <div class="circle-label label-b">B</div>
+                <div class="simple-venn">
+                    <svg width="250" height="150" viewBox="0 0 250 150">
+                        <defs>
+                            <clipPath id="circleA">
+                                <circle cx="85" cy="75" r="50"/>
+                            </clipPath>
+                            <clipPath id="circleB">
+                                <circle cx="165" cy="75" r="50"/>
+                            </clipPath>
+                        </defs>
+                        <!-- Background rectangle -->
+                        <rect x="20" y="20" width="210" height="110" fill="none" stroke="black" stroke-width="2" rx="8"/>
+                        <!-- Intersection shading -->
+                        <circle cx="165" cy="75" r="50" fill="#ffcccc" clip-path="url(#circleA)"/>
+                        <!-- Circles -->
+                        <circle cx="85" cy="75" r="50" fill="none" stroke="black" stroke-width="2"/>
+                        <circle cx="165" cy="75" r="50" fill="none" stroke="black" stroke-width="2"/>
+                        <!-- Labels -->
+                        <text x="60" y="80" font-size="18" font-weight="bold" fill="black">A</text>
+                        <text x="190" y="80" font-size="18" font-weight="bold" fill="black">B</text>
+                    </svg>
                 </div>
                 <p><strong>Shaded:</strong> Only points in both A and B</p>
             </div>
@@ -405,45 +381,28 @@
     </div>
     
     <div class="card">
-        <h2>📹 Video: Unions, Intersections, and Complements</h2>
-        <div class="example-box">
-            <p>This video provides an excellent introduction to unions, intersections, and complements in probability theory. It covers mutually exclusive events, the addition rule, and works through practical examples including die rolling and population sampling scenarios.</p>
-            
-            <div style="text-align: center; margin: 20px 0;">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/B1v9OeCTlu0?si=mtKgcmoe-pAf32y-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); max-width: 100%; height: auto;"></iframe>
-            </div>
-            
-            <p><strong>Key Topics Covered:</strong></p>
-            <ul>
-                <li>Union and intersection operations with clear Venn diagram illustrations</li>
-                <li>Complement events and their probability calculations</li>
-                <li>Mutually exclusive events and when they apply</li>
-                <li>Addition rule for probability calculations</li>
-                <li>Real-world examples: diabetes and hypertension in populations</li>
-                <li>Step-by-step problem solving with visual diagrams</li>
-            </ul>
-        </div>
-    </div>
-    
-    <div class="card">
-        <h2>🎲 Interactive Example: Die Toss</h2>
-        <p>Let's explore unions and intersections with a concrete example involving a fair six-sided die.</p>
+        <h2>🎲 Experiment Simulator: Die Toss</h2>
         
         <div class="example-box">
+            <h4>The Experiment:</h4>
+            <p>We roll a single fair six-sided die and observe the number that appears on the top face. The sample space contains six equally likely outcomes: $S = \{1, 2, 3, 4, 5, 6\}$, each with probability $\frac{1}{6}$.</p>
+            
             <h4>Define the Events:</h4>
-            <p><strong>Event A:</strong> Toss an even number = $\{2, 4, 6\}$</p>
-            <p><strong>Event B:</strong> Toss a number ≤ 3 = $\{1, 2, 3\}$</p>
+            <p><strong>Event A:</strong> "Roll an even number" = $\{2, 4, 6\}$</p>
+            <p><strong>Event B:</strong> "Roll a number less than or equal to 3" = $\{1, 2, 3\}$</p>
+            
+            <p><strong>Set Notation Connection:</strong> The symbol $\cup$ means "union" (OR), while $\cap$ means "intersection" (AND). So $A \cup B$ represents outcomes in either event A or event B (or both), while $A \cap B$ represents outcomes in both events simultaneously.</p>
         </div>
         
         <div class="interactive-die">
-            <h4>🎯 Interactive Die Explorer</h4>
+            <h4>🎯 Experiment Simulator</h4>
             <p>Click the buttons below to see which numbers belong to each event:</p>
             
             <div class="control-buttons">
                 <button class="btn btn-primary" onclick="showEvent('A')">Show Event A (Even)</button>
                 <button class="btn btn-success" onclick="showEvent('B')">Show Event B (≤ 3)</button>
-                <button class="btn btn-warning" onclick="showEvent('union')">Show A ∪ B</button>
-                <button class="btn btn-warning" onclick="showEvent('intersection')">Show A ∩ B</button>
+                <button class="btn btn-info" onclick="showEvent('union')">Show A ∪ B</button>
+                <button class="btn btn-danger" onclick="showEvent('intersection')">Show A ∩ B</button>
                 <button class="btn btn-secondary" onclick="showEvent('clear')">Clear All</button>
             </div>
             
@@ -460,13 +419,15 @@
                 <h4 id="resultTitle"></h4>
                 <p id="resultDescription"></p>
                 <p id="resultProbability"></p>
+                <p id="resultNotation"></p>
             </div>
         </div>
         
         <div class="formula-box">
-            <h4>Solution:</h4>
-            <p><strong>Union:</strong> $A \cup B = \{1, 2, 3, 4, 6\}$ with $P(A \cup B) = \frac{5}{6}$</p>
-            <p><strong>Intersection:</strong> $A \cap B = \{2\}$ with $P(A \cap B) = \frac{1}{6}$</p>
+            <h4>Solution Summary:</h4>
+            <p><strong>Union:</strong> $A \cup B = \{1, 2, 3, 4, 6\}$ with $P(A \cup B) = \frac{5}{6} \approx 0.833$</p>
+            <p><strong>Intersection:</strong> $A \cap B = \{2\}$ with $P(A \cap B) = \frac{1}{6} \approx 0.167$</p>
+            <p><em>The union includes all outcomes that satisfy either condition, while the intersection includes only outcomes that satisfy both conditions.</em></p>
         </div>
     </div>
     
@@ -513,9 +474,15 @@
             <div class="control-buttons">
                 <button class="btn btn-primary" onclick="highlightTable('A')">Highlight Event A</button>
                 <button class="btn btn-success" onclick="highlightTable('B')">Highlight Event B</button>
-                <button class="btn btn-warning" onclick="highlightTable('union')">Highlight A ∪ B</button>
-                <button class="btn btn-warning" onclick="highlightTable('intersection')">Highlight A ∩ B</button>
+                <button class="btn btn-info" onclick="highlightTable('union')">Highlight A ∪ B</button>
+                <button class="btn btn-danger" onclick="highlightTable('intersection')">Highlight A ∩ B</button>
                 <button class="btn btn-secondary" onclick="highlightTable('clear')">Clear Highlights</button>
+            </div>
+            
+            <div id="table-results" class="results-panel">
+                <h4 id="tableResultTitle"></h4>
+                <p id="tableResultNotation"></p>
+                <p id="tableResultCalculation"></p>
             </div>
         </div>
         
@@ -532,20 +499,31 @@
         <h2>🎯 Advanced Venn Diagram Explorer</h2>
         <p>Explore more complex probability scenarios with three sets. Click any region or use the dropdown to highlight different intersections and unions.</p>
         
-        <div class="interactive-venn-container" style="background: #f8f9fa; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <div id="venn-explorer"></div>
-            
-            <label for="region-selector" style="display: block; margin-top: 1rem; font-weight: 600; color: var(--dark);">Select region to highlight:</label>
-            <select id="region-selector" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ddd; border-radius: 5px; margin-top: 0.5rem;">
-                <option value="" disabled selected>— choose a region —</option>
-                <option value="A">Event A only</option>
-                <option value="B">Event B only</option>
-                <option value="C">Event C only</option>
-                <option value="A&B">A ∩ B (A and B only)</option>
-                <option value="A&C">A ∩ C (A and C only)</option>
-                <option value="B&C">B ∩ C (B and C only)</option>
-                <option value="A&B&C">A ∩ B ∩ C (All three events)</option>
-            </select>
+        <div class="interactive-venn-container" style="background: #f8f9fa; border: 2px solid black; border-radius: 15px; padding: 20px; margin: 20px 0;">
+            <div style="display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 400px;">
+                    <div id="venn-explorer"></div>
+                    
+                    <label for="region-selector" style="display: block; margin-top: 1rem; font-weight: 600; color: var(--dark);">Select region to highlight:</label>
+                    <select id="region-selector" style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ddd; border-radius: 5px; margin-top: 0.5rem;">
+                        <option value="" disabled selected>— choose a region —</option>
+                        <option value="A">Event A only</option>
+                        <option value="B">Event B only</option>
+                        <option value="C">Event C only</option>
+                        <option value="A&B">A ∩ B (A and B only)</option>
+                        <option value="A&C">A ∩ C (A and C only)</option>
+                        <option value="B&C">B ∩ C (B and C only)</option>
+                        <option value="A&B&C">A ∩ B ∩ C (All three events)</option>
+                    </select>
+                </div>
+                
+                <div style="flex: 0 0 200px;">
+                    <div id="math-expression" style="background: white; border: 2px solid black; border-radius: 10px; padding: 15px; margin-top: 20px; min-height: 100px; display: none;">
+                        <h4 style="margin: 0 0 10px 0; color: var(--primary); font-size: 1.1em;">Mathematical Expression:</h4>
+                        <div id="expression-content" style="font-size: 1.2em; text-align: center;"></div>
+                    </div>
+                </div>
+            </div>
             
             <div id="region-info" style="background: white; border-radius: 8px; padding: 15px; margin: 15px 0; border-left: 4px solid var(--info); display: none;">
                 <h4 id="region-title" style="margin: 0 0 10px 0; color: var(--primary);"></h4>
@@ -581,10 +559,38 @@
     
     <script>
         const eventDefinitions = {
-            A: { numbers: [2, 4, 6], color: 'in-a', name: 'Event A (Even Numbers)', description: 'Numbers: {2, 4, 6}', probability: '3/6 = 1/2' },
-            B: { numbers: [1, 2, 3], color: 'in-b', name: 'Event B (≤ 3)', description: 'Numbers: {1, 2, 3}', probability: '3/6 = 1/2' },
-            union: { numbers: [1, 2, 3, 4, 6], color: 'in-a', name: 'Union: A ∪ B', description: 'Numbers: {1, 2, 3, 4, 6}', probability: '5/6 ≈ 0.833' },
-            intersection: { numbers: [2], color: 'in-both', name: 'Intersection: A ∩ B', description: 'Numbers: {2}', probability: '1/6 ≈ 0.167' }
+            A: { 
+                numbers: [2, 4, 6], 
+                color: 'in-a', 
+                name: 'Event A (Even Numbers)', 
+                description: 'Numbers: {2, 4, 6}', 
+                probability: '3/6 = 1/2',
+                notation: 'P(A) = P({2, 4, 6}) = 3/6 = 1/2'
+            },
+            B: { 
+                numbers: [1, 2, 3], 
+                color: 'in-b', 
+                name: 'Event B (≤ 3)', 
+                description: 'Numbers: {1, 2, 3}', 
+                probability: '3/6 = 1/2',
+                notation: 'P(B) = P({1, 2, 3}) = 3/6 = 1/2'
+            },
+            union: { 
+                numbers: [1, 2, 3, 4, 6], 
+                color: 'in-a', 
+                name: 'Union: A ∪ B', 
+                description: 'Numbers: {1, 2, 3, 4, 6}', 
+                probability: '5/6 ≈ 0.833',
+                notation: 'P(A ∪ B) = P({1, 2, 3, 4, 6}) = 5/6'
+            },
+            intersection: { 
+                numbers: [2], 
+                color: 'in-both', 
+                name: 'Intersection: A ∩ B', 
+                description: 'Numbers: {2}', 
+                probability: '1/6 ≈ 0.167',
+                notation: 'P(A ∩ B) = P({2}) = 1/6'
+            }
         };
 
         function showEvent(eventType) {
@@ -612,6 +618,7 @@
             document.getElementById('resultTitle').textContent = event.name;
             document.getElementById('resultDescription').textContent = event.description;
             document.getElementById('resultProbability').textContent = `Probability: ${event.probability}`;
+            document.getElementById('resultNotation').textContent = `Set Notation: ${event.notation}`;
             resultsPanel.classList.add('show');
         }
 
@@ -621,7 +628,15 @@
                 cell.classList.remove('highlight-union', 'highlight-intersection');
             });
             
-            if (eventType === 'clear') return;
+            const tableResults = document.getElementById('table-results');
+            const titleElement = document.getElementById('tableResultTitle');
+            const notationElement = document.getElementById('tableResultNotation');
+            const calculationElement = document.getElementById('tableResultCalculation');
+            
+            if (eventType === 'clear') {
+                tableResults.classList.remove('show');
+                return;
+            }
             
             document.querySelectorAll('.cell').forEach(cell => {
                 const events = cell.dataset.event;
@@ -636,37 +651,76 @@
                     cell.classList.add('highlight-intersection');
                 }
             });
+            
+            // Show appropriate results
+            const tableEventInfo = {
+                'A': {
+                    title: 'Event A: White Mothers',
+                    notation: 'P(A) = P(White Mother)',
+                    calculation: 'Sum all White percentages: 2% + 3% + 41% + 33% = 79%'
+                },
+                'B': {
+                    title: 'Event B: Teenage Mothers',
+                    notation: 'P(B) = P(Teenage Mother)',
+                    calculation: 'Sum all Teenage percentages: 2% + 3% + 2% + 2% = 9%'
+                },
+                'union': {
+                    title: 'Union: A ∪ B (White OR Teenage)',
+                    notation: 'P(A ∪ B) = P(White OR Teenage)',
+                    calculation: 'All highlighted cells: 2% + 3% + 41% + 33% + 2% + 2% = 83%'
+                },
+                'intersection': {
+                    title: 'Intersection: A ∩ B (White AND Teenage)',
+                    notation: 'P(A ∩ B) = P(White AND Teenage)',
+                    calculation: 'Only cells in both events: 2% + 3% = 5%'
+                }
+            };
+            
+            const info = tableEventInfo[eventType];
+            if (info) {
+                titleElement.textContent = info.title;
+                notationElement.textContent = info.notation;
+                calculationElement.textContent = info.calculation;
+                tableResults.classList.add('show');
+            }
         }
 
         // Region information for the 3-set Venn diagram
         const regionInfo = {
             'A': {
                 title: 'Event A Only',
-                description: 'Elements that belong to event A but not to events B or C. This represents outcomes that satisfy only condition A.'
+                description: 'Elements that belong to event A but not to events B or C. This represents outcomes that satisfy only condition A.',
+                expression: 'A ∩ B^c ∩ C^c'
             },
             'B': {
                 title: 'Event B Only', 
-                description: 'Elements that belong to event B but not to events A or C. This represents outcomes that satisfy only condition B.'
+                description: 'Elements that belong to event B but not to events A or C. This represents outcomes that satisfy only condition B.',
+                expression: 'A^c ∩ B ∩ C^c'
             },
             'C': {
                 title: 'Event C Only',
-                description: 'Elements that belong to event C but not to events A or B. This represents outcomes that satisfy only condition C.'
+                description: 'Elements that belong to event C but not to events A or B. This represents outcomes that satisfy only condition C.',
+                expression: 'A^c ∩ B^c ∩ C'
             },
             'A&B': {
                 title: 'Intersection A ∩ B',
-                description: 'Elements that belong to both events A and B, but not to C. These outcomes satisfy both conditions A and B simultaneously.'
+                description: 'Elements that belong to both events A and B, but not to C. These outcomes satisfy both conditions A and B simultaneously.',
+                expression: 'A ∩ B ∩ C^c'
             },
             'A&C': {
                 title: 'Intersection A ∩ C', 
-                description: 'Elements that belong to both events A and C, but not to B. These outcomes satisfy both conditions A and C simultaneously.'
+                description: 'Elements that belong to both events A and C, but not to B. These outcomes satisfy both conditions A and C simultaneously.',
+                expression: 'A ∩ B^c ∩ C'
             },
             'B&C': {
                 title: 'Intersection B ∩ C',
-                description: 'Elements that belong to both events B and C, but not to A. These outcomes satisfy both conditions B and C simultaneously.'
+                description: 'Elements that belong to both events B and C, but not to A. These outcomes satisfy both conditions B and C simultaneously.',
+                expression: 'A^c ∩ B ∩ C'
             },
             'A&B&C': {
                 title: 'Intersection A ∩ B ∩ C',
-                description: 'Elements that belong to all three events A, B, and C. These are outcomes that satisfy all three conditions simultaneously.'
+                description: 'Elements that belong to all three events A, B, and C. These are outcomes that satisfy all three conditions simultaneously.',
+                expression: 'A ∩ B ∩ C'
             }
         };
 
@@ -734,13 +788,23 @@
                 const infoPanel = document.getElementById('region-info');
                 const titleElement = document.getElementById('region-title');
                 const descElement = document.getElementById('region-description');
+                const mathPanel = document.getElementById('math-expression');
+                const expressionElement = document.getElementById('expression-content');
 
                 if (region && regionInfo[region]) {
                     titleElement.textContent = regionInfo[region].title;
                     descElement.textContent = regionInfo[region].description;
+                    expressionElement.innerHTML = `$${regionInfo[region].expression}$`;
                     infoPanel.style.display = 'block';
+                    mathPanel.style.display = 'block';
+                    
+                    // Re-render MathJax for the expression
+                    if (window.MathJax) {
+                        MathJax.typesetPromise([expressionElement]).catch((err) => console.log(err.message));
+                    }
                 } else {
                     infoPanel.style.display = 'none';
+                    mathPanel.style.display = 'none';
                 }
             }
         }
