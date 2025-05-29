@@ -343,6 +343,14 @@
             <p>You're playing poker. In three consecutive hands, one player gets four aces each time.</p>
             <p><strong>Question:</strong> Are the cards properly shuffled?</p>
             <p><strong>Answer:</strong> Almost certainly not! This outcome is so improbable with fair shuffling that you should suspect cheating.</p>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/four_aces_probabilities.png" 
+                     alt="Probability calculations for getting four aces in consecutive poker hands" 
+                     style="max-width: 90%; width: 90%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
+            </div>
+            
+            <p><strong>Mathematical Analysis:</strong> The probability of getting four aces in a single 5-card hand is approximately $\frac{48}{270,725} \approx 0.00018$. Getting this three times in a row has probability around $2.4 \times 10^{-11}$ - essentially impossible!</p>
         </div>
         
         <p><strong>The Key Insight:</strong> We need probability theory to determine when observed results are "too improbable" to believe they occurred by chance.</p>
@@ -351,30 +359,28 @@
     <div class="card">
         <h2>📚 Essential Definitions</h2>
         
-        <div class="key-terms">
-            <div class="term-card">
-                <div class="term-title">Experiment</div>
-                <p>An act or process of observation that leads to a single outcome that cannot be predicted with certainty.</p>
-                <p><em>Examples:</em> Toss a coin, roll a die, survey a voter, measure dissolved oxygen</p>
-            </div>
-            
-            <div class="term-card">
-                <div class="term-title">Sample Point</div>
-                <p>The most basic outcome of an experiment—cannot be decomposed further.</p>
-                <p><em>Examples:</em> H, T (coin); 1,2,3,4,5,6 (die); HH, HT, TH, TT (two coins)</p>
-            </div>
-            
-            <div class="term-card">
-                <div class="term-title">Sample Space ($S$)</div>
-                <p>The set of all possible sample points for an experiment.</p>
-                <p><em>Notation:</em> $S = \{H, T\}$ or $S = \{1, 2, 3, 4, 5, 6\}$</p>
-            </div>
-            
-            <div class="term-card">
-                <div class="term-title">Event ($A$)</div>
-                <p>Any collection (subset) of one or more sample points in $S$.</p>
-                <p><em>Example:</em> $A = \{\text{even number}\} = \{2, 4, 6\}$</p>
-            </div>
+        <div class="definition-box">
+            <h3>Experiment</h3>
+            <p><strong>Definition:</strong> An act or process of observation that leads to a single outcome that cannot be predicted with certainty.</p>
+            <p><strong>Examples:</strong> Toss a coin, roll a die, survey a voter, measure dissolved oxygen</p>
+        </div>
+        
+        <div class="definition-box">
+            <h3>Sample Point</h3>
+            <p><strong>Definition:</strong> The most basic outcome of an experiment—cannot be decomposed further.</p>
+            <p><strong>Examples:</strong> H, T (coin); 1,2,3,4,5,6 (die); HH, HT, TH, TT (two coins)</p>
+        </div>
+        
+        <div class="definition-box">
+            <h3>Sample Space ($S$)</h3>
+            <p><strong>Definition:</strong> The set of all possible sample points for an experiment.</p>
+            <p><strong>Notation:</strong> $S = \{H, T\}$ or $S = \{1, 2, 3, 4, 5, 6\}$</p>
+        </div>
+        
+        <div class="definition-box">
+            <h3>Event ($A$)</h3>
+            <p><strong>Definition:</strong> Any collection (subset) of one or more sample points in $S$.</p>
+            <p><strong>Example:</strong> $A = \{\text{even number}\} = \{2, 4, 6\}$</p>
         </div>
     </div>
     
@@ -524,6 +530,19 @@
     </div>
     
     <div class="card">
+        <h2>📹 Video: Sample Spaces and Events</h2>
+        <div class="example-box">
+            <p>This video covers the fundamental concepts of sample spaces, events, and their relationships including unions, intersections, and complements.</p>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <iframe width="480" height="270" src="https://www.youtube.com/embed/PamWL2WN-to?si=PVvpU3pygWwKza9M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"></iframe>
+            </div>
+            
+            <p><strong>Key Topics:</strong> Sample space definition, event relationships (A ∪ B, A ∩ B, A^c), and practical problem-solving with probability calculations.</p>
+        </div>
+    </div>
+    
+    <div class="card">
         <h2>📊 Probability Rules for Sample Points</h2>
         <div class="definition-box">
             <h3>Fundamental Rules</h3>
@@ -609,29 +628,6 @@
                 
                 <p><strong>✓ The formula gives the correct count!</strong></p>
             </div>
-        </div>
-    </div>
-    
-    <div class="card">
-        <h2>📹 Additional Learning Resources</h2>
-        <div class="example-box">
-            <h3>🎓 TrevTutor: Sample Spaces and Events</h3>
-            <p><strong>High-quality video explanation</strong> covering sample spaces, events, unions, complements, and intersections with practical problem-solving examples.</p>
-            
-            <div style="text-align: center; margin: 20px 0;">
-                <iframe width="480" height="270" src="https://www.youtube.com/embed/PamWL2WN-to?si=PVvpU3pygWwKza9M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"></iframe>
-            </div>
-            
-            <p><strong>What you'll learn:</strong></p>
-            <ul>
-                <li>Clear explanation of sample spaces and events</li>
-                <li>Union of events (A ∪ B) with visual examples</li>
-                <li>Complement of events (A^c) and their applications</li>
-                <li>Intersection of events (A ∩ B) and overlapping outcomes</li>
-                <li>Step-by-step problem-solving techniques</li>
-            </ul>
-            
-            <p><em>This video perfectly complements the interactive examples above and provides additional practice problems to reinforce your understanding.</em></p>
         </div>
     </div>
     
