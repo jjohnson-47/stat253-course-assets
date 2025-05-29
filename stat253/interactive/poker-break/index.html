@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🃏 Poker Break: Probability in Action</title>
+    <title>🃏 Poker Break</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
@@ -229,6 +229,37 @@
         
         .card:hover {
             transform: translateY(-5px);
+        }
+        
+        .card.selectable {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .card.selectable:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card.discarded {
+            opacity: 0.6;
+            transform: translateY(10px);
+            border: 3px solid var(--danger);
+            position: relative;
+        }
+        
+        .discard-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--danger);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            pointer-events: none;
         }
         
         .card.red {
@@ -544,23 +575,23 @@
     </style>
 </head>
 <body>
-    <h1>🃏 Poker Break: Probability in Action</h1>
+    <h1>🃏 Poker Break</h1>
     
     <div class="step-card">
-        <h2>🎯 Take a Fun Break with Probability!</h2>
+        <h2>🎯 Take a Learning Break</h2>
         
         <div class="action-box">
-            <p><strong>Learning Through Play:</strong> Experience probability theory in action with this interactive poker game that tracks real vs. theoretical hand frequencies!</p>
+            <p><strong>Interactive Poker Game:</strong> Play 5-card draw poker while observing probability concepts in action through real-time statistics tracking.</p>
         </div>
         
         <div class="sub-section">
-            <h3>How This Connects to Your Studies</h3>
-            <p>This isn't just a game – it's a live demonstration of:</p>
+            <h3>Learning Goals</h3>
+            <p>You will:</p>
             <ul>
-                <li><strong>Combinatorial probability:</strong> Each poker hand has a precise mathematical probability</li>
-                <li><strong>Law of Large Numbers:</strong> Your observed frequencies will approach theoretical values</li>
-                <li><strong>Sample space analysis:</strong> 52 cards, choose 5 = $\binom{52}{5}$ = 2,598,960 possible hands</li>
-                <li><strong>Conditional probability:</strong> How knowing some cards affects the probability of others</li>
+                <li>Observe <strong>combinatorial probability</strong> through poker hand frequencies</li>
+                <li>Experience the <strong>Law of Large Numbers</strong> as your data approaches theoretical values</li>
+                <li>Practice <strong>sample space analysis</strong> with $\binom{52}{5}$ = 2,598,960 possible hands</li>
+                <li>See <strong>conditional probability</strong> when discarding affects remaining card probabilities</li>
             </ul>
         </div>
         
@@ -571,16 +602,25 @@
     </div>
     
     <div class="step-card">
-        <h2>🃏 Interactive Poker Game</h2>
+        <h2>🃏 Interactive 5-Card Draw Poker</h2>
         
         <div class="poker-table">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div id="gamePhase" style="font-size: 1.2rem; font-weight: bold; color: white;">
+                    Click "Deal New Hand" to begin a round
+                </div>
+            </div>
+            
             <div class="game-area">
                 <div class="player-section">
                     <h3>🎯 Your Hand</h3>
                     <div class="hand" id="playerHand">
                         <!-- Cards will be populated here -->
                     </div>
-                    <div id="playerHandName" style="font-size: 1.1rem; font-weight: bold; margin-top: 10px;">Click Deal to start!</div>
+                    <div id="playerHandName" style="font-size: 1.1rem; font-weight: bold; margin-top: 10px;">Waiting for cards...</div>
+                    <div id="discardInstructions" style="font-size: 0.9rem; margin-top: 10px; color: #ccc; display: none;">
+                        Click cards to discard them, then click "Draw Cards"
+                    </div>
                 </div>
                 
                 <div class="player-section">
@@ -588,26 +628,35 @@
                     <div class="hand" id="computerHand">
                         <!-- Cards will be populated here -->
                     </div>
-                    <div id="computerHandName" style="font-size: 1.1rem; font-weight: bold; margin-top: 10px;">Ready to play!</div>
+                    <div id="computerHandName" style="font-size: 1.1rem; font-weight: bold; margin-top: 10px;">Waiting for cards...</div>
+                    <div id="computerAction" style="font-size: 0.9rem; margin-top: 10px; color: #ccc;">
+                        Computer will make its decision
+                    </div>
                 </div>
             </div>
             
-            <div style="text-align: center;">
-                <button class="deal-button" id="dealButton" onclick="dealNewHand()">
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="deal-button" id="dealButton" onclick="startNewRound()">
                     Deal New Hand 🎲
+                </button>
+                <button class="deal-button" id="drawButton" onclick="drawCards()" style="display: none; background: linear-gradient(135deg, var(--success), #28a745);">
+                    Draw Cards 🃏
+                </button>
+                <button class="deal-button" id="standButton" onclick="standPat()" style="display: none; background: linear-gradient(135deg, var(--info), #0056b3);">
+                    Stand Pat ✋
                 </button>
             </div>
             
             <div class="game-result" id="gameResult">
-                Welcome to Poker Break! Click "Deal New Hand" to begin.
+                Welcome to 5-Card Draw Poker! Click "Deal New Hand" to begin.
             </div>
             
             <div class="convergence-indicator">
-                <div>Hands Played: <strong id="handsPlayed">0</strong> | Convergence Progress:</div>
+                <div>Rounds Completed: <strong id="handsPlayed">0</strong> | First-Hand Analysis:</div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
                 </div>
-                <div style="font-size: 0.8rem; margin-top: 5px;">More hands = better approximation to theoretical probabilities</div>
+                <div style="font-size: 0.8rem; margin-top: 5px;">Statistics track initial hands only (before discarding)</div>
             </div>
         </div>
     </div>
@@ -721,6 +770,18 @@
             bestHandEver: null
         };
 
+        // Game state for 3-hand draw poker
+        let gameState = {
+            phase: 'waiting', // 'waiting', 'initialDeal', 'firstDraw', 'secondDraw', 'showdown'
+            currentRound: 0,
+            deck: null,
+            playerCards: [],
+            computerCards: [],
+            playerDiscards: [],
+            computerDiscards: [],
+            cardsUsed: 0
+        };
+
         // Initialize hand counts
         Object.keys(HAND_PROBABILITIES).forEach(hand => {
             gameStats.handCounts[hand] = 0;
@@ -817,14 +878,48 @@
             return 0; // Tie
         }
 
-        function renderCard(card) {
+        function renderCard(card, index, isPlayer = false) {
             const isRed = card.suit === '♥' || card.suit === '♦';
+            const isDiscarded = isPlayer && gameState.playerDiscards.includes(index);
+            const clickHandler = isPlayer && (gameState.phase === 'initialDeal' || gameState.phase === 'firstDraw') ? 
+                `onclick="toggleDiscard(${index})"` : '';
+            const cardClass = `card ${isRed ? 'red' : ''} ${isDiscarded ? 'discarded' : ''} ${clickHandler ? 'selectable' : ''}`;
+            
             return `
-                <div class="card ${isRed ? 'red' : ''}">
+                <div class="${cardClass}" ${clickHandler} data-index="${index}">
                     <div class="rank">${card.rank}</div>
                     <div class="suit">${card.suit}</div>
+                    ${isDiscarded ? '<div class="discard-overlay">DISCARD</div>' : ''}
                 </div>
             `;
+        }
+
+        function renderPlayerHand() {
+            document.getElementById('playerHand').innerHTML = 
+                gameState.playerCards.map((card, index) => renderCard(card, index, true)).join('');
+        }
+
+        function renderComputerHand() {
+            document.getElementById('computerHand').innerHTML = 
+                gameState.computerCards.map((card, index) => renderCard(card, index, false)).join('');
+        }
+
+        function toggleDiscard(cardIndex) {
+            if (gameState.phase !== 'initialDeal' && gameState.phase !== 'firstDraw') return;
+            
+            const discardIdx = gameState.playerDiscards.indexOf(cardIndex);
+            if (discardIdx === -1) {
+                gameState.playerDiscards.push(cardIndex);
+            } else {
+                gameState.playerDiscards.splice(discardIdx, 1);
+            }
+            
+            renderPlayerHand();
+            
+            // Update discard count display
+            const discardCount = gameState.playerDiscards.length;
+            document.getElementById('discardInstructions').textContent = 
+                `${discardCount} card${discardCount !== 1 ? 's' : ''} selected for discard. Click "Draw Cards" or "Stand Pat".`;
         }
 
         function updateDisplay() {
@@ -862,20 +957,210 @@
             }).join('');
         }
 
-        function dealNewHand() {
-            const deck = createDeck();
-            const playerCards = deck.slice(0, 5);
-            const computerCards = deck.slice(5, 10);
+        function startNewRound() {
+            // Initialize new round
+            gameState.phase = 'initialDeal';
+            gameState.currentRound++;
+            gameState.deck = createDeck();
+            gameState.cardsUsed = 0;
+            gameState.playerDiscards = [];
+            gameState.computerDiscards = [];
             
-            // Render cards
-            document.getElementById('playerHand').innerHTML = playerCards.map(renderCard).join('');
-            document.getElementById('computerHand').innerHTML = computerCards.map(renderCard).join('');
+            // Deal initial 5 cards to each player
+            gameState.playerCards = gameState.deck.slice(0, 5);
+            gameState.computerCards = gameState.deck.slice(5, 10);
+            gameState.cardsUsed = 10;
             
-            // Evaluate hands
-            const playerHand = evaluateHand(playerCards);
-            const computerHand = evaluateHand(computerCards);
+            // Render initial hands
+            renderPlayerHand();
+            renderComputerHand();
             
-            // Display hand names
+            // Evaluate initial hands for statistics (first-hand analysis)
+            const playerHand = evaluateHand(gameState.playerCards);
+            gameStats.totalHands++;
+            gameStats.handCounts[playerHand.name]++;
+            
+            // Track best hand from initial deal
+            if (!gameStats.bestHandEver || playerHand.rank > getBestHandRank()) {
+                gameStats.bestHandEver = playerHand.name;
+            }
+            
+            // Update display names
+            document.getElementById('playerHandName').textContent = playerHand.name;
+            document.getElementById('computerHandName').textContent = evaluateHand(gameState.computerCards).name;
+            
+            // Update UI
+            document.getElementById('gamePhase').textContent = 'Round ' + gameState.currentRound + ' - First Draw: Select cards to discard';
+            document.getElementById('discardInstructions').style.display = 'block';
+            document.getElementById('discardInstructions').textContent = 'Click cards to discard them, then click "Draw Cards" or "Stand Pat"';
+            document.getElementById('computerAction').textContent = 'Computer is analyzing hand...';
+            
+            // Show discard phase buttons
+            document.getElementById('dealButton').style.display = 'none';
+            document.getElementById('drawButton').style.display = 'inline-block';
+            document.getElementById('standButton').style.display = 'inline-block';
+            
+            // Reset result
+            const resultElement = document.getElementById('gameResult');
+            resultElement.textContent = 'Select cards to discard, then choose "Draw Cards" or "Stand Pat"';
+            resultElement.className = 'game-result';
+            
+            updateDisplay();
+        }
+
+        function getBestHandRank() {
+            if (!gameStats.bestHandEver) return 0;
+            const handRanks = {
+                'High Card': 1, 'One Pair': 2, 'Two Pair': 3, 'Three of a Kind': 4,
+                'Straight': 5, 'Flush': 6, 'Full House': 7, 'Four of a Kind': 8,
+                'Straight Flush': 9, 'Royal Flush': 10
+            };
+            return handRanks[gameStats.bestHandEver] || 0;
+        }
+
+        function drawCards() {
+            if (gameState.phase === 'initialDeal') {
+                performFirstDraw();
+            } else if (gameState.phase === 'firstDraw') {
+                performSecondDraw();
+            }
+        }
+
+        function standPat() {
+            if (gameState.phase === 'initialDeal') {
+                // Player stands pat on first draw, move to computer's decision
+                gameState.phase = 'firstDraw';
+                performComputerFirstDraw();
+                
+                document.getElementById('gamePhase').textContent = 'Round ' + gameState.currentRound + ' - Second Draw: Select cards to discard';
+                document.getElementById('discardInstructions').textContent = 'Select cards to discard for second draw';
+                document.getElementById('discardInstructions').style.display = 'block';
+                
+                // Reset player discards for second draw
+                gameState.playerDiscards = [];
+                renderPlayerHand();
+                
+            } else if (gameState.phase === 'firstDraw') {
+                // Player stands pat on second draw, move to showdown
+                performComputerSecondDraw();
+                performShowdown();
+            }
+        }
+
+        function performFirstDraw() {
+            // Replace player's discarded cards
+            replacePlayerCards();
+            
+            // Computer makes first draw decision
+            performComputerFirstDraw();
+            
+            gameState.phase = 'firstDraw';
+            document.getElementById('gamePhase').textContent = 'Round ' + gameState.currentRound + ' - Second Draw: Select cards to discard';
+            document.getElementById('discardInstructions').textContent = 'Select cards to discard for second draw';
+            document.getElementById('discardInstructions').style.display = 'block';
+            
+            // Reset discards for second draw
+            gameState.playerDiscards = [];
+            renderPlayerHand();
+            
+            // Update hand evaluations
+            const playerHand = evaluateHand(gameState.playerCards);
+            const computerHand = evaluateHand(gameState.computerCards);
+            document.getElementById('playerHandName').textContent = playerHand.name;
+            document.getElementById('computerHandName').textContent = computerHand.name;
+        }
+
+        function performSecondDraw() {
+            // Replace player's discarded cards
+            replacePlayerCards();
+            
+            // Computer makes second draw decision
+            performComputerSecondDraw();
+            
+            // Move to showdown
+            performShowdown();
+        }
+
+        function replacePlayerCards() {
+            // Sort discards in descending order to maintain indices
+            const sortedDiscards = [...gameState.playerDiscards].sort((a, b) => b - a);
+            
+            sortedDiscards.forEach(discardIndex => {
+                // Draw new card from deck
+                const newCard = gameState.deck[gameState.cardsUsed++];
+                gameState.playerCards[discardIndex] = newCard;
+            });
+            
+            renderPlayerHand();
+        }
+
+        function performComputerFirstDraw() {
+            const computerHand = evaluateHand(gameState.computerCards);
+            let discardCount = 0;
+            
+            // Simple AI: discard based on hand strength
+            if (computerHand.rank >= 7) { // Full House or better - stand pat
+                discardCount = 0;
+            } else if (computerHand.rank >= 4) { // Three of a Kind or better - discard 2
+                discardCount = 2;
+            } else if (computerHand.rank >= 2) { // One Pair or better - discard 3
+                discardCount = 3;
+            } else { // High Card - discard 4 (keep highest)
+                discardCount = 4;
+            }
+            
+            performComputerDraw(discardCount);
+            document.getElementById('computerAction').textContent = 
+                `Computer discarded ${discardCount} card${discardCount !== 1 ? 's' : ''} on first draw`;
+        }
+
+        function performComputerSecondDraw() {
+            const computerHand = evaluateHand(gameState.computerCards);
+            let discardCount = 0;
+            
+            // More conservative on second draw
+            if (computerHand.rank >= 6) { // Flush or better - stand pat
+                discardCount = 0;
+            } else if (computerHand.rank >= 3) { // Two Pair or better - discard 1
+                discardCount = 1;
+            } else if (computerHand.rank >= 2) { // One Pair - discard 2
+                discardCount = 2;
+            } else { // High Card - discard 3
+                discardCount = 3;
+            }
+            
+            performComputerDraw(discardCount);
+            document.getElementById('computerAction').textContent = 
+                `Computer discarded ${discardCount} card${discardCount !== 1 ? 's' : ''} on second draw`;
+        }
+
+        function performComputerDraw(discardCount) {
+            // Computer discards lowest cards (simple strategy)
+            if (discardCount > 0) {
+                const sortedIndices = gameState.computerCards
+                    .map((card, index) => ({ card, index }))
+                    .sort((a, b) => a.card.value - b.card.value)
+                    .slice(0, discardCount)
+                    .map(item => item.index)
+                    .sort((a, b) => b - a); // Sort descending for proper replacement
+                
+                sortedIndices.forEach(index => {
+                    const newCard = gameState.deck[gameState.cardsUsed++];
+                    gameState.computerCards[index] = newCard;
+                });
+            }
+            
+            renderComputerHand();
+        }
+
+        function performShowdown() {
+            gameState.phase = 'showdown';
+            
+            // Final hand evaluation
+            const playerHand = evaluateHand(gameState.playerCards);
+            const computerHand = evaluateHand(gameState.computerCards);
+            
+            // Update display
             document.getElementById('playerHandName').textContent = playerHand.name;
             document.getElementById('computerHandName').textContent = computerHand.name;
             
@@ -897,20 +1182,17 @@
                 gameStats.ties++;
             }
             
-            // Update statistics
-            gameStats.totalHands++;
-            gameStats.handCounts[playerHand.name]++;
-            
-            // Track best hand
-            if (!gameStats.bestHandEver || playerHand.rank > evaluateHand([]).rank) {
-                const currentBestRank = gameStats.bestHandEver ? Object.keys(HAND_PROBABILITIES).find(name => 
-                    HAND_PROBABILITIES[name] === Math.min(...Object.keys(HAND_PROBABILITIES).map(n => HAND_PROBABILITIES[n]))
-                ) : null;
-                
-                if (!gameStats.bestHandEver || playerHand.rank > (currentBestRank ? 10 - Object.keys(HAND_PROBABILITIES).indexOf(currentBestRank) : 0)) {
-                    gameStats.bestHandEver = playerHand.name;
-                }
+            // Update best hand if player improved
+            if (playerHand.rank > getBestHandRank()) {
+                gameStats.bestHandEver = playerHand.name;
             }
+            
+            // Reset UI for next round
+            document.getElementById('gamePhase').textContent = 'Round Complete! Click "Deal New Hand" for next round';
+            document.getElementById('discardInstructions').style.display = 'none';
+            document.getElementById('dealButton').style.display = 'inline-block';
+            document.getElementById('drawButton').style.display = 'none';
+            document.getElementById('standButton').style.display = 'none';
             
             updateDisplay();
         }
