@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R Guide for Chapter 3: Probability</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <style>
+        :root {
+            --primary: #0466c8;
+            --primary-light: #e0f2fe;
+            --accent: #0353a4;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --info: #4361ee;
+            --danger: #dc3545;
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
+        }
+        
+        html {
+            font-size: 100%;
+            box-sizing: border-box;
+        }
+        
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+        
+        body {
+            font-family: 'Open Sans', Arial, sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #333333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Open Sans', Arial, sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-top: 0;
+        }
+        
+        h1 {
+            font-size: 2.25rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 20px 0;
+        }
+        
+        h2 {
+            font-size: 1.875rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        h4 {
+            font-size: 1.25rem;
+        }
+        
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        }
+        
+        .step-card h2 {
+            font-size: 1.875rem;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+        }
+        
+        .action-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .sub-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--info);
+        }
+        
+        .sub-section h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .highlight-insight {
+            background: linear-gradient(135deg, #cce7ff, #b3d9ff);
+            border: 2px solid var(--info);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .highlight-confirmed {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .highlight-warning {
+            background: linear-gradient(135deg, #fff8e6, #ffeaa7);
+            border: 2px solid var(--warning);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .navigation {
+            background: linear-gradient(135deg, var(--dark), #34495e);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .navigation a {
+            color: var(--primary-light);
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .navigation a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .code-section {
+            background: white;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        
+        .code-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .code-header:hover {
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+        }
+        
+        .code-header::after {
+            content: "▼";
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .code-header.collapsed::after {
+            transform: rotate(-90deg);
+        }
+        
+        .code-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: #2d3748;
+            position: relative;
+        }
+        
+        .code-content.expanded {
+            max-height: 2000px;
+        }
+        
+        .code-block {
+            padding: 20px;
+            position: relative;
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        
+        .copy-button:hover {
+            background: #28a745;
+            transform: translateY(-1px);
+        }
+        
+        .copy-button.copied {
+            background: var(--warning);
+            transform: scale(0.95);
+        }
+        
+        pre {
+            background: transparent;
+            color: #e2e8f0;
+            margin: 0;
+            padding: 0;
+            border: none;
+            border-radius: 0;
+            overflow-x: auto;
+            font-family: 'Roboto Mono', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+            font-family: 'Roboto Mono', 'Courier New', monospace;
+        }
+        
+        .inline-code {
+            background-color: #f4f4f4;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: 'Roboto Mono', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--dark);
+        }
+        
+        .learning-objectives {
+            background: var(--primary-light);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .learning-objectives h3 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .section-note {
+            background: rgba(255, 255, 255, 0.9);
+            border-left: 4px solid var(--warning);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        
+        .section-note strong {
+            color: var(--warning);
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            .step-card {
+                padding: 20px;
+            }
+            
+            .navigation {
+                padding: 15px;
+            }
+            
+            .navigation a {
+                display: block;
+                margin: 5px 0;
+            }
+            
+            .code-header {
+                padding: 12px 15px;
+            }
+            
+            .code-block {
+                padding: 15px;
+            }
+        }
+        
+        /* Math rendering compatibility */
+        .katex {
+            font-size: 1.1em !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 R Guide for Chapter 3: Probability</h1>
+    
+    <div class="action-box">
+        <h2 style="margin: 0 0 10px 0; color: white;">Learn to Apply Probability Concepts Using R Programming</h2>
+        <p style="margin: 0;">Master probability calculations, simulations, and real-world applications with practical R code examples</p>
+    </div>
+
+    <div class="navigation">
+        <strong>Quick Navigation:</strong><br>
+        <a href="#basics">Basics</a>
+        <a href="#operations">Set Operations</a>
+        <a href="#conditional">Conditional Probability</a>
+        <a href="#bayes">Bayes' Rule</a>
+        <a href="#simulations">Simulations</a>
+        <a href="#distributions">Distributions</a>
+    </div>
+
+    <div class="learning-objectives">
+        <h3>🎯 Learning Objectives</h3>
+        <p>By the end of this guide, you will be able to:</p>
+        <ul>
+            <li>Calculate basic probabilities using R functions and operations</li>
+            <li>Apply set operations (union, intersection) to probability problems</li>
+            <li>Compute conditional probabilities and apply Bayes' theorem</li>
+            <li>Use R simulations to verify theoretical probability results</li>
+            <li>Work with common probability distributions in R</li>
+            <li>Create visualizations to better understand probability concepts</li>
+        </ul>
+    </div>
+
+    <section class="step-card" id="basics">
+        <h2>🎯 3.1 Events, Sample Spaces, and Probability</h2>
+        <p>Let's start with fundamental probability calculations in R. Understanding how to represent sample spaces and calculate probabilities is essential for all statistical work.</p>
+        
+        <div class="code-section">
+            <div class="code-header" onclick="toggleCode(this)">
+                <span>📝 Basic Probability Calculations</span>
+            </div>
+            <div class="code-content">
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre><code># Define a sample space for coin flipping
+sample_space <- c("H", "T")  # H for Heads, T for Tails
+print(paste("Sample space:", paste(sample_space, collapse = ", ")))
+
+# Assign probabilities (fair coin)
+prob_H <- 0.5
+prob_T <- 0.5
+
+# Verify that probabilities sum to 1 (fundamental rule)
+sum_prob <- prob_H + prob_T
+print(paste("Sum of probabilities:", sum_prob))
+
+# Calculate probability of specific events
+P_heads <- prob_H
+print(paste("P(Heads) =", P_heads))
+print(paste("P(Tails) =", prob_T))
+
+# For a dice example
+dice_space <- 1:6
+dice_probs <- rep(1/6, 6)  # Equal probability for each face
+names(dice_probs) <- dice_space
+
+print("Dice probabilities:")
+print(dice_probs)</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-note">
+            <strong>💡 Tip:</strong> In R, vectors are fundamental for representing sample spaces. Use <code class="inline-code">c()</code> to create vectors and <code class="inline-code">rep()</code> to create repeated values efficiently.
+        </div>
+    </section>
+
+    <section class="step-card" id="operations">
+        <h2>🔗 3.2 Unions and Intersections</h2>
+        <p>R provides powerful tools for set operations in probability. These operations are essential for working with compound events.</p>
+        
+        <div class="code-section">
+            <div class="code-header" onclick="toggleCode(this)">
+                <span>🔧 Set Operations in R</span>
+            </div>
+            <div class="code-content">
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre><code># Define events A and B (outcomes of rolling a die)
+A <- c(1, 2, 3, 4)    # Event A: rolling 1, 2, 3, or 4
+B <- c(3, 4, 5, 6)    # Event B: rolling 3, 4, 5, or 6
+
+print(paste("Event A:", paste(A, collapse = ", ")))
+print(paste("Event B:", paste(B, collapse = ", ")))
+
+# Calculate union (A or B)
+union_AB <- union(A, B)
+print(paste("A ∪ B:", paste(union_AB, collapse = ", ")))
+
+# Calculate intersection (A and B)
+intersection_AB <- intersect(A, B)
+print(paste("A ∩ B:", paste(intersection_AB, collapse = ", ")))
+
+# Calculate set difference (A but not B)
+diff_A_B <- setdiff(A, B)
+print(paste("A - B:", paste(diff_A_B, collapse = ", ")))
+
+# Calculate probabilities (assuming fair die)
+sample_size <- 6
+P_A <- length(A) / sample_size
+P_B <- length(B) / sample_size
+P_union <- length(union_AB) / sample_size
+P_intersection <- length(intersection_AB) / sample_size
+
+print(paste("P(A) =", P_A))
+print(paste("P(B) =", P_B))
+print(paste("P(A ∪ B) =", P_union))
+print(paste("P(A ∩ B) =", P_intersection))
+
+# Verify additive rule: P(A ∪ B) = P(A) + P(B) - P(A ∩ B)
+additive_check <- P_A + P_B - P_intersection
+print(paste("Additive rule check: P(A) + P(B) - P(A ∩ B) =", additive_check))
+print(paste("Does it equal P(A ∪ B)?", abs(additive_check - P_union) < 1e-10))</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="highlight-confirmed">
+            <p><strong>🆕 Modern Approach:</strong> Consider using the <code class="inline-code">sets</code> package for more advanced set operations, especially when working with complex probability problems involving multiple events.</p>
+        </div>
+    </section>
+
+    <section class="step-card">
+        <h2>🔄 3.3 Complementary Events</h2>
+        <p>Understanding and calculating complement probabilities is crucial for solving "at least one" problems efficiently.</p>
+        
+        <div class="code-section">
+            <div class="code-header" onclick="toggleCode(this)">
+                <span>🔀 Complement Calculations</span>
+            </div>
+            <div class="code-content">
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre><code># Define an event A and its complement
+P_A <- 0.3
+P_not_A <- 1 - P_A
+
+print(paste("P(A) =", P_A))
+print(paste("P(A^c) =", P_not_A))
+print(paste("P(A) + P(A^c) =", P_A + P_not_A))
+
+# Practical example: Weather prediction
+P_rain <- 0.25
+P_no_rain <- 1 - P_rain
+
+print(paste("Probability of rain:", P_rain))
+print(paste("Probability of no rain:", P_no_rain))
+
+# Function to calculate complement
+complement <- function(p) {
+    if (p < 0 || p > 1) {
+        stop("Probability must be between 0 and 1")
+    }
+    return(1 - p)
+}
+
+# Test the function
+test_prob <- 0.65
+comp_prob <- complement(test_prob)
+print(paste("Original probability:", test_prob))
+print(paste("Complement probability:", comp_prob))</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-note">
+            <strong>💡 Tip:</strong> Always verify that your probabilities are valid (between 0 and 1) and that complements sum to 1. Creating functions with error checking helps avoid common mistakes.
+        </div>
+    </section>
+
+    <section class="step-card" id="conditional">
+        <h2>📋 3.5 Conditional Probability</h2>
+        <p>Computing conditional probabilities with R is essential for understanding how prior knowledge affects probability calculations.</p>
+        
+        <div class="code-section">
+            <div class="code-header" onclick="toggleCode(this)">
+                <span>🔍 Conditional Probability Calculations</span>
+            </div>
+            <div class="code-content">
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre><code># Basic conditional probability: P(A|B) = P(A ∩ B) / P(B)
+P_B <- 0.4
+P_A_and_B <- 0.1
+
+# Calculate P(A|B)
+P_A_given_B <- P_A_and_B / P_B
+print(paste("P(A|B) =", P_A_given_B))
+
+# Create a general function for conditional probability
+conditional_prob <- function(P_A_and_B, P_B) {
+    if (P_B == 0) {
+        stop("Cannot condition on an event with probability 0")
+    }
+    return(P_A_and_B / P_B)
+}
+
+# Use the function
+result <- conditional_prob(0.15, 0.3)
+print(paste("P(A|B) using function:", result))
+
+# Practical example: Medical testing
+# P(Disease) = 0.01, P(Positive Test | Disease) = 0.95, P(Positive Test | No Disease) = 0.05
+P_disease <- 0.01
+P_positive_given_disease <- 0.95
+P_positive_given_no_disease <- 0.05
+
+# Calculate P(Positive Test) using law of total probability
+P_positive <- P_disease * P_positive_given_disease + 
+              (1 - P_disease) * P_positive_given_no_disease
+
+print(paste("P(Positive Test) =", P_positive))
+
+# Calculate P(Disease | Positive Test) - the important question!
+P_disease_given_positive <- (P_disease * P_positive_given_disease) / P_positive
+print(paste("P(Disease | Positive Test) =", P_disease_given_positive))</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="highlight-insight">
+            <p><strong>💡 Modern Insight:</strong> Conditional probability is crucial in machine learning and AI. The medical testing example shows why understanding base rates (prior probabilities) is essential for interpreting test results correctly.</p>
+        </div>
+    </section>
+
+    <section class="step-card" id="bayes">
+        <h2>🔍 3.8 Bayes's Rule</h2>
+        <p>Implementing Bayes's theorem for probability updating is fundamental to modern data science and machine learning.</p>
+        
+        <div class="code-section">
+            <div class="code-header" onclick="toggleCode(this)">
+                <span>🎯 Bayes' Theorem Implementation</span>
+            </div>
+            <div class="code-content">
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre><code># Classic Bayes's theorem: P(A|B) = P(B|A) × P(A) / P(B)
+
+# Example: Email spam detection
+P_spam <- 0.1          # Prior: 10% of emails are spam
+P_word_given_spam <- 0.9      # 90% of spam emails contain certain word
+P_word_given_not_spam <- 0.05  # 5% of legitimate emails contain the word
+
+# Calculate P(word) using law of total probability
+P_word <- P_spam * P_word_given_spam + (1 - P_spam) * P_word_given_not_spam
+
+# Apply Bayes's theorem
+P_spam_given_word <- (P_spam * P_word_given_spam) / P_word
+
+print(paste("P(spam|word) =", round(P_spam_given_word, 4)))
+
+# Create a comprehensive Bayes function
+bayes_theorem <- function(prior, likelihood_true, likelihood_false) {
+    # Calculate evidence (marginal probability)
+    evidence <- prior * likelihood_true + (1 - prior) * likelihood_false
+    
+    # Calculate posterior probability
+    posterior <- (prior * likelihood_true) / evidence
+    
+    return(list(
+        prior = prior,
+        evidence = evidence,
+        posterior = posterior,
+        update_factor = posterior / prior
+    ))
+}
+
+# Test with spam example
+spam_result <- bayes_theorem(0.1, 0.9, 0.05)
+print("Spam Detection Results:")
+print(paste("Prior P(spam):", spam_result$prior))
+print(paste("Evidence P(word):", round(spam_result$evidence, 4)))
+print(paste("Posterior P(spam|word):", round(spam_result$posterior, 4)))
+print(paste("Update factor:", round(spam_result$update_factor, 2)))</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="highlight-insight">
+            <p><strong>🤖 Modern Applications:</strong> Bayes's theorem is fundamental to machine learning, AI decision-making, and data science. The sequential updating example shows how AI systems continuously learn from new evidence.</p>
+        </div>
+    </section>
+
+    <section class="step-card" id="simulations">
+        <h2>🎲 Probability Simulations in R</h2>
+        <p>Using Monte Carlo methods to verify and explore probability concepts provides powerful insights into complex problems.</p>
+        
+        <div class="code-section">
+            <div class="code-header" onclick="toggleCode(this)">
+                <span>🎯 Monte Carlo Simulations</span>
+            </div>
+            <div class="code-content">
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre><code># Set seed for reproducible results
+set.seed(2025)
+
+# Basic coin flipping simulation
+n_flips <- 100000
+coin_flips <- sample(c("H", "T"), n_flips, replace = TRUE, prob = c(0.5, 0.5))
+simulated_prob_heads <- mean(coin_flips == "H")
+
+print(paste("Theoretical P(Heads):", 0.5))
+print(paste("Simulated P(Heads):", round(simulated_prob_heads, 4)))
+print(paste("Difference:", abs(0.5 - simulated_prob_heads)))
+
+# Simulate the birthday paradox
+simulate_birthday_paradox <- function(n_people, n_simulations = 10000) {
+    matches <- 0
+    
+    for (i in 1:n_simulations) {
+        birthdays <- sample(1:365, n_people, replace = TRUE)
+        if (length(unique(birthdays)) < n_people) {
+            matches <- matches + 1
+        }
+    }
+    
+    return(matches / n_simulations)
+}
+
+# Test with 23 people (classic birthday paradox)
+birthday_prob <- simulate_birthday_paradox(23)
+theoretical_prob <- 1 - prod((365:(365-22))/365)  # Theoretical calculation
+
+print(paste("Birthday paradox (23 people):"))
+print(paste("Simulated probability:", round(birthday_prob, 4)))
+print(paste("Theoretical probability:", round(theoretical_prob, 4)))</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-note">
+            <strong>💡 Simulation Tip:</strong> Monte Carlo simulations are powerful tools for understanding complex probability problems. They're especially useful when analytical solutions are difficult or when you want to verify theoretical results.
+        </div>
+    </section>
+
+    <section class="step-card" id="distributions">
+        <h2>📊 Working with Probability Distributions</h2>
+        <p>R provides comprehensive support for probability distributions, which are fundamental to statistical analysis.</p>
+        
+        <div class="code-section">
+            <div class="code-header" onclick="toggleCode(this)">
+                <span>📈 Distribution Functions</span>
+            </div>
+            <div class="code-content">
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <pre><code># Binomial Distribution
+# Example: 10 coin flips, probability of exactly 6 heads
+n_trials <- 10
+p_success <- 0.5
+x_successes <- 6
+
+# Probability mass function
+prob_exactly_6 <- dbinom(x_successes, size = n_trials, prob = p_success)
+print(paste("P(exactly 6 heads in 10 flips) =", round(prob_exactly_6, 4)))
+
+# Cumulative probability
+prob_6_or_fewer <- pbinom(x_successes, size = n_trials, prob = p_success)
+print(paste("P(6 or fewer heads) =", round(prob_6_or_fewer, 4)))
+
+# Generate random binomial data
+random_binom <- rbinom(1000, size = n_trials, prob = p_success)
+mean_successes <- mean(random_binom)
+print(paste("Expected successes (theoretical):", n_trials * p_success))
+print(paste("Average successes (simulated):", round(mean_successes, 2)))
+
+# Normal Distribution
+# Standard normal distribution
+z_score <- 1.96
+prob_less_than_z <- pnorm(z_score)
+print(paste("P(Z < 1.96) =", round(prob_less_than_z, 4)))
+
+# Find critical values
+alpha <- 0.05
+critical_value <- qnorm(1 - alpha/2)
+print(paste("Critical value for α = 0.05:", round(critical_value, 3)))
+
+# Poisson Distribution
+# Example: Average 3 customers per hour
+lambda <- 3
+x_customers <- 5
+
+# Probability of exactly 5 customers
+prob_exactly_5 <- dpois(x_customers, lambda)
+print(paste("P(exactly 5 customers) =", round(prob_exactly_5, 4)))
+
+# Probability of more than 5 customers
+prob_more_than_5 <- 1 - ppois(5, lambda)
+print(paste("P(more than 5 customers) =", round(prob_more_than_5, 4)))</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="highlight-confirmed">
+            <p><strong>📊 2025 Data Science Context:</strong> Understanding probability distributions is fundamental to data science and machine learning. Each distribution has specific use cases: binomial for binary outcomes, normal for continuous symmetric data, Poisson for count data.</p>
+        </div>
+    </section>
+
+    <section class="step-card">
+        <h2>🎯 Summary and Next Steps</h2>
+        <p>Congratulations! You've learned how to use R for probability calculations and analysis.</p>
+        
+        <div class="sub-section">
+            <h3>Key Concepts Mastered</h3>
+            <ul>
+                <li><strong>Basic Probability:</strong> Sample spaces, events, and fundamental probability rules</li>
+                <li><strong>Set Operations:</strong> Unions, intersections, and complements using R functions</li>
+                <li><strong>Conditional Probability:</strong> Computing P(A|B) and understanding dependence</li>
+                <li><strong>Bayes' Theorem:</strong> Updating probabilities with new evidence</li>
+                <li><strong>Simulations:</strong> Monte Carlo methods for complex probability problems</li>
+                <li><strong>Real-world Applications:</strong> Quality control, finance, medical testing</li>
+            </ul>
+        </div>
+
+        <div class="highlight-insight">
+            <h3>🚀 Skills for Data Science and Beyond</h3>
+            <p>The probability concepts you've learned are fundamental to:</p>
+            <ul>
+                <li><strong>Data Science:</strong> Statistical inference and predictive modeling</li>
+                <li><strong>Machine Learning:</strong> Bayesian methods and uncertainty quantification</li>
+                <li><strong>Business Analytics:</strong> Risk assessment and decision analysis</li>
+                <li><strong>Research:</strong> Experimental design and hypothesis testing</li>
+            </ul>
+        </div>
+
+        <div class="section-note">
+            <strong>💡 Final Tip:</strong> The best way to master probability with R is through practice. Start with simple problems and gradually work your way up to more complex scenarios. Don't hesitate to experiment with the code and modify it for your own learning!
+        </div>
+    </section>
+
+    <footer class="action-box" style="margin-top: 40px;">
+        <h3 style="margin: 0 0 10px 0; color: white;">📊 R Guide for Probability - Summer 2025</h3>
+        <p style="margin: 0;">Remember: Probability is everywhere in data science and decision-making. Master these fundamentals, and you'll be well-prepared for advanced statistical analysis!</p>
+        <p style="margin: 10px 0 0 0;"><em>Happy coding and learning!</em> 🎲📊</p>
+    </footer>
+
+    <script>
+        function toggleCode(header) {
+            const content = header.nextElementSibling;
+            const isExpanded = content.classList.contains('expanded');
+            
+            if (isExpanded) {
+                content.classList.remove('expanded');
+                header.classList.add('collapsed');
+            } else {
+                content.classList.add('expanded');
+                header.classList.remove('collapsed');
+            }
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(function() {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(function() {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy code: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(function() {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Initialize all code sections as collapsed
+        document.addEventListener('DOMContentLoaded', function() {
+            const headers = document.querySelectorAll('.code-header');
+            headers.forEach(header => {
+                header.classList.add('collapsed');
+            });
+        });
+    </script>
+</body>
+</html>
