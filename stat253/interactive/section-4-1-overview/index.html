@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 4.1 - Two Types of Random Variables | STAT A253</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- MathJax Configuration -->
+    <script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            processEnvironments: true
+        },
+        options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+        }
+    };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        /* CSS Variables - Consistent with STAT A253 theme */
+        :root {
+            --primary: #0466c8;
+            --primary-light: #e0f2fe;
+            --accent: #0353a4;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --info: #4361ee;
+            --danger: #dc3545;
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            --card-shadow-hover: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Typography */
+        body {
+            font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* Header Styling */
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border-left: 5px solid var(--primary);
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--dark);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+        /* Card-based Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border-left: 5px solid;
+        }
+
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .discrete-card {
+            border-left-color: var(--primary);
+        }
+
+        .continuous-card {
+            border-left-color: var(--info);
+        }
+
+        .step-card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Definition Boxes */
+        .definition-box {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+
+        .definition-box .highlight {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* Example Grid */
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .example-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .example-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .example-item strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .example-item em {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        /* Video Section */
+        .video-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border-left: 5px solid var(--warning);
+        }
+
+        .video-section h2 {
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Comparison Table */
+        .comparison-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: var(--card-shadow);
+            border-left: 5px solid var(--success);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comparison-table tr:hover {
+            background: var(--light);
+        }
+
+        /* Concept Pills */
+        .concept-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pill {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Interactive Suggestion */
+        .action-box {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            margin: 30px 0;
+        }
+
+        .action-box h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .action-box .btn {
+            background: white;
+            color: var(--primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .action-box .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Formula Display */
+        .formula-display {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            margin: 20px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .step-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .step-card {
+                padding: 15px;
+            }
+        }
+
+        /* Utility Classes */
+        .text-primary { color: var(--primary) !important; }
+        .text-accent { color: var(--accent) !important; }
+        .text-success { color: var(--success) !important; }
+        .text-center { text-align: center; }
+        .emoji { font-size: 1.2em; margin-right: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span class="emoji">🎲</span>Two Types of Random Variables</h1>
+            <p>Chapter 4.1 - Understanding the Foundation of Probability Distributions</p>
+        </div>
+
+        <div class="content-grid">
+            <div class="step-card discrete-card">
+                <h2><span class="emoji">🔢</span>Discrete Random Variables</h2>
+                <div class="definition-box">
+                    <strong>Definition:</strong> Random variables that can assume a <span class="highlight">countable</span> number of values.
+                </div>
+                <p>Think of discrete variables as values you can list out, even if the list goes on forever. They often answer questions like "How many...?"</p>
+                
+                <h3 class="text-primary">Examples from the Textbook:</h3>
+                <div class="example-grid">
+                    <div class="example-item">
+                        <strong>Wine Expert Ratings</strong><br>
+                        Sum of 10 expert ratings (0-3 each)<br>
+                        <em>Possible values: 0, 1, 2, ..., 30</em>
+                    </div>
+                    <div class="example-item">
+                        <strong>EPA Monitoring</strong><br>
+                        Months until first violation<br>
+                        <em>Possible values: 1, 2, 3, ...</em>
+                    </div>
+                    <div class="example-item">
+                        <strong>Shoe Sizes</strong><br>
+                        Tennis player shoe sizes<br>
+                        <em>5, 5½, 6, 6½, 7, ...</em>
+                    </div>
+                    <div class="example-item">
+                        <strong>Number of Seizures</strong><br>
+                        Epileptic patient per week<br>
+                        <em>0, 1, 2, 3, ...</em>
+                    </div>
+                    <div class="example-item">
+                        <strong>Voters in Sample</strong><br>
+                        Favor impeachment (n=500)<br>
+                        <em>0, 1, 2, ..., 500</em>
+                    </div>
+                    <div class="example-item">
+                        <strong>Restaurant Customers</strong><br>
+                        Waiting to be served<br>
+                        <em>0, 1, 2, 3, ...</em>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card continuous-card">
+                <h2><span class="emoji">📈</span>Continuous Random Variables</h2>
+                <div class="definition-box">
+                    <strong>Definition:</strong> Random variables that can assume values corresponding to <span class="highlight">any point in an interval</span>.
+                </div>
+                <p>Continuous variables represent measurements that can take on any value within a range. They often involve time, distance, weight, or concentration.</p>
+                
+                <h3 class="text-primary">Examples from the Textbook:</h3>
+                <div class="example-grid">
+                    <div class="example-item">
+                        <strong>Pesticide Concentration</strong><br>
+                        mg/L in discharge water<br>
+                        <em>Any value in [0, 500]</em>
+                    </div>
+                    <div class="example-item">
+                        <strong>Exam Completion Time</strong><br>
+                        Minutes to complete exam<br>
+                        <em>Any value in [0, 60]</em>
+                    </div>
+                    <div class="example-item">
+                        <strong>Oil Drilling Depth</strong><br>
+                        Feet until striking oil<br>
+                        <em>Any value in [0, c]</em>
+                    </div>
+                    <div class="example-item">
+                        <strong>Hospital Arrivals</strong><br>
+                        Time between arrivals (seconds)<br>
+                        <em>0 ≤ x ≤ ∞</em>
+                    </div>
+                    <div class="example-item">
+                        <strong>Beverage Fill Amount</strong><br>
+                        Ounces in 12-oz can<br>
+                        <em>Any value in [0, 12]</em>
+                    </div>
+                    <div class="example-item">
+                        <strong>Food Item Weight</strong><br>
+                        Pounds in supermarket<br>
+                        <em>Any value in [0, 500]</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-section">
+            <h2><span class="emoji">🎥</span>Khan Academy: Random Variables</h2>
+            <p>Watch this excellent explanation to reinforce the concepts:</p>
+            <div class="video-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/3v9w79NhsfI?si=cJLpyc21POZay1c1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="comparison-section">
+            <h2><span class="emoji">🧠</span>Key Concepts to Remember</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Discrete</th>
+                        <th>Continuous</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Values</strong></td>
+                        <td>Countable (listable)</td>
+                        <td>Uncountable (interval)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Common Question</strong></td>
+                        <td>"How many...?"</td>
+                        <td>"How much...?" or "How long...?"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Examples</strong></td>
+                        <td>Counts, ratings, number of events</td>
+                        <td>Time, weight, temperature, distance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sample Space</strong></td>
+                        <td>Finite or countably infinite</td>
+                        <td>Uncountably infinite</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Probability Distribution</strong></td>
+                        <td>Chapter 4 (this chapter)</td>
+                        <td>Chapter 5 (next chapter)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="concept-pills">
+                <span class="pill">Sample Points</span>
+                <span class="pill">Random Variables</span>
+                <span class="pill">Countable vs Uncountable</span>
+                <span class="pill">Probability Models</span>
+                <span class="pill">Discrete Distributions</span>
+                <span class="pill">Continuous Distributions</span>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <h2><span class="emoji">📚</span>Understanding Sample Points</h2>
+            <p>Remember that a random variable is a function that assigns numerical values to the outcomes of an experiment. The key insight from the textbook examples:</p>
+            
+            <div class="formula-display">
+                <h4>Wine Rating Example</h4>
+                <p><strong>Sample Point:</strong> $\{1, 0, 0, 1, 2, 0, 0, 3, 1, 0\}$</p>
+                <p><strong>Random Variable Value:</strong> $x = 1 + 0 + 0 + 1 + 2 + 0 + 0 + 3 + 1 + 0 = 8$</p>
+                <p><em>Total sample points: $4^{10} = 1,048,576$ → Reduced to 31 possible values (0 to 30)</em></p>
+            </div>
+
+            <p>This demonstrates how random variables simplify complex sample spaces by focusing on the numerical outcomes we care about.</p>
+        </div>
+
+        <div class="action-box">
+            <h3><span class="emoji">🚀</span>Ready to Explore Further?</h3>
+            <p><strong>Try the Interactive Random Variable Explorer!</strong></p>
+            <p>Experiment with the textbook examples and see how different scenarios create different types of random variables.</p>
+            <a href="https://jjohnson-47.github.io/stat253-summer2025/stat253/shiny-apps/random-variable-explorer/" target="_blank" class="btn">Launch Interactive Tool</a>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; margin-top: 40px; padding: 20px; color: #7f8c8d;">
+            <p>STAT A253 Applied Statistics for the Sciences | Section 4.1 - Two Types of Random Variables</p>
+        </div>
+    </div>
+</body>
+</html>
