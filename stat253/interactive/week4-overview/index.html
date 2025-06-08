@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4: Random Variables</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <style>
+        :root {
+            --primary: #0466c8;
+            --primary-light: #e0f2fe;
+            --accent: #0353a4;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --info: #4361ee;
+            --gray-light: #dee2e6;
+            --danger: #dc3545;
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            --card-shadow-hover: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .section-card {
+            background: white;
+            border: 1px solid var(--gray-light);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .section-card h3 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-card .emoji {
+            font-size: 1.5rem;
+        }
+
+        .section-card p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .section-card .concepts {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .section-card .concepts h4 {
+            margin: 0 0 10px 0;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+
+        .section-card .concepts ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .section-card .concepts li {
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(4, 102, 200, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #c6cbd1;
+        }
+
+        .learning-objectives {
+            background: var(--primary-light);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border-left: 5px solid var(--primary);
+        }
+
+        .learning-objectives h2 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .learning-objectives ul {
+            margin: 0;
+            padding-left: 25px;
+        }
+
+        .learning-objectives li {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .week-overview {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 1px solid var(--primary-light);
+        }
+
+        .week-overview h2 {
+            color: var(--primary);
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #7f8c8d;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Week 4: Random Variables</h1>
+            <p>Introduction to Discrete and Continuous Random Variables</p>
+        </div>
+
+        <div class="content">
+            <div class="week-overview">
+                <h2><span class="emoji">🗓️</span>This Week's Focus</h2>
+                <p>Welcome to <strong>Chapter 4</strong>! After mastering probability in Chapter 3, we now explore <strong>random variables</strong> - the bridge between probability theory and practical statistical analysis. You'll learn to identify, classify, and work with the two fundamental types of random variables that appear throughout statistics.</p>
+            </div>
+
+            <div class="learning-objectives">
+                <h2>🎯 Learning Objectives</h2>
+                <p>By the end of this week, you will be able to:</p>
+                <ul>
+                    <li><strong>Define</strong> what a random variable is and explain its relationship to sample spaces</li>
+                    <li><strong>Distinguish</strong> between discrete and continuous random variables with confidence</li>
+                    <li><strong>Identify</strong> the type of random variable in real-world scenarios</li>
+                    <li><strong>Recognize</strong> how random variables simplify complex probability problems</li>
+                    <li><strong>Apply</strong> random variable concepts to textbook examples and practical situations</li>
+                </ul>
+            </div>
+
+            <div class="section-grid">
+                <div class="section-card">
+                    <h3><span class="emoji">📖</span>Section 4.1: Two Types of Random Variables</h3>
+                    <p>Discover the fundamental distinction between discrete and continuous random variables through engaging examples from the textbook.</p>
+                    
+                    <div class="concepts">
+                        <h4>Key Concepts:</h4>
+                        <ul>
+                            <li>Definition of random variables</li>
+                            <li>Discrete vs. continuous classification</li>
+                            <li>Wine expert rating example</li>
+                            <li>EPA violation scenarios</li>
+                            <li>Pesticide level measurements</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="../section-4-1-overview/" class="btn">Explore Section 4.1</a>
+                </div>
+
+                <div class="section-card">
+                    <h3><span class="emoji">🔬</span>Section 4.2: Discrete Random Variables</h3>
+                    <p>Deep dive into discrete random variables, probability mass functions, and discrete probability distributions.</p>
+                    
+                    <div class="concepts">
+                        <h4>Coming Soon:</h4>
+                        <ul>
+                            <li>Probability mass functions</li>
+                            <li>Discrete probability distributions</li>
+                            <li>Expected values and variance</li>
+                            <li>Common discrete distributions</li>
+                        </ul>
+                    </div>
+                    
+                    <button class="btn btn-secondary" disabled>Available Next Week</button>
+                </div>
+
+                <div class="section-card">
+                    <h3><span class="emoji">📊</span>Section 4.3: Expected Values</h3>
+                    <p>Learn about the expected value (mean) and variance of discrete random variables with practical applications.</p>
+                    
+                    <div class="concepts">
+                        <h4>Coming Soon:</h4>
+                        <ul>
+                            <li>Calculating expected values</li>
+                            <li>Properties of expectation</li>
+                            <li>Variance and standard deviation</li>
+                            <li>Linear transformations</li>
+                        </ul>
+                    </div>
+                    
+                    <button class="btn btn-secondary" disabled>Available Next Week</button>
+                </div>
+
+                <div class="section-card">
+                    <h3><span class="emoji">📈</span>Section 4.4: Binomial Distribution</h3>
+                    <p>Explore one of the most important discrete probability distributions in statistics and its real-world applications.</p>
+                    
+                    <div class="concepts">
+                        <h4>Coming Soon:</h4>
+                        <ul>
+                            <li>Binomial probability formula</li>
+                            <li>Conditions for binomial distribution</li>
+                            <li>Mean and variance calculations</li>
+                            <li>Normal approximation</li>
+                        </ul>
+                    </div>
+                    
+                    <button class="btn btn-secondary" disabled>Available Next Week</button>
+                </div>
+            </div>
+
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 12px; padding: 20px; margin: 30px 0;">
+                <h3 style="color: #d68910; margin-top: 0;">🚧 Interactive Tools Coming Soon</h3>
+                <p style="margin-bottom: 0; color: #855a00;">We're currently developing interactive simulations and tools to help you explore random variables. These will include probability calculators, distribution visualizers, and hands-on exercises with the textbook examples.</p>
+            </div>
+
+            <div style="background: var(--light); padding: 25px; border-radius: 12px; margin: 30px 0;">
+                <h3 style="color: var(--dark); margin-top: 0;">📚 Study Tips for Week 4</h3>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li><strong>Practice Classification:</strong> Look at everyday situations and ask "Is this discrete or continuous?"</li>
+                    <li><strong>Review Chapter 3:</strong> Random variables build directly on probability concepts</li>
+                    <li><strong>Work Through Examples:</strong> The textbook examples are carefully chosen to illustrate key concepts</li>
+                    <li><strong>Think About Sample Spaces:</strong> Consider how random variables simplify complex outcomes</li>
+                    <li><strong>Connect to Real Life:</strong> Random variables are everywhere in data analysis and research</li>
+                </ul>
+            </div>
+
+            <div class="footer">
+                <p>STAT A253 Applied Statistics for the Sciences | Week 4 - Random Variables</p>
+                <p>Building the foundation for all statistical analysis that follows</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
