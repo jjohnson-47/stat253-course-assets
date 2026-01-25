@@ -2613,9 +2613,41 @@
 
         document.getElementById('resetCareerBtn').addEventListener('click', resetCareerStats);
 
+        // ============================================
+        // IFRAME AUTO-RESIZE FOR LMS EMBEDDING
+        // ============================================
+
+        function notifyParentOfHeight() {
+            const height = document.documentElement.scrollHeight;
+            window.parent.postMessage({
+                type: 'poker-break-resize',
+                height: height
+            }, '*');
+        }
+
+        // Send height on load
+        window.addEventListener('load', () => {
+            notifyParentOfHeight();
+            // Also send after fonts and images fully load
+            setTimeout(notifyParentOfHeight, 500);
+            setTimeout(notifyParentOfHeight, 1500);
+        });
+
+        // Send height on resize
+        window.addEventListener('resize', notifyParentOfHeight);
+
+        // Observe DOM changes and notify parent
+        const resizeObserver = new ResizeObserver(() => {
+            notifyParentOfHeight();
+        });
+        resizeObserver.observe(document.body);
+
         // Initialize
         initChart();
         updateDisplay();
+
+        // Initial height notification
+        notifyParentOfHeight();
     </script>
 </body>
 </html>
