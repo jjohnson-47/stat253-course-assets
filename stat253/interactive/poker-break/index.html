@@ -3,746 +3,953 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🃏 Poker Break</title>
+    <title>Poker Break - Probability in Action</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
         window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
                 displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
             }
         };
     </script>
     <style>
         :root {
-            --primary: #0466c8;
-            --primary-light: #e0f2fe;
-            --accent: #0353a4;
-            --dark: #2c3e50;
-            --light: #f8f9fa;
-            --success: #38b000;
-            --warning: #ffbe0b;
-            --info: #4361ee;
-            --danger: #dc3545;
-            --gradient-start: #667eea;
-            --gradient-end: #764ba2;
-            --card-bg: #ffffff;
-            --card-border: #e0e0e0;
-            --poker-green: #0d6c3d;
-            --poker-red: #c41e3a;
-            --poker-black: #2c2c2c;
-            --win-color: #38b000;
-            --lose-color: #dc3545;
-            --tie-color: #ffbe0b;
+            /* Modern color palette */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --surface: #ffffff;
+            --surface-dim: #f8fafc;
+            --surface-muted: #f1f5f9;
+
+            /* Accent colors */
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --primary-light: #dbeafe;
+            --success: #22c55e;
+            --success-light: #dcfce7;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --info: #6366f1;
+
+            /* Text colors */
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --text-inverse: #ffffff;
+
+            /* Poker theme */
+            --poker-felt: #15803d;
+            --poker-felt-dark: #166534;
+            --poker-rail: #92400e;
+            --card-red: #dc2626;
+            --card-black: #1e293b;
+
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+
+            /* Borders & Shadows */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 0 20px rgb(59 130 246 / 0.3);
+
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        html {
-            font-size: 100%;
-            box-sizing: border-box;
-        }
-        
+
         *, *::before, *::after {
-            box-sizing: inherit;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        
-        body {
-            font-family: 'Open Sans', Arial, sans-serif;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.6;
-            color: #333333;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 15px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            width: 100%;
-            overflow-x: hidden;
+
+        html {
+            font-size: 16px;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
         }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Open Sans', Arial, sans-serif;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-top: 0;
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            min-height: 100vh;
+            padding: var(--space-lg);
         }
-        
-        h1 {
-            font-size: 2.25rem;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
             text-align: center;
-            margin-bottom: 2rem;
-            padding: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: var(--space-2xl);
         }
-        
-        h2 {
-            font-size: 1.875rem;
-        }
-        
-        h3 {
-            font-size: 1.5rem;
-        }
-        
-        h4 {
-            font-size: 1.25rem;
-        }
-        
-        .step-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-bottom: 30px;
-            border-left: 5px solid var(--primary);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .step-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
-        }
-        
-        .step-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
-        }
-        
-        .step-card h2 {
-            font-size: 1.875rem;
-            color: var(--dark);
-            margin-bottom: 1.5rem;
+
+        .header h1 {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-inverse);
             display: flex;
             align-items: center;
-            gap: 10px;
-            border-bottom: 2px solid var(--primary-light);
-            padding-bottom: 10px;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-sm);
         }
-        
-        .action-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
         }
-        
-        .sub-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 4px solid var(--info);
+
+        /* Cards (sections) */
+        .section-card {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgb(255 255 255 / 0.1);
         }
-        
-        .sub-section h3 {
+
+        .section-card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding-bottom: var(--space-md);
+            border-bottom: 2px solid var(--surface-muted);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: var(--text-inverse);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .info-box p {
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .learning-goals {
+            background: var(--surface-dim);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            border-left: 4px solid var(--primary);
+        }
+
+        .learning-goals h3 {
             color: var(--primary);
-            margin-bottom: 15px;
-            font-size: 1.3rem;
+            margin-bottom: var(--space-md);
+            font-size: 1.1rem;
         }
-        
-        .poker-table {
-            background: var(--poker-green);
-            border-radius: 20px;
-            padding: 30px;
-            margin: 30px 0;
-            color: white;
-            box-shadow: 0 12px 40px rgba(13, 108, 61, 0.3);
+
+        .learning-goals ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .learning-goals li {
+            padding: var(--space-sm) 0;
+            padding-left: var(--space-lg);
             position: relative;
         }
-        
+
+        .learning-goals li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Poker Table */
+        .poker-table-wrapper {
+            background: linear-gradient(145deg, var(--poker-rail) 0%, #78350f 100%);
+            border-radius: var(--radius-2xl);
+            padding: 12px;
+            box-shadow:
+                var(--shadow-xl),
+                inset 0 2px 4px rgb(255 255 255 / 0.1);
+        }
+
+        .poker-table {
+            background: linear-gradient(135deg, var(--poker-felt) 0%, var(--poker-felt-dark) 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
         .poker-table::before {
             content: '';
             position: absolute;
-            top: 15px;
-            left: 15px;
-            right: 15px;
-            bottom: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
+            inset: 8px;
+            border: 2px dashed rgb(255 255 255 / 0.15);
+            border-radius: var(--radius-lg);
             pointer-events: none;
         }
-        
+
+        .game-phase {
+            text-align: center;
+            color: var(--text-inverse);
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: var(--space-lg);
+            padding: var(--space-md);
+            background: rgb(0 0 0 / 0.2);
+            border-radius: var(--radius-md);
+            backdrop-filter: blur(4px);
+        }
+
         .game-area {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin: 30px 0;
-            align-items: center;
+            gap: var(--space-2xl);
+            margin: var(--space-xl) 0;
         }
-        
+
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: var(--space-xl);
+            }
+        }
+
         .player-section {
             text-align: center;
         }
-        
-        .player-section h3 {
-            color: white;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+
+        .player-label {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--text-inverse);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: var(--space-md);
+            padding: var(--space-sm) var(--space-md);
+            background: rgb(0 0 0 / 0.25);
+            border-radius: var(--radius-md);
         }
-        
+
         .hand {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
+            gap: var(--space-sm);
             flex-wrap: wrap;
+            min-height: 120px;
+            align-items: center;
         }
-        
-        .card {
+
+        /* Playing Cards */
+        .playing-card {
             width: 70px;
-            height: 98px;
-            background: var(--card-bg);
-            border: 2px solid var(--card-border);
-            border-radius: 10px;
+            height: 100px;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: var(--radius-md);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--poker-black);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s ease;
+            box-shadow:
+                var(--shadow-md),
+                0 4px 8px rgb(0 0 0 / 0.15);
+            transition:
+                transform var(--transition-base),
+                box-shadow var(--transition-base);
             cursor: default;
             position: relative;
+            border: 2px solid transparent;
+            user-select: none;
         }
-        
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .card.selectable {
+
+        .playing-card.selectable {
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        
-        .card.selectable:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+
+        .playing-card.selectable:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow:
+                var(--shadow-lg),
+                0 8px 16px rgb(0 0 0 / 0.2);
         }
-        
-        .card.discarded {
-            opacity: 0.6;
+
+        .playing-card.selectable:focus {
+            outline: none;
+            box-shadow:
+                var(--shadow-lg),
+                0 0 0 3px var(--primary);
+        }
+
+        .playing-card.discarded {
             transform: translateY(10px);
-            border: 3px solid var(--danger);
-            position: relative;
+            opacity: 0.7;
+            border-color: var(--danger);
+            background: linear-gradient(145deg, #fef2f2 0%, #fee2e2 100%);
         }
-        
-        .discard-overlay {
+
+        .playing-card.discarded::after {
+            content: 'DISCARD';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--danger);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            pointer-events: none;
+            bottom: 4px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--danger);
+            letter-spacing: 0.5px;
         }
-        
-        .card.red {
-            color: var(--poker-red);
+
+        .playing-card .rank {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1;
         }
-        
-        .card .rank {
-            font-size: 1.4rem;
-            margin-bottom: 2px;
+
+        .playing-card .suit {
+            font-size: 1.75rem;
+            line-height: 1;
         }
-        
-        .card .suit {
-            font-size: 1.8rem;
+
+        .playing-card.red .rank,
+        .playing-card.red .suit {
+            color: var(--card-red);
         }
-        
-        .deal-button {
-            background: linear-gradient(135deg, var(--warning), #e6ac00);
-            color: white;
+
+        .playing-card.black .rank,
+        .playing-card.black .suit {
+            color: var(--card-black);
+        }
+
+        @media (max-width: 480px) {
+            .playing-card {
+                width: 55px;
+                height: 80px;
+            }
+
+            .playing-card .rank {
+                font-size: 1.2rem;
+            }
+
+            .playing-card .suit {
+                font-size: 1.4rem;
+            }
+        }
+
+        .hand-name {
+            color: var(--text-inverse);
+            font-weight: 600;
+            margin-top: var(--space-md);
+            font-size: 1rem;
+            padding: var(--space-xs) var(--space-md);
+            background: rgb(0 0 0 / 0.2);
+            border-radius: var(--radius-sm);
+            display: inline-block;
+        }
+
+        .discard-hint {
+            color: rgb(255 255 255 / 0.7);
+            font-size: 0.9rem;
+            margin-top: var(--space-sm);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+            margin: var(--space-xl) 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-md) var(--space-xl);
             border: none;
-            border-radius: 12px;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            border-radius: var(--radius-lg);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 6px 20px rgba(255, 190, 11, 0.4);
-            min-height: 50px;
-            min-width: 120px;
-            touch-action: manipulation;
+            transition: all var(--transition-base);
+            min-height: 48px;
+            min-width: 140px;
+            justify-content: center;
         }
-        
-        .deal-button:hover {
+
+        .btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+            color: var(--text-inverse);
+            box-shadow: 0 4px 14px rgb(245 158 11 / 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 190, 11, 0.5);
+            box-shadow: 0 6px 20px rgb(245 158 11 / 0.5);
         }
-        
-        .deal-button:active {
-            transform: translateY(0);
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #16a34a 100%);
+            color: var(--text-inverse);
+            box-shadow: 0 4px 14px rgb(34 197 94 / 0.4);
         }
-        
+
+        .btn-success:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgb(34 197 94 / 0.5);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            color: var(--text-inverse);
+            box-shadow: 0 4px 14px rgb(59 130 246 / 0.4);
+        }
+
+        .btn-info:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgb(59 130 246 / 0.5);
+        }
+
+        /* Game Result */
         .game-result {
             text-align: center;
-            margin: 25px 0;
-            padding: 20px;
-            border-radius: 12px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: 1.1rem;
+            background: rgb(255 255 255 / 0.1);
+            color: var(--text-inverse);
+            border: 2px solid rgb(255 255 255 / 0.2);
+            backdrop-filter: blur(4px);
         }
-        
+
         .game-result.win {
-            background: linear-gradient(135deg, rgba(56, 176, 0, 0.2), rgba(56, 176, 0, 0.1));
-            border-color: var(--win-color);
-            color: var(--win-color);
+            background: linear-gradient(135deg, rgb(34 197 94 / 0.3) 0%, rgb(34 197 94 / 0.1) 100%);
+            border-color: var(--success);
+            color: #86efac;
         }
-        
+
         .game-result.lose {
-            background: linear-gradient(135deg, rgba(220, 53, 69, 0.2), rgba(220, 53, 69, 0.1));
-            border-color: var(--lose-color);
-            color: var(--lose-color);
+            background: linear-gradient(135deg, rgb(239 68 68 / 0.3) 0%, rgb(239 68 68 / 0.1) 100%);
+            border-color: var(--danger);
+            color: #fca5a5;
         }
-        
+
         .game-result.tie {
-            background: linear-gradient(135deg, rgba(255, 190, 11, 0.2), rgba(255, 190, 11, 0.1));
-            border-color: var(--tie-color);
-            color: var(--tie-color);
+            background: linear-gradient(135deg, rgb(245 158 11 / 0.3) 0%, rgb(245 158 11 / 0.1) 100%);
+            border-color: var(--warning);
+            color: #fcd34d;
         }
-        
+
+        /* Progress */
+        .progress-section {
+            margin-top: var(--space-lg);
+            padding: var(--space-md);
+            background: rgb(0 0 0 / 0.15);
+            border-radius: var(--radius-md);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-inverse);
+            font-size: 0.9rem;
+            margin-bottom: var(--space-sm);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgb(255 255 255 / 0.2);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--warning));
+            border-radius: var(--radius-sm);
+            transition: width var(--transition-slow);
+        }
+
+        .progress-note {
+            color: rgb(255 255 255 / 0.6);
+            font-size: 0.8rem;
+            margin-top: var(--space-xs);
+        }
+
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin: 30px 0;
+            gap: var(--space-xl);
         }
-        
-        .stats-table {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
-        
-        .stats-table h3 {
+
+        .stats-card {
+            background: var(--surface-dim);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+        }
+
+        .stats-card h3 {
             color: var(--primary);
-            margin-bottom: 15px;
+            font-size: 1.1rem;
+            margin-bottom: var(--space-md);
             text-align: center;
-            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
         }
-        
+
+        /* Probability Table */
         .prob-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.9rem;
         }
-        
+
         .prob-table th {
-            background: linear-gradient(135deg, var(--dark), #34495e);
-            color: white;
-            padding: 12px 8px;
+            background: var(--bg-secondary);
+            color: var(--text-inverse);
+            padding: var(--space-sm) var(--space-md);
             text-align: left;
-            font-weight: bold;
-            font-size: 0.85rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        
+
+        .prob-table th:first-child {
+            border-radius: var(--radius-sm) 0 0 0;
+        }
+
+        .prob-table th:last-child {
+            border-radius: 0 var(--radius-sm) 0 0;
+        }
+
         .prob-table td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #eee;
+            padding: var(--space-sm) var(--space-md);
+            border-bottom: 1px solid var(--surface-muted);
         }
-        
-        .prob-table tr:nth-child(even) {
-            background: #f9f9f9;
+
+        .prob-table tr:hover td {
+            background: var(--surface-muted);
         }
-        
-        .prob-table tr:hover {
-            background: #e9ecef;
+
+        .prob-table .hand-col {
+            font-weight: 500;
+            color: var(--text-primary);
         }
-        
-        .prob-table .hand-name {
-            font-weight: bold;
-            color: var(--dark);
-        }
-        
-        .prob-table .observed {
+
+        .prob-table .observed-col {
             text-align: center;
-            font-weight: bold;
+            font-family: 'JetBrains Mono', monospace;
         }
-        
-        .prob-table .theoretical {
+
+        .prob-table .theory-col {
             text-align: center;
             color: var(--info);
-            font-weight: bold;
+            font-family: 'JetBrains Mono', monospace;
         }
-        
-        .summary-stats {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .summary-stats h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .stat-item {
+
+        /* Summary Stats */
+        .stat-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            padding: var(--space-sm) 0;
+            border-bottom: 1px solid var(--surface-muted);
         }
-        
-        .stat-item:last-child {
+
+        .stat-row:last-child {
             border-bottom: none;
         }
-        
+
         .stat-label {
-            font-weight: bold;
-            color: var(--dark);
+            color: var(--text-secondary);
+            font-weight: 500;
         }
-        
+
         .stat-value {
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
             color: var(--primary);
         }
-        
-        .highlight-insight {
-            background: linear-gradient(135deg, #cce7ff, #b3d9ff);
-            border: 2px solid var(--info);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
+
+        .stat-value.win { color: var(--success); }
+        .stat-value.lose { color: var(--danger); }
+        .stat-value.tie { color: var(--warning); }
+
+        /* Math Section */
+        .formula-box {
+            background: var(--surface-dim);
+            border: 1px solid var(--surface-muted);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            text-align: center;
+            margin: var(--space-lg) 0;
         }
-        
-        .highlight-confirmed {
-            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+
+        .formula-box h3 {
+            color: var(--text-primary);
+            margin-bottom: var(--space-md);
+        }
+
+        .examples-list {
+            background: var(--surface-dim);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            border-left: 4px solid var(--info);
+        }
+
+        .examples-list h3 {
+            color: var(--info);
+            margin-bottom: var(--space-md);
+        }
+
+        .examples-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .examples-list li {
+            padding: var(--space-sm) 0;
+            color: var(--text-secondary);
+        }
+
+        .examples-list strong {
+            color: var(--text-primary);
+        }
+
+        .key-objectives {
+            background: linear-gradient(135deg, var(--success-light) 0%, #bbf7d0 100%);
             border: 2px solid var(--success);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
             text-align: center;
         }
-        
-        .formula-display {
-            background: white;
-            border: 2px solid #dee2e6;
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+        .key-objectives h3 {
+            color: var(--success);
+            margin-bottom: var(--space-md);
         }
-        
-        /* Code and monospace styling */
-        pre, code {
-            font-family: 'Roboto Mono', "Courier New", monospace;
-            font-size: 0.9375rem;
-            background-color: #f4f4f4;
-            border-radius: 4px;
+
+        .key-objectives p {
+            color: var(--text-primary);
+            line-height: 2;
         }
-        
-        code {
-            padding: 0.2em 0.4em;
+
+        /* Insight Box */
+        .insight-box {
+            background: linear-gradient(135deg, var(--primary-light) 0%, #bfdbfe 100%);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin: var(--space-lg) 0;
         }
-        
-        pre {
-            padding: 1em;
-            overflow-x: auto;
-            border: 1px solid #ddd;
+
+        .insight-box h4 {
+            color: var(--primary);
+            margin-bottom: var(--space-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
         }
-        
-        /* Math rendering compatibility */
-        .katex {
-            font-size: 1.1em !important;
+
+        .insight-box p {
+            color: var(--text-secondary);
         }
-        
-        /* Progress indicators */
-        .convergence-indicator {
-            margin: 15px 0;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            font-size: 0.9rem;
+
+        /* Animations */
+        @keyframes dealCard {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) rotateY(90deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateY(0);
+            }
         }
-        
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .playing-card.dealing {
+            animation: dealCard 0.3s ease-out forwards;
+        }
+
+        .playing-card:nth-child(1).dealing { animation-delay: 0ms; }
+        .playing-card:nth-child(2).dealing { animation-delay: 80ms; }
+        .playing-card:nth-child(3).dealing { animation-delay: 160ms; }
+        .playing-card:nth-child(4).dealing { animation-delay: 240ms; }
+        .playing-card:nth-child(5).dealing { animation-delay: 320ms; }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
             overflow: hidden;
-            margin: 5px 0;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--success), var(--warning));
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        
-        /* Mobile responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-            
-            h1 {
-                font-size: 1.75rem;
-            }
-            
-            .step-card {
-                padding: 20px;
-            }
-            
-            .game-area {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .hand {
-                gap: 5px;
-            }
-            
-            .card {
-                width: 55px;
-                height: 77px;
-                font-size: 1rem;
-            }
-            
-            .card .rank {
-                font-size: 1.1rem;
-            }
-            
-            .card .suit {
-                font-size: 1.4rem;
-            }
-            
-            .poker-table {
-                padding: 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .prob-table {
-                font-size: 0.8rem;
-            }
-            
-            .prob-table th,
-            .prob-table td {
-                padding: 8px 4px;
-            }
-            
-            .deal-button {
-                padding: 12px 20px;
-                font-size: 1rem;
-            }
+
+        /* Focus visible for keyboard users */
+        .btn:focus-visible,
+        .playing-card.selectable:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
         }
     </style>
 </head>
 <body>
-    <h1>🃏 Poker Break</h1>
-    
-    <div class="step-card">
-        <h2>🎯 Take a Learning Break</h2>
-        
-        <div class="action-box">
-            <p><strong>Interactive Poker Game:</strong> Play 5-card draw poker while observing probability concepts in action through real-time statistics tracking.</p>
-        </div>
-        
-        <div class="sub-section">
-            <h3>Learning Goals</h3>
-            <p>You will:</p>
-            <ul>
-                <li>Observe <strong>combinatorial probability</strong> through poker hand frequencies</li>
-                <li>Experience the <strong>Law of Large Numbers</strong> as your data approaches theoretical values</li>
-                <li>Practice <strong>sample space analysis</strong> with $\binom{52}{5}$ = 2,598,960 possible hands</li>
-                <li>See <strong>conditional probability</strong> when discarding affects remaining card probabilities</li>
-            </ul>
-        </div>
-        
-        <div class="highlight-insight">
-            <h4>💡 The Mathematics Behind Poker</h4>
-            <p>Poker hands are ranked by rarity, which directly corresponds to their mathematical probability. A Royal Flush occurs in only 0.000154% of hands, while a High Card occurs in about 50% of hands. As you play, watch how your observed frequencies converge to these theoretical values!</p>
-        </div>
-    </div>
-    
-    <div class="step-card">
-        <h2>🃏 Interactive 5-Card Draw Poker</h2>
-        
-        <div class="poker-table">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <div id="gamePhase" style="font-size: 1.2rem; font-weight: bold; color: white;">
-                    Click "Deal New Hand" to begin a round
-                </div>
+    <div class="container">
+        <header class="header">
+            <h1><span aria-hidden="true">&#127183;</span> Poker Break</h1>
+            <p>Experience probability theory through interactive gameplay</p>
+        </header>
+
+        <section class="section-card" aria-labelledby="intro-heading">
+            <h2 id="intro-heading"><span aria-hidden="true">&#127919;</span> Take a Learning Break</h2>
+
+            <div class="info-box">
+                <p><strong>Interactive Poker Game:</strong> Play 5-card draw poker while observing probability concepts in action through real-time statistics tracking.</p>
             </div>
-            
-            <div class="game-area">
-                <div class="player-section">
-                    <h3>🎯 Your Hand</h3>
-                    <div class="hand" id="playerHand">
-                        <!-- Cards will be populated here -->
+
+            <div class="learning-goals">
+                <h3>Learning Goals</h3>
+                <ul>
+                    <li>Observe <strong>combinatorial probability</strong> through poker hand frequencies</li>
+                    <li>Experience the <strong>Law of Large Numbers</strong> as your data approaches theoretical values</li>
+                    <li>Practice <strong>sample space analysis</strong> with $\binom{52}{5}$ = 2,598,960 possible hands</li>
+                    <li>See <strong>conditional probability</strong> when discarding affects remaining card probabilities</li>
+                </ul>
+            </div>
+
+            <div class="insight-box">
+                <h4><span aria-hidden="true">&#128161;</span> The Mathematics Behind Poker</h4>
+                <p>Poker hands are ranked by rarity, which directly corresponds to their mathematical probability. A Royal Flush occurs in only 0.000154% of hands, while a High Card occurs in about 50% of hands. As you play, watch how your observed frequencies converge to these theoretical values!</p>
+            </div>
+        </section>
+
+        <section class="section-card" aria-labelledby="game-heading">
+            <h2 id="game-heading"><span aria-hidden="true">&#127183;</span> Interactive 5-Card Draw Poker</h2>
+
+            <div class="poker-table-wrapper">
+                <div class="poker-table" role="application" aria-label="Poker game table">
+                    <div class="game-phase" id="gamePhase" aria-live="polite">
+                        Click "Deal New Hand" to begin a round
                     </div>
-                    <div id="playerHandName" style="font-size: 1.1rem; font-weight: bold; margin-top: 10px;">Waiting for cards...</div>
-                    <div id="discardInstructions" style="font-size: 0.9rem; margin-top: 10px; color: #ccc; display: none;">
-                        Click cards to discard them, then click "Draw Cards"
+
+                    <div class="game-area">
+                        <div class="player-section">
+                            <div class="player-label"><span aria-hidden="true">&#127919;</span> Your Hand</div>
+                            <div class="hand" id="playerHand" role="group" aria-label="Your cards">
+                                <!-- Cards populated by JavaScript -->
+                            </div>
+                            <div class="hand-name" id="playerHandName" aria-live="polite">Waiting for cards...</div>
+                            <div class="discard-hint" id="discardInstructions" aria-live="polite" style="display: none;">
+                                Click cards to discard them, then click "Draw Cards"
+                            </div>
+                        </div>
+
+                        <div class="player-section">
+                            <div class="player-label"><span aria-hidden="true">&#129302;</span> Computer's Hand</div>
+                            <div class="hand" id="computerHand" role="group" aria-label="Computer's cards">
+                                <!-- Cards populated by JavaScript -->
+                            </div>
+                            <div class="hand-name" id="computerHandName">Waiting for cards...</div>
+                            <div class="discard-hint" id="computerAction">
+                                Computer will make its decision
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="dealButton" type="button">
+                            Deal New Hand <span aria-hidden="true">&#127922;</span>
+                        </button>
+                        <button class="btn btn-success" id="drawButton" type="button" style="display: none;">
+                            Draw Cards <span aria-hidden="true">&#127183;</span>
+                        </button>
+                        <button class="btn btn-info" id="standButton" type="button" style="display: none;">
+                            Stand Pat <span aria-hidden="true">&#9995;</span>
+                        </button>
+                    </div>
+
+                    <div class="game-result" id="gameResult" role="status" aria-live="polite">
+                        Welcome to 5-Card Draw Poker! Click "Deal New Hand" to begin.
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <span>Rounds Completed: <strong id="handsPlayed">0</strong></span>
+                            <span>First-Hand Analysis</span>
+                        </div>
+                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-note">Statistics track initial hands only (before discarding)</div>
                     </div>
                 </div>
-                
-                <div class="player-section">
-                    <h3>🤖 Computer's Hand</h3>
-                    <div class="hand" id="computerHand">
-                        <!-- Cards will be populated here -->
+            </div>
+        </section>
+
+        <section class="section-card" aria-labelledby="stats-heading">
+            <h2 id="stats-heading"><span aria-hidden="true">&#128202;</span> Probability Analysis Dashboard</h2>
+
+            <div class="info-box">
+                <p><strong>Real-Time Statistics:</strong> Watch how your game data compares to the mathematical theory!</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stats-card">
+                    <h3><span aria-hidden="true">&#127920;</span> Hand Frequency Analysis</h3>
+                    <table class="prob-table" aria-label="Poker hand probability comparison">
+                        <thead>
+                            <tr>
+                                <th scope="col">Hand</th>
+                                <th scope="col">Count</th>
+                                <th scope="col">Your %</th>
+                                <th scope="col">Theory %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="probabilityTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="stats-card">
+                    <h3><span aria-hidden="true">&#127942;</span> Game Summary</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Hands</span>
+                        <span class="stat-value" id="totalHands">0</span>
                     </div>
-                    <div id="computerHandName" style="font-size: 1.1rem; font-weight: bold; margin-top: 10px;">Waiting for cards...</div>
-                    <div id="computerAction" style="font-size: 0.9rem; margin-top: 10px; color: #ccc;">
-                        Computer will make its decision
+                    <div class="stat-row">
+                        <span class="stat-label">Wins</span>
+                        <span class="stat-value win" id="totalWins">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Losses</span>
+                        <span class="stat-value lose" id="totalLosses">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Ties</span>
+                        <span class="stat-value tie" id="totalTies">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Win Rate</span>
+                        <span class="stat-value" id="winRate">0%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Best Hand</span>
+                        <span class="stat-value" id="bestHand">None yet</span>
                     </div>
                 </div>
             </div>
-            
-            <div style="text-align: center; margin: 20px 0;">
-                <button class="deal-button" id="dealButton" onclick="startNewRound()">
-                    Deal New Hand 🎲
-                </button>
-                <button class="deal-button" id="drawButton" onclick="drawCards()" style="display: none; background: linear-gradient(135deg, var(--success), #28a745);">
-                    Draw Cards 🃏
-                </button>
-                <button class="deal-button" id="standButton" onclick="standPat()" style="display: none; background: linear-gradient(135deg, var(--info), #0056b3);">
-                    Stand Pat ✋
-                </button>
+        </section>
+
+        <section class="section-card" aria-labelledby="math-heading">
+            <h2 id="math-heading"><span aria-hidden="true">&#129518;</span> The Mathematical Foundation</h2>
+
+            <div class="formula-box">
+                <h3>Combinatorial Probability Formula</h3>
+                <p>For any poker hand type:</p>
+                $$P(\text{Hand Type}) = \frac{\text{Number of ways to make that hand}}{\binom{52}{5}} = \frac{\text{Favorable outcomes}}{2,598,960}$$
+                <p><em>Each hand probability is computed using exact combinatorial analysis</em></p>
             </div>
-            
-            <div class="game-result" id="gameResult">
-                Welcome to 5-Card Draw Poker! Click "Deal New Hand" to begin.
+
+            <div class="examples-list">
+                <h3>Examples of Hand Calculations</h3>
+                <ul>
+                    <li><strong>Royal Flush:</strong> Only 4 possible (one per suit) &#8594; P = 4/2,598,960 &#8776; 0.000154%</li>
+                    <li><strong>Straight Flush:</strong> 36 possible (9 per suit, excluding royal) &#8594; P &#8776; 0.00139%</li>
+                    <li><strong>Four of a Kind:</strong> $13 \times \binom{4}{4} \times \binom{48}{1}$ = 624 ways &#8594; P &#8776; 0.024%</li>
+                    <li><strong>Full House:</strong> $13 \times \binom{4}{3} \times 12 \times \binom{4}{2}$ = 3,744 ways &#8594; P &#8776; 0.144%</li>
+                </ul>
             </div>
-            
-            <div class="convergence-indicator">
-                <div>Rounds Completed: <strong id="handsPlayed">0</strong> | First-Hand Analysis:</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-                </div>
-                <div style="font-size: 0.8rem; margin-top: 5px;">Statistics track initial hands only (before discarding)</div>
+
+            <div class="key-objectives">
+                <h3><span aria-hidden="true">&#127919;</span> Key Learning Objectives</h3>
+                <p>
+                    &#10003; <strong>Observe the Law of Large Numbers</strong> as frequencies converge<br/>
+                    &#10003; <strong>Understand combinatorial probability</strong> through hand rankings<br/>
+                    &#10003; <strong>See randomness vs. patterns</strong> in real-time data<br/>
+                    &#10003; <strong>Connect theory to practice</strong> with interactive learning
+                </p>
             </div>
-        </div>
-    </div>
-    
-    <div class="step-card">
-        <h2>📊 Probability Analysis Dashboard</h2>
-        
-        <div class="action-box">
-            <p><strong>Real-Time Statistics:</strong> Watch how your game data compares to the mathematical theory!</p>
-        </div>
-        
-        <div class="stats-grid">
-            <div class="stats-table">
-                <h3>🎰 Hand Frequency Analysis</h3>
-                <table class="prob-table">
-                    <thead>
-                        <tr>
-                            <th>Poker Hand</th>
-                            <th>Observed</th>
-                            <th>Your %</th>
-                            <th>Theory %</th>
-                        </tr>
-                    </thead>
-                    <tbody id="probabilityTableBody">
-                        <!-- Will be populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="summary-stats">
-                <h3>🏆 Game Summary</h3>
-                <div class="stat-item">
-                    <span class="stat-label">Total Hands:</span>
-                    <span class="stat-value" id="totalHands">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Wins:</span>
-                    <span class="stat-value" id="totalWins" style="color: var(--win-color);">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Losses:</span>
-                    <span class="stat-value" id="totalLosses" style="color: var(--lose-color);">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Ties:</span>
-                    <span class="stat-value" id="totalTies" style="color: var(--tie-color);">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Win Rate:</span>
-                    <span class="stat-value" id="winRate">0%</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Best Hand:</span>
-                    <span class="stat-value" id="bestHand">None yet</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="step-card">
-        <h2>🧮 The Mathematical Foundation</h2>
-        
-        <div class="formula-display">
-            <h3>Combinatorial Probability Formula</h3>
-            <p>For any poker hand type:</p>
-            $$P(\text{Hand Type}) = \frac{\text{Number of ways to make that hand}}{\binom{52}{5}} = \frac{\text{Favorable outcomes}}{2,598,960}$$
-            <p><em>Each hand probability is computed using exact combinatorial analysis</em></p>
-        </div>
-        
-        <div class="sub-section">
-            <h3>Examples of Hand Calculations</h3>
-            <ul>
-                <li><strong>Royal Flush:</strong> Only 4 possible (one per suit) → P = 4/2,598,960 ≈ 0.000154%</li>
-                <li><strong>Straight Flush:</strong> 36 possible (9 per suit, excluding royal) → P ≈ 0.00139%</li>
-                <li><strong>Four of a Kind:</strong> $13 \times \binom{4}{4} \times \binom{48}{1}$ = 624 ways → P ≈ 0.024%</li>
-                <li><strong>Full House:</strong> $13 \times \binom{4}{3} \times 12 \times \binom{4}{2}$ = 3,744 ways → P ≈ 0.144%</li>
-            </ul>
-        </div>
-        
-        <div class="highlight-confirmed">
-            <h3>🎯 Key Learning Objectives</h3>
-            <p>✓ <strong>Observe the Law of Large Numbers</strong> as frequencies converge<br/>
-            ✓ <strong>Understand combinatorial probability</strong> through hand rankings<br/>
-            ✓ <strong>See randomness vs. patterns</strong> in real-time data<br/>
-            ✓ <strong>Connect theory to practice</strong> with interactive learning</p>
-        </div>
+        </section>
     </div>
 
     <script>
@@ -761,7 +968,7 @@
         };
 
         // Game statistics
-        let gameStats = {
+        const gameStats = {
             totalHands: 0,
             wins: 0,
             losses: 0,
@@ -770,9 +977,9 @@
             bestHandEver: null
         };
 
-        // Game state for 3-hand draw poker
-        let gameState = {
-            phase: 'waiting', // 'waiting', 'initialDeal', 'firstDraw', 'secondDraw', 'showdown'
+        // Game state for 5-card draw poker
+        const gameState = {
+            phase: 'waiting',
             currentRound: 0,
             deck: null,
             playerCards: [],
@@ -787,8 +994,8 @@
             gameStats.handCounts[hand] = 0;
         });
 
-        // Card and deck utilities
-        const SUITS = ['♠', '♥', '♦', '♣'];
+        // Card utilities
+        const SUITS = ['\u2660', '\u2665', '\u2666', '\u2663']; // ♠ ♥ ♦ ♣
         const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
         const VALUES = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14 };
 
@@ -811,33 +1018,29 @@
         }
 
         function evaluateHand(cards) {
-            // Sort by value for easier analysis
             const sortedCards = [...cards].sort((a, b) => b.value - a.value);
-            
-            // Count ranks and suits
+
             const rankCounts = {};
             const suitCounts = {};
-            
+
             sortedCards.forEach(card => {
                 rankCounts[card.value] = (rankCounts[card.value] || 0) + 1;
                 suitCounts[card.suit] = (suitCounts[card.suit] || 0) + 1;
             });
-            
+
             const counts = Object.values(rankCounts).sort((a, b) => b - a);
             const isFlush = Object.keys(suitCounts).length === 1;
             const values = Object.keys(rankCounts).map(Number).sort((a, b) => b - a);
-            
-            // Check for straight
+
             let isStraight = false;
             if (values.length === 5) {
                 if (values[0] - values[4] === 4) {
                     isStraight = true;
-                } else if (values.join(',') === '14,5,4,3,2') { // A-2-3-4-5 straight
+                } else if (values.join(',') === '14,5,4,3,2') {
                     isStraight = true;
                 }
             }
-            
-            // Determine hand type
+
             if (isStraight && isFlush && values[0] === 14 && values[1] === 13) {
                 return { name: 'Royal Flush', rank: 10, tiebreaker: [14] };
             } else if (isStraight && isFlush) {
@@ -865,8 +1068,7 @@
             if (hand1.rank !== hand2.rank) {
                 return hand1.rank - hand2.rank;
             }
-            
-            // Compare tiebreakers
+
             for (let i = 0; i < Math.max(hand1.tiebreaker.length, hand2.tiebreaker.length); i++) {
                 const val1 = hand1.tiebreaker[i] || 0;
                 const val2 = hand2.tiebreaker[i] || 0;
@@ -874,137 +1076,154 @@
                     return val1 - val2;
                 }
             }
-            
-            return 0; // Tie
+
+            return 0;
         }
 
         function renderCard(card, index, isPlayer = false) {
-            const isRed = card.suit === '♥' || card.suit === '♦';
+            const isRed = card.suit === '\u2665' || card.suit === '\u2666';
             const isDiscarded = isPlayer && gameState.playerDiscards.includes(index);
-            const clickHandler = isPlayer && (gameState.phase === 'initialDeal' || gameState.phase === 'firstDraw') ? 
-                `onclick="toggleDiscard(${index})"` : '';
-            const cardClass = `card ${isRed ? 'red' : ''} ${isDiscarded ? 'discarded' : ''} ${clickHandler ? 'selectable' : ''}`;
-            
+            const isSelectable = isPlayer && (gameState.phase === 'initialDeal' || gameState.phase === 'firstDraw');
+
+            const colorClass = isRed ? 'red' : 'black';
+            const discardedClass = isDiscarded ? 'discarded' : '';
+            const selectableClass = isSelectable ? 'selectable' : '';
+            const dealingClass = 'dealing';
+
+            const tabindex = isSelectable ? '0' : '-1';
+            const ariaLabel = `${card.rank} of ${getSuitName(card.suit)}${isDiscarded ? ', marked for discard' : ''}`;
+
             return `
-                <div class="${cardClass}" ${clickHandler} data-index="${index}">
+                <div class="playing-card ${colorClass} ${discardedClass} ${selectableClass} ${dealingClass}"
+                     data-index="${index}"
+                     ${isSelectable ? `tabindex="${tabindex}" role="button"` : ''}
+                     aria-label="${ariaLabel}"
+                     ${isSelectable ? `onclick="toggleDiscard(${index})" onkeydown="handleCardKeydown(event, ${index})"` : ''}>
                     <div class="rank">${card.rank}</div>
                     <div class="suit">${card.suit}</div>
-                    ${isDiscarded ? '<div class="discard-overlay">DISCARD</div>' : ''}
                 </div>
             `;
         }
 
+        function getSuitName(suit) {
+            const names = {
+                '\u2660': 'spades',
+                '\u2665': 'hearts',
+                '\u2666': 'diamonds',
+                '\u2663': 'clubs'
+            };
+            return names[suit] || suit;
+        }
+
+        function handleCardKeydown(event, index) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleDiscard(index);
+            }
+        }
+
         function renderPlayerHand() {
-            document.getElementById('playerHand').innerHTML = 
+            document.getElementById('playerHand').innerHTML =
                 gameState.playerCards.map((card, index) => renderCard(card, index, true)).join('');
         }
 
         function renderComputerHand() {
-            document.getElementById('computerHand').innerHTML = 
+            document.getElementById('computerHand').innerHTML =
                 gameState.computerCards.map((card, index) => renderCard(card, index, false)).join('');
         }
 
         function toggleDiscard(cardIndex) {
             if (gameState.phase !== 'initialDeal' && gameState.phase !== 'firstDraw') return;
-            
+
             const discardIdx = gameState.playerDiscards.indexOf(cardIndex);
             if (discardIdx === -1) {
                 gameState.playerDiscards.push(cardIndex);
             } else {
                 gameState.playerDiscards.splice(discardIdx, 1);
             }
-            
+
             renderPlayerHand();
-            
-            // Update discard count display
+
             const discardCount = gameState.playerDiscards.length;
-            document.getElementById('discardInstructions').textContent = 
-                `${discardCount} card${discardCount !== 1 ? 's' : ''} selected for discard. Click "Draw Cards" or "Stand Pat".`;
+            document.getElementById('discardInstructions').textContent =
+                discardCount > 0
+                    ? `${discardCount} card${discardCount !== 1 ? 's' : ''} selected. Click "Draw Cards" or "Stand Pat".`
+                    : 'Click cards to discard them, then click "Draw Cards" or "Stand Pat"';
         }
 
         function updateDisplay() {
-            // Update summary stats
             document.getElementById('totalHands').textContent = gameStats.totalHands;
             document.getElementById('totalWins').textContent = gameStats.wins;
             document.getElementById('totalLosses').textContent = gameStats.losses;
             document.getElementById('totalTies').textContent = gameStats.ties;
             document.getElementById('handsPlayed').textContent = gameStats.totalHands;
-            
+
             const winRate = gameStats.totalHands > 0 ? ((gameStats.wins / gameStats.totalHands) * 100).toFixed(1) : 0;
             document.getElementById('winRate').textContent = winRate + '%';
-            
+
             document.getElementById('bestHand').textContent = gameStats.bestHandEver || 'None yet';
-            
-            // Update progress bar (assuming good convergence after 100+ hands)
+
             const progressPercent = Math.min(100, (gameStats.totalHands / 100) * 100);
-            document.getElementById('progressFill').style.width = progressPercent + '%';
-            
-            // Update probability table
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = progressPercent + '%';
+            progressFill.parentElement.setAttribute('aria-valuenow', progressPercent);
+
             const tableBody = document.getElementById('probabilityTableBody');
             tableBody.innerHTML = Object.keys(HAND_PROBABILITIES).map(handName => {
                 const observed = gameStats.handCounts[handName];
                 const observedPercent = gameStats.totalHands > 0 ? ((observed / gameStats.totalHands) * 100).toFixed(3) : '0.000';
                 const theoretical = HAND_PROBABILITIES[handName].toFixed(3);
-                
+
                 return `
                     <tr>
-                        <td class="hand-name">${handName}</td>
-                        <td class="observed">${observed}</td>
-                        <td class="observed">${observedPercent}%</td>
-                        <td class="theoretical">${theoretical}%</td>
+                        <td class="hand-col">${handName}</td>
+                        <td class="observed-col">${observed}</td>
+                        <td class="observed-col">${observedPercent}%</td>
+                        <td class="theory-col">${theoretical}%</td>
                     </tr>
                 `;
             }).join('');
         }
 
         function startNewRound() {
-            // Initialize new round
             gameState.phase = 'initialDeal';
             gameState.currentRound++;
             gameState.deck = createDeck();
             gameState.cardsUsed = 0;
             gameState.playerDiscards = [];
             gameState.computerDiscards = [];
-            
-            // Deal initial 5 cards to each player
+
             gameState.playerCards = gameState.deck.slice(0, 5);
             gameState.computerCards = gameState.deck.slice(5, 10);
             gameState.cardsUsed = 10;
-            
-            // Render initial hands
+
             renderPlayerHand();
             renderComputerHand();
-            
-            // Evaluate initial hands for statistics (first-hand analysis)
+
             const playerHand = evaluateHand(gameState.playerCards);
             gameStats.totalHands++;
             gameStats.handCounts[playerHand.name]++;
-            
-            // Track best hand from initial deal
+
             if (!gameStats.bestHandEver || playerHand.rank > getBestHandRank()) {
                 gameStats.bestHandEver = playerHand.name;
             }
-            
-            // Update display names
+
             document.getElementById('playerHandName').textContent = playerHand.name;
             document.getElementById('computerHandName').textContent = evaluateHand(gameState.computerCards).name;
-            
-            // Update UI
+
             document.getElementById('gamePhase').textContent = 'Round ' + gameState.currentRound + ' - First Draw: Select cards to discard';
             document.getElementById('discardInstructions').style.display = 'block';
             document.getElementById('discardInstructions').textContent = 'Click cards to discard them, then click "Draw Cards" or "Stand Pat"';
             document.getElementById('computerAction').textContent = 'Computer is analyzing hand...';
-            
-            // Show discard phase buttons
+
             document.getElementById('dealButton').style.display = 'none';
-            document.getElementById('drawButton').style.display = 'inline-block';
-            document.getElementById('standButton').style.display = 'inline-block';
-            
-            // Reset result
+            document.getElementById('drawButton').style.display = 'inline-flex';
+            document.getElementById('standButton').style.display = 'inline-flex';
+
             const resultElement = document.getElementById('gameResult');
             resultElement.textContent = 'Select cards to discard, then choose "Draw Cards" or "Stand Pat"';
             resultElement.className = 'game-result';
-            
+
             updateDisplay();
         }
 
@@ -1028,42 +1247,34 @@
 
         function standPat() {
             if (gameState.phase === 'initialDeal') {
-                // Player stands pat on first draw, move to computer's decision
                 gameState.phase = 'firstDraw';
                 performComputerFirstDraw();
-                
+
                 document.getElementById('gamePhase').textContent = 'Round ' + gameState.currentRound + ' - Second Draw: Select cards to discard';
                 document.getElementById('discardInstructions').textContent = 'Select cards to discard for second draw';
                 document.getElementById('discardInstructions').style.display = 'block';
-                
-                // Reset player discards for second draw
+
                 gameState.playerDiscards = [];
                 renderPlayerHand();
-                
+
             } else if (gameState.phase === 'firstDraw') {
-                // Player stands pat on second draw, move to showdown
                 performComputerSecondDraw();
                 performShowdown();
             }
         }
 
         function performFirstDraw() {
-            // Replace player's discarded cards
             replacePlayerCards();
-            
-            // Computer makes first draw decision
             performComputerFirstDraw();
-            
+
             gameState.phase = 'firstDraw';
             document.getElementById('gamePhase').textContent = 'Round ' + gameState.currentRound + ' - Second Draw: Select cards to discard';
             document.getElementById('discardInstructions').textContent = 'Select cards to discard for second draw';
             document.getElementById('discardInstructions').style.display = 'block';
-            
-            // Reset discards for second draw
+
             gameState.playerDiscards = [];
             renderPlayerHand();
-            
-            // Update hand evaluations
+
             const playerHand = evaluateHand(gameState.playerCards);
             const computerHand = evaluateHand(gameState.computerCards);
             document.getElementById('playerHandName').textContent = playerHand.name;
@@ -1071,89 +1282,64 @@
         }
 
         function performSecondDraw() {
-            // Replace player's discarded cards
             replacePlayerCards();
-            
-            // Computer makes second draw decision
             performComputerSecondDraw();
-            
-            // Move to showdown
             performShowdown();
         }
 
         function replacePlayerCards() {
-            // Sort discards in descending order to maintain indices
             const sortedDiscards = [...gameState.playerDiscards].sort((a, b) => b - a);
-            
+
             sortedDiscards.forEach(discardIndex => {
-                // Draw new card from deck
                 const newCard = gameState.deck[gameState.cardsUsed++];
                 gameState.playerCards[discardIndex] = newCard;
             });
-            
+
             renderPlayerHand();
         }
 
         function performComputerFirstDraw() {
             const discardDecision = getOptimalDiscardStrategy(gameState.computerCards, true);
-            
+
             performComputerDraw(discardDecision.indices, discardDecision.reasoning);
-            document.getElementById('computerAction').textContent = 
+            document.getElementById('computerAction').textContent =
                 `Computer ${discardDecision.indices.length === 0 ? 'stands pat' : `discarded ${discardDecision.indices.length} card${discardDecision.indices.length !== 1 ? 's' : ''}`} (${discardDecision.reasoning})`;
         }
 
         function performComputerSecondDraw() {
             const discardDecision = getOptimalDiscardStrategy(gameState.computerCards, false);
-            
+
             performComputerDraw(discardDecision.indices, discardDecision.reasoning);
-            document.getElementById('computerAction').textContent = 
+            document.getElementById('computerAction').textContent =
                 `Computer ${discardDecision.indices.length === 0 ? 'stands pat' : `discarded ${discardDecision.indices.length} card${discardDecision.indices.length !== 1 ? 's' : ''}`} (${discardDecision.reasoning})`;
         }
 
         function getOptimalDiscardStrategy(cards, isFirstDraw) {
             const hand = evaluateHand(cards);
             const sortedCards = [...cards].sort((a, b) => b.value - a.value);
-            
-            // Analyze hand patterns for optimal play
+
             const rankCounts = {};
             const suitCounts = {};
             cards.forEach(card => {
                 rankCounts[card.value] = (rankCounts[card.value] || 0) + 1;
                 suitCounts[card.suit] = (suitCounts[card.suit] || 0) + 1;
             });
-            
+
             const pairs = Object.keys(rankCounts).filter(rank => rankCounts[rank] === 2).map(Number);
             const trips = Object.keys(rankCounts).filter(rank => rankCounts[rank] === 3).map(Number);
-            const quads = Object.keys(rankCounts).filter(rank => rankCounts[rank] === 4).map(Number);
-            const maxSuitCount = Math.max(...Object.values(suitCounts));
-            
-            // Check for straight draws
-            const straightInfo = analyzeStraightDraws(sortedCards);
             const flushInfo = analyzeFlushDraws(cards, suitCounts);
-            
-            // **OPTIMAL POKER STRATEGY**
-            
-            // 1. Made hands: Stand pat on strong hands
-            if (hand.rank >= 8 || (hand.rank >= 6 && !isFirstDraw)) { // Four of a kind+, or flush+ on second draw
+            const straightInfo = analyzeStraightDraws(sortedCards);
+
+            // Strong made hands - stand pat
+            if (hand.rank >= 8 || (hand.rank >= 6 && !isFirstDraw)) {
                 return { indices: [], reasoning: 'strong made hand' };
             }
-            
-            // 2. Full House: Always stand pat
-            if (hand.rank === 7) {
-                return { indices: [], reasoning: 'full house' };
-            }
-            
-            // 3. Flush: Stand pat
-            if (hand.rank === 6) {
-                return { indices: [], reasoning: 'flush' };
-            }
-            
-            // 4. Straight: Stand pat  
-            if (hand.rank === 5) {
-                return { indices: [], reasoning: 'straight' };
-            }
-            
-            // 5. Three of a Kind: Keep trips, discard other two
+
+            if (hand.rank === 7) return { indices: [], reasoning: 'full house' };
+            if (hand.rank === 6) return { indices: [], reasoning: 'flush' };
+            if (hand.rank === 5) return { indices: [], reasoning: 'straight' };
+
+            // Three of a Kind
             if (hand.rank === 4) {
                 const tripRank = trips[0];
                 const discardIndices = cards
@@ -1161,8 +1347,8 @@
                     .filter(index => index !== null);
                 return { indices: discardIndices, reasoning: 'keeping trips' };
             }
-            
-            // 6. Two Pair: Keep both pairs, discard kicker
+
+            // Two Pair
             if (hand.rank === 3) {
                 const pairRanks = pairs;
                 const discardIndices = cards
@@ -1170,93 +1356,61 @@
                     .filter(index => index !== null);
                 return { indices: discardIndices, reasoning: 'keeping two pair' };
             }
-            
-            // 7. One Pair: Advanced pair strategy
+
+            // One Pair
             if (hand.rank === 2) {
                 const pairRank = pairs[0];
-                
-                // Keep the pair, evaluate kickers
                 let discardIndices = cards
                     .map((card, index) => card.value !== pairRank ? index : null)
                     .filter(index => index !== null);
-                
-                // If we have flush or straight draws with our pair
-                if (flushInfo.drawToFlush && isFirstDraw) {
-                    // Advanced: Sometimes go for flush over pair improvement
-                    if (flushInfo.suitCards >= 4 && pairRank <= 10) {
-                        const flushIndices = getFlushDrawDiscards(cards, flushInfo.majorSuit);
-                        return { indices: flushIndices, reasoning: 'flush draw over pair' };
-                    }
+
+                if (flushInfo.drawToFlush && isFirstDraw && flushInfo.suitCards >= 4 && pairRank <= 10) {
+                    return { indices: getFlushDrawDiscards(cards, flushInfo.majorSuit), reasoning: 'flush draw over pair' };
                 }
-                
-                // Keep pair, discard worst kickers (but consider straight draws)
-                if (straightInfo.isOpenEnded && isFirstDraw && pairRank <= 9) {
-                    // Sometimes break small pair for open-ended straight
-                    return { indices: getStraightDrawDiscards(cards, straightInfo), reasoning: 'open-ended straight draw' };
-                }
-                
+
                 return { indices: discardIndices, reasoning: 'keeping pair' };
             }
-            
-            // 8. High Card: Look for draws
+
+            // High Card
             if (hand.rank === 1) {
-                // Priority 1: Four-card flush
                 if (flushInfo.drawToFlush && flushInfo.suitCards >= 4) {
-                    const flushIndices = getFlushDrawDiscards(cards, flushInfo.majorSuit);
-                    return { indices: flushIndices, reasoning: 'four-card flush draw' };
+                    return { indices: getFlushDrawDiscards(cards, flushInfo.majorSuit), reasoning: 'four-card flush draw' };
                 }
-                
-                // Priority 2: Open-ended straight draw
+
                 if (straightInfo.isOpenEnded) {
                     return { indices: getStraightDrawDiscards(cards, straightInfo), reasoning: 'open-ended straight draw' };
                 }
-                
-                // Priority 3: Inside straight draw (gutshot)
-                if (straightInfo.isGutshot && isFirstDraw) {
-                    return { indices: getStraightDrawDiscards(cards, straightInfo), reasoning: 'gutshot straight draw' };
-                }
-                
-                // Priority 4: Three-card flush
-                if (flushInfo.suitCards >= 3 && isFirstDraw) {
-                    const flushIndices = getFlushDrawDiscards(cards, flushInfo.majorSuit);
-                    return { indices: flushIndices, reasoning: 'three-card flush draw' };
-                }
-                
-                // Priority 5: High cards (keep A, K, Q, J)
-                const highCardThreshold = isFirstDraw ? 11 : 12; // J+ first draw, Q+ second draw
+
+                const highCardThreshold = isFirstDraw ? 11 : 12;
                 const lowCardIndices = cards
                     .map((card, index) => card.value < highCardThreshold ? index : null)
                     .filter(index => index !== null);
-                
+
                 if (lowCardIndices.length > 0) {
                     return { indices: lowCardIndices, reasoning: 'keeping high cards' };
                 }
-                
-                // Last resort: discard lowest cards
+
                 const lowestIndices = cards
                     .map((card, index) => ({ card, index }))
                     .sort((a, b) => a.card.value - b.card.value)
                     .slice(0, isFirstDraw ? 3 : 2)
                     .map(item => item.index);
-                
+
                 return { indices: lowestIndices, reasoning: 'discarding low cards' };
             }
-            
-            // Fallback
+
             return { indices: [], reasoning: 'standing pat' };
         }
-        
+
         function analyzeStraightDraws(sortedCards) {
             const values = sortedCards.map(card => card.value).sort((a, b) => a - b);
             const uniqueValues = [...new Set(values)];
-            
+
             if (uniqueValues.length < 4) return { isOpenEnded: false, isGutshot: false };
-            
-            // Check for open-ended straight draws (missing one card on either end)
+
             for (let i = 0; i <= uniqueValues.length - 4; i++) {
                 const sequence = uniqueValues.slice(i, i + 4);
                 if (sequence[3] - sequence[0] === 3) {
-                    // Check if we can extend on either end
                     const canExtendLow = sequence[0] > 2;
                     const canExtendHigh = sequence[3] < 14;
                     if (canExtendLow || canExtendHigh) {
@@ -1264,42 +1418,27 @@
                     }
                 }
             }
-            
-            // Check for gutshot (inside straight draw)
-            for (let i = 0; i <= uniqueValues.length - 3; i++) {
-                for (let j = i + 3; j < uniqueValues.length; j++) {
-                    if (uniqueValues[j] - uniqueValues[i] === 4) {
-                        // Found a 4-card spread, check if exactly one card is missing
-                        const expectedCards = [uniqueValues[i], uniqueValues[i] + 1, uniqueValues[i] + 2, uniqueValues[i] + 3, uniqueValues[i] + 4];
-                        const presentCards = uniqueValues.filter(v => expectedCards.includes(v));
-                        if (presentCards.length === 4) {
-                            return { isGutshot: true, isOpenEnded: false, sequence: presentCards };
-                        }
-                    }
-                }
-            }
-            
+
             return { isOpenEnded: false, isGutshot: false };
         }
-        
+
         function analyzeFlushDraws(cards, suitCounts) {
             const majorSuit = Object.keys(suitCounts).find(suit => suitCounts[suit] >= 3);
             if (!majorSuit) return { drawToFlush: false, suitCards: 0 };
-            
-            const suitCards = suitCounts[majorSuit];
+
             return {
-                drawToFlush: suitCards >= 3,
-                suitCards,
+                drawToFlush: suitCounts[majorSuit] >= 3,
+                suitCards: suitCounts[majorSuit],
                 majorSuit
             };
         }
-        
+
         function getFlushDrawDiscards(cards, targetSuit) {
             return cards
                 .map((card, index) => card.suit !== targetSuit ? index : null)
                 .filter(index => index !== null);
         }
-        
+
         function getStraightDrawDiscards(cards, straightInfo) {
             const targetValues = new Set(straightInfo.sequence);
             return cards
@@ -1307,65 +1446,64 @@
                 .filter(index => index !== null);
         }
 
-        function performComputerDraw(discardIndices, reasoning) {
+        function performComputerDraw(discardIndices) {
             if (discardIndices.length > 0) {
-                // Sort indices in descending order to maintain proper indexing during replacement
                 const sortedIndices = [...discardIndices].sort((a, b) => b - a);
-                
+
                 sortedIndices.forEach(index => {
                     const newCard = gameState.deck[gameState.cardsUsed++];
                     gameState.computerCards[index] = newCard;
                 });
             }
-            
+
             renderComputerHand();
         }
 
         function performShowdown() {
             gameState.phase = 'showdown';
-            
-            // Final hand evaluation
+
             const playerHand = evaluateHand(gameState.playerCards);
             const computerHand = evaluateHand(gameState.computerCards);
-            
-            // Update display
+
             document.getElementById('playerHandName').textContent = playerHand.name;
             document.getElementById('computerHandName').textContent = computerHand.name;
-            
-            // Determine winner
+
             const comparison = compareHands(playerHand, computerHand);
             const resultElement = document.getElementById('gameResult');
-            
+
             if (comparison > 0) {
-                resultElement.textContent = `🎉 You WIN! ${playerHand.name} beats ${computerHand.name}`;
+                resultElement.textContent = `You WIN! ${playerHand.name} beats ${computerHand.name}`;
                 resultElement.className = 'game-result win';
                 gameStats.wins++;
             } else if (comparison < 0) {
-                resultElement.textContent = `😔 You lose. ${computerHand.name} beats ${playerHand.name}`;
+                resultElement.textContent = `You lose. ${computerHand.name} beats ${playerHand.name}`;
                 resultElement.className = 'game-result lose';
                 gameStats.losses++;
             } else {
-                resultElement.textContent = `🤝 It's a tie! Both have ${playerHand.name}`;
+                resultElement.textContent = `It's a tie! Both have ${playerHand.name}`;
                 resultElement.className = 'game-result tie';
                 gameStats.ties++;
             }
-            
-            // Update best hand if player improved
+
             if (playerHand.rank > getBestHandRank()) {
                 gameStats.bestHandEver = playerHand.name;
             }
-            
-            // Reset UI for next round
+
             document.getElementById('gamePhase').textContent = 'Round Complete! Click "Deal New Hand" for next round';
             document.getElementById('discardInstructions').style.display = 'none';
-            document.getElementById('dealButton').style.display = 'inline-block';
+            document.getElementById('dealButton').style.display = 'inline-flex';
             document.getElementById('drawButton').style.display = 'none';
             document.getElementById('standButton').style.display = 'none';
-            
+
             updateDisplay();
         }
 
-        // Initialize the display
+        // Event listeners
+        document.getElementById('dealButton').addEventListener('click', startNewRound);
+        document.getElementById('drawButton').addEventListener('click', drawCards);
+        document.getElementById('standButton').addEventListener('click', standPat);
+
+        // Initialize display
         updateDisplay();
     </script>
 </body>
