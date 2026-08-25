@@ -1,491 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Section 3.1 Part B: Counting Rules and Probability Calculations</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            }
-        };
-    </script>
-    <style>
-        :root {
-            --primary: #0466c8;
-            --primary-light: #e0f2fe;
-            --accent: #0353a4;
-            --dark: #2c3e50;
-            --light: #f8f9fa;
-            --success: #38b000;
-            --warning: #ffbe0b;
-            --info: #4361ee;
-        }
-        
-        html {
-            font-size: 100%;
-            box-sizing: border-box;
-        }
-        
-        *, *::before, *::after {
-            box-sizing: inherit;
-        }
-        
-        body {
-            font-family: 'Open Sans', Arial, sans-serif;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.6;
-            color: #333333;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Open Sans', Arial, sans-serif;
-            font-weight: 700;
-            line-height: 1.3;
-            color: #222222;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        h1 {
-            font-size: 2.2rem;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10px;
-            text-align: center;
-        }
-        
-        h2 {
-            font-size: 1.6rem;
-            border-bottom: 2px solid var(--primary-light);
-            padding-bottom: 5px;
-        }
-        
-        h3 {
-            font-size: 1.3rem;
-            color: var(--primary);
-        }
-        
-        .card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-        
-        .definition-box {
-            background-color: var(--primary-light);
-            border-left: 5px solid var(--primary);
-            border-radius: 5px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .example-box {
-            background-color: #fff8e6;
-            border-left: 5px solid var(--warning);
-            border-radius: 5px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .formula-box {
-            background-color: #f8f9fa;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 15px 0;
-            text-align: center;
-        }
-        
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 0.9em;
-        }
-        
-        .data-table th,
-        .data-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        
-        .data-table th {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .data-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        .question-card {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-        
-        .question-header {
-            background-color: var(--primary);
-            color: white;
-            padding: 15px 20px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.3s ease;
-        }
-        
-        .question-header:hover {
-            background-color: var(--accent);
-        }
-        
-        .question-header::after {
-            content: "▼";
-            font-size: 0.8rem;
-            transition: transform 0.3s ease;
-        }
-        
-        .question-header.active::after {
-            transform: rotate(180deg);
-        }
-        
-        .question-content {
-            padding: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, padding 0.4s ease;
-            background-color: var(--light);
-        }
-        
-        .question-content.show {
-            padding: 20px;
-            max-height: 800px;
-        }
-        
-        .counting-calculator {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section 3.1 Part B: Counting Rules and Assigning Probabilities</title>
+<!--
+  STAT A253 - Applied Statistics for the Sciences
+  Section 3.1 Part B.
 
-        .calc-input {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin: 10px 0;
-        }
+  NO THIRD-PARTY RUNTIME DEPENDENCIES. See the note in Part A. The untested
+  combinations control that used to sit in this page has been removed. Its
+  replacement will be a separately built and tested asset.
+-->
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+html { background: #ffffff; }
+body {
+  margin: 0;
+  color: #202124;
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+main { width: min(100%, 920px); margin: 0 auto; padding: 20px 24px 32px; }
+p { margin: 0 0 1rem; }
+.lead { font-size: 1.08rem; }
+h1 {
+  margin: 0 0 1.1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid #4a3466;
+  color: #1f3864;
+  font-size: 1.6rem;
+  line-height: 1.25;
+}
+h2 { margin: 1.55rem 0 0.55rem; color: #1f3864; font-size: 1.3rem; line-height: 1.25; }
+h3 { margin: 1.2rem 0 0.4rem; color: #2d6a4f; font-size: 1.08rem; }
+ul, ol { margin: 0.4rem 0 1rem; padding-left: 1.55rem; }
+li { margin: 0.35rem 0; }
+a { color: #005ea8; text-decoration: underline; text-underline-offset: 0.12em; }
+a:focus-visible, summary:focus-visible { outline: 3px solid #f2c94c; outline-offset: 2px; box-shadow: 0 0 0 1px #202124; }
+table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1rem; }
+caption { caption-side: top; text-align: left; padding-bottom: 0.4rem; color: #5f6368; font-size: 0.93rem; }
+th, td { padding: 0.55rem 0.7rem; border: 1px solid #c7d0dd; text-align: left; }
+th { color: #ffffff; background: #1f3864; }
+tbody tr:nth-child(even) { background: #f4f6f9; }
+td.numcell { text-align: right; font-variant-numeric: tabular-nums; }
+.card {
+  margin: 0 0 1.15rem;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid #dfe3e8;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.card > h2 { margin-top: 0; padding-bottom: 0.4rem; border-bottom: 2px solid #2d6a4f; }
+.callout { margin: 1.1rem 0; padding: 0.9rem 1rem; border-left: 5px solid #1f3864; background: #eef3f8; }
+.callout.warning { border-left-color: #a14b00; background: #fff4e8; }
+.callout.key { border-left-color: #2d6a4f; background: #edf8f1; }
+.callout p:last-child, .card p:last-child { margin-bottom: 0; }
+.rule { margin: 1.1rem 0; padding: 1rem 1.1rem; border-left: 5px solid #4a3466; background: #f5f2f9; }
+.rule > h3 { margin-top: 0; color: #4a3466; }
+.example { margin: 1.1rem 0; padding: 1rem 1.1rem; border: 1px solid #e6d9b8; border-radius: 5px; background: #fffaf0; }
+.example > h3 { margin-top: 0; color: #7a5a00; }
+.qline { font-weight: 700; }
 
-        .calc-input input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 80px;
-        }
+/* Math without a CDN, labelled for screen readers */
+.m { font-family: "Cambria Math", Cambria, Georgia, serif; font-style: italic; white-space: nowrap; }
+.m .op, .m .num { font-style: normal; }
+.frac { display: inline-block; vertical-align: -0.55em; text-align: center; font-style: normal; margin: 0 0.15em; }
+.frac > span { display: block; padding: 0 0.35em; font-size: 0.92em; }
+.frac .den { border-top: 1px solid currentColor; }
+.binom { display: inline-flex; align-items: center; font-style: normal; margin: 0 0.1em; }
+.binom .paren { font-size: 2.1em; line-height: 0.72; font-weight: 300; }
+.binom .stack { display: inline-block; text-align: center; padding: 0 0.12em; font-size: 0.92em; line-height: 1.12; }
+.eq { display: block; margin: 0.85rem 0; text-align: center; font-size: 1.1rem; }
 
-        .calc-result {
-            background: var(--primary-light);
-            padding: 15px;
-            border-radius: 5px;
-            margin: 10px 0;
-            font-weight: bold;
-        }
+.check { border: 1px solid #dfe3e8; border-radius: 5px; margin-bottom: 0.7rem; background: #ffffff; }
+.check > summary {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 700;
+  color: #1f3864;
+  background: #f4f6f9;
+  border-radius: 4px;
+  list-style-position: inside;
+}
+.check > summary:hover { background: #e9eef5; }
+.check[open] > summary { border-bottom: 1px solid #dfe3e8; border-radius: 4px 4px 0 0; }
+.check .body { padding: 0.9rem 1rem; }
+.check .body p:last-child { margin-bottom: 0; }
 
-        .highlight {
-            background-color: #fffacd;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-weight: bold;
-        }
-
-        .prev-section {
-            background: linear-gradient(135deg, var(--success), #28a745);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .prev-section a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 5px;
-            display: inline-block;
-            transition: background-color 0.3s ease;
-        }
-
-        .prev-section a:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        /* Code and monospace styling */
-        pre, code {
-            font-family: 'Roboto Mono', "Courier New", monospace;
-            font-size: 0.9375rem;
-            background-color: #f4f4f4;
-            border-radius: 4px;
-        }
-        
-        code {
-            padding: 0.2em 0.4em;
-        }
-        
-        pre {
-            padding: 1em;
-            overflow-x: auto;
-            border: 1px solid #ddd;
-        }
-        
-        /* Math rendering compatibility */
-        .katex {
-            font-size: 1.1em !important;
-        }
-    </style>
+@media (max-width: 640px) {
+  main { padding: 16px 16px 26px; }
+  h1 { font-size: 1.35rem; }
+  th, td { padding: 0.45rem 0.5rem; }
+  .card { padding: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
 </head>
 <body>
-    <div class="prev-section">
-        <h3>Continuing from Section 3.1 Part A</h3>
-        <p>This section covers advanced counting rules, probability calculations, and detailed applications.</p>
-        <a href="../section-3-1-part-a/">← Back to Part A</a>
-    </div>
+<main>
 
-    <h1>🧮 Section 3.1 Part B: Counting Rules and Probability Calculations</h1>
-    
-    <div class="card">
-        <h2>🧮 Counting Sample Points: Essential Rules</h2>
-        
-        <h3>Multiplication Rule</h3>
-        <div class="formula-box">
-            <p>If an experiment has $k$ stages with $n_1, n_2, \ldots, n_k$ possible outcomes at each stage, then:</p>
-            $$\text{Total Sample Points} = n_1 \times n_2 \times \cdots \times n_k$$
-        </div>
-        
-        <div class="example-box">
-            <h4>Examples Using Multiplication Rule:</h4>
-            <ul>
-                <li><strong>Two coin tosses:</strong> $2 \times 2 = 4$ sample points</li>
-                <li><strong>Rolling two dice:</strong> $6 \times 6 = 36$ sample points</li>
-                <li><strong>Three coin tosses:</strong> $2 \times 2 \times 2 = 8$ sample points</li>
-            </ul>
-        </div>
-        
-        <h3>Combinations Rule</h3>
-        <div class="formula-box">
-            <p>Number of ways to choose $n$ objects from $N$ objects (without replacement):</p>
-            $$\binom{N}{n} = \frac{N!}{n!(N-n)!}$$
-            <p>where $n! = n \times (n-1) \times (n-2) \times \cdots \times 2 \times 1$</p>
-        </div>
-        
-        <div class="counting-calculator">
-            <h4>🧮 Interactive Combinations Calculator</h4>
-            <div class="calc-input">
-                <label>Choose <input type="number" id="nInput" value="2" min="0"> objects from <input type="number" id="NInput" value="4" min="0"> total objects</label>
-                <button onclick="calculateCombination()" style="padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;">Calculate</button>
-            </div>
-            <div id="calcResult" class="calc-result" style="display: none;"></div>
-        </div>
-    </div>
-    
-    <div class="card">
-        <h2>🎯 Real-World Application: AAMFT Divorce Study</h2>
-        <div class="example-box">
-            <p><strong>Research Question:</strong> The American Association for Marriage and Family Therapy studied 100 divorced couples and classified them into relationship types.</p>
-            
-            <table class="data-table">
-                <tr>
-                    <th>Relationship Type</th>
-                    <th>Description</th>
-                    <th>Proportion</th>
-                </tr>
-                <tr>
-                    <td>Perfect Pals (PP)</td>
-                    <td>Joint-custody parents who get along well</td>
-                    <td>0.12</td>
-                </tr>
-                <tr>
-                    <td>Cooperative Colleagues (CC)</td>
-                    <td>Occasional conflict, likely to be remarried</td>
-                    <td>0.38</td>
-                </tr>
-                <tr>
-                    <td>Angry Associates (AA)</td>
-                    <td>Cooperate on children-related issues only</td>
-                    <td>0.25</td>
-                </tr>
-                <tr>
-                    <td>Fiery Foes (FF)</td>
-                    <td>Communicate only through children, hostile</td>
-                    <td>0.25</td>
-                </tr>
-            </table>
-            
-            <p><strong>Sample Space:</strong> $S = \{PP, CC, AA, FF\}$</p>
-            <p><strong>Sample Point Probabilities:</strong> Must sum to 1.0</p>
-            <p><strong>Event Example:</strong> $A = \{\text{Some conflict}\} = \{CC, AA, FF\}$</p>
-            <p><strong>Probability Calculation:</strong> $P(A) = 0.38 + 0.25 + 0.25 = 0.88$</p>
-        </div>
-    </div>
-    
-    <div class="card">
-        <h2>📊 Probability Rules for Sample Points</h2>
-        <div class="definition-box">
-            <h3>Fundamental Rules</h3>
-            <p>Let $p_i$ represent the probability of sample point $i$. Then:</p>
-            <ol>
-                <li><strong>Range Rule:</strong> $0 \leq p_i \leq 1$ for all sample points</li>
-                <li><strong>Sum Rule:</strong> $\sum p_i = 1$ (all probabilities must sum to 1)</li>
-            </ol>
-        </div>
-        
-        <div class="formula-box">
-            <h3>Probability of an Event</h3>
-            <p>The probability of event $A$ is the sum of probabilities of all sample points in $A$:</p>
-            $$P(A) = \sum_{\text{sample points in } A} p_i$$
-        </div>
-    </div>
-    
-    <div class="card">
-        <h2>🤔 Check Your Understanding</h2>
-        
-        <div class="question-card">
-            <div class="question-header">
-                What's the difference between a sample point and an event?
-            </div>
-            <div class="question-content">
-                <p><strong>Sample Point:</strong> The most basic, indivisible outcome of an experiment.</p>
-                <p><strong>Event:</strong> A collection of one or more sample points.</p>
-                <p><strong>Example:</strong> Rolling a die</p>
-                <ul>
-                    <li><strong>Sample Points:</strong> 1, 2, 3, 4, 5, 6 (six individual outcomes)</li>
-                    <li><strong>Event:</strong> "Roll an even number" = {2, 4, 6} (three sample points combined)</li>
-                </ul>
-                <p><strong>Key Insight:</strong> Every sample point is an event, but not every event is a sample point!</p>
-            </div>
-        </div>
-        
-        <div class="question-card">
-            <div class="question-header">
-                Why do we use combinations instead of just counting by hand?
-            </div>
-            <div class="question-content">
-                <p>For simple cases, counting by hand works fine. But consider these scenarios:</p>
-                <ul>
-                    <li><strong>Choose 5 marines from 1,000:</strong> $\binom{1000}{5} = 8.25 \times 10^{13}$ ways!</li>
-                    <li><strong>Choose 5 movies from 20:</strong> $\binom{20}{5} = 15,504$ ways</li>
-                    <li><strong>DNA sequences:</strong> Millions of possible arrangements</li>
-                </ul>
-                <p><strong>The combinations formula gives us exact counts for complex scenarios where listing each possibility would be impossible.</strong></p>
-            </div>
-        </div>
-        
-        <div class="question-card">
-            <div class="question-header">
-                How do we assign probabilities to sample points?
-            </div>
-            <div class="question-content">
-                <p><strong>Method 1: Equal Likelihood (Classical Approach)</strong></p>
-                <p>For fair coins, dice, etc.: Each sample point gets equal probability</p>
-                <p>Example: Fair die → $P(\text{each face}) = \frac{1}{6}$</p>
-                
-                <p><strong>Method 2: Relative Frequency (Empirical Approach)</strong></p>
-                <p>Based on observed data or historical records</p>
-                <p>Example: AAMFT study → $P(PP) = 0.12$ based on 12% of 100 couples</p>
-                
-                <p><strong>Method 3: Subjective Assessment</strong></p>
-                <p>Expert judgment for unique situations</p>
-                <p>Example: Business venture → $P(\text{Success}) = 0.8$ based on market analysis</p>
-            </div>
-        </div>
-        
-        <div class="question-card">
-            <div class="question-header">
-                Practice Problem: Marine Selection
-            </div>
-            <div class="question-content">
-                <p><strong>Problem:</strong> How many ways can we choose 2 marines from a group of 4 for a dangerous mission?</p>
-                <p><strong>Solution Using Combinations:</strong></p>
-                <p>$\binom{4}{2} = \frac{4!}{2!(4-2)!} = \frac{4!}{2! \cdot 2!} = \frac{24}{2 \cdot 2} = 6$ ways</p>
-                
-                <p><strong>Let's verify by listing them:</strong></p>
-                <p>If marines are M₁, M₂, M₃, M₄, the 6 ways are:</p>
-                <p>{M₁,M₂}, {M₁,M₃}, {M₁,M₄}, {M₂,M₃}, {M₂,M₄}, {M₃,M₄}</p>
-                
-                <p><strong>✓ The formula gives the correct count!</strong></p>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-        function calculateCombination() {
-            const n = parseInt(document.getElementById('nInput').value);
-            const N = parseInt(document.getElementById('NInput').value);
-            
-            if (n > N || n < 0 || N < 0) {
-                document.getElementById('calcResult').innerHTML = "Error: Invalid input (n must be ≤ N, both ≥ 0)";
-                document.getElementById('calcResult').style.display = 'block';
-                return;
-            }
-            
-            const factorial = (num) => {
-                if (num <= 1) return 1;
-                return num * factorial(num - 1);
-            };
-            
-            const combinations = factorial(N) / (factorial(n) * factorial(N - n));
-            
-            document.getElementById('calcResult').innerHTML = 
-                `$\\binom{${N}}{${n}} = \\frac{${N}!}{${n}!(${N}-${n})!} = ${combinations}$ ways`;
-            document.getElementById('calcResult').style.display = 'block';
-            
-            // Re-render MathJax
-            if (window.MathJax) {
-                MathJax.typesetPromise([document.getElementById('calcResult')]).catch((err) => console.log(err.message));
-            }
-        }
+<h1>Section 3.1 Part B: Counting Rules and Assigning Probabilities</h1>
 
-        // Add interactivity to question cards
-        document.querySelectorAll('.question-header').forEach(header => {
-            header.addEventListener('click', function() {
-                const content = this.nextElementSibling;
-                const isActive = this.classList.contains('active');
-                
-                // Close all other questions
-                document.querySelectorAll('.question-header').forEach(h => {
-                    h.classList.remove('active');
-                    h.nextElementSibling.classList.remove('show');
-                });
-                
-                // Toggle current question
-                if (!isActive) {
-                    this.classList.add('active');
-                    content.classList.add('show');
-                }
-            });
-        });
-    </script>
+<p class="lead">Part A ended on a sample space small enough to draw. Most are not. This half is
+about counting a sample space you could never list, and about where the probabilities attached to
+its points actually come from.</p>
+
+<div class="card">
+  <h2>Counting without listing</h2>
+
+  <div class="rule">
+    <h3>The multiplication rule</h3>
+    <p>If an experiment happens in <span class="m">k</span> stages, and stage
+    <span class="m">i</span> has <span class="m">n<sub>i</sub></span> possible outcomes, then the
+    number of sample points is the product:</p>
+    <span class="eq m" role="math" aria-label="Total sample points equals n sub 1 times n sub 2 times, and so on, times n sub k">
+      n<sub>1</sub> <span class="op">&#215;</span> n<sub>2</sub> <span class="op">&#215;</span>
+      &#8943; <span class="op">&#215;</span> n<sub>k</sub>
+    </span>
+    <p>This is the two-coin tree from Part A, generalised. Each level of the tree multiplies.</p>
+  </div>
+
+  <table>
+    <caption>The multiplication rule on experiments you can still check by hand.</caption>
+    <thead><tr><th scope="col">Experiment</th><th scope="col">Stages</th><th scope="col">Sample points</th></tr></thead>
+    <tbody>
+      <tr><td>Toss two coins</td><td>2 &#215; 2</td><td class="numcell">4</td></tr>
+      <tr><td>Toss three coins</td><td>2 &#215; 2 &#215; 2</td><td class="numcell">8</td></tr>
+      <tr><td>Roll two dice, recording both faces</td><td>6 &#215; 6</td><td class="numcell">36</td></tr>
+      <tr><td>Roll five dice</td><td>6<sup>5</sup></td><td class="numcell">7,776</td></tr>
+    </tbody>
+  </table>
+
+  <div class="rule">
+    <h3>The combinations rule</h3>
+    <p>The number of ways to choose <span class="m">n</span> objects from
+    <span class="m">N</span>, when order does not matter and nothing is put back:</p>
+    <span class="eq m" role="math" aria-label="N choose n equals N factorial divided by n factorial times N minus n factorial">
+      <span class="binom">
+        <span class="paren">(</span>
+        <span class="stack">N<br>n</span>
+        <span class="paren">)</span>
+      </span>
+      <span class="op">=</span>
+      <span class="frac"><span>N!</span><span class="den">n! (N &#8722; n)!</span></span>
+    </span>
+    <p>where <span class="m" role="math" aria-label="n factorial equals n times n minus 1 times, and so on, down to 2 times 1">n! = n &#215; (n&#8722;1) &#215; &#8943; &#215; 2 &#215; 1</span>,
+    and <span class="m" role="math" aria-label="zero factorial equals 1">0! = 1</span> by
+    convention &#8212; there is exactly one way to choose nothing.</p>
+  </div>
+
+  <div class="callout warning">
+    <p><strong>Order matters, or it doesn't.</strong> That single question decides which rule you
+    need, and getting it wrong is the most common error in this chapter. Choosing a committee of
+    three from a class: order does not matter, use combinations. Choosing a president, then a
+    treasurer, then a secretary: order matters, and combinations will give you the wrong answer by
+    a factor of <span class="m" role="math" aria-label="3 factorial">3!</span>. Section 3.7
+    returns to this properly.</p>
+  </div>
+
+  <div class="example">
+    <h3>Why the formula rather than a list</h3>
+    <p>Choosing 2 marines from 4 gives
+    <span class="m" role="math" aria-label="4 choose 2 equals 6">
+      <span class="binom"><span class="paren">(</span><span class="stack">4<br>2</span><span class="paren">)</span></span>
+      <span class="op">= 6</span></span>,
+    and you can check that by listing: {M1,M2}, {M1,M3}, {M1,M4}, {M2,M3}, {M2,M4}, {M3,M4}.
+    Listing is fine here.</p>
+    <p>Choosing 5 from 1,000 gives
+    <span class="m" role="math" aria-label="approximately 8.25 times 10 to the 12th">&#8776; 8.25 &#215; 10<sup>12</sup></span>
+    &#8212; over eight trillion. Nobody lists that. The formula is not a shortcut for the small
+    cases; it is the only method that survives the real ones.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Where probabilities come from</h2>
+
+  <p>Counting tells you how many sample points there are. It does not tell you what number to
+  attach to each one. Whatever numbers you use, two rules are not negotiable:</p>
+
+  <div class="rule">
+    <h3>The two rules every assignment must satisfy</h3>
+    <ol>
+      <li>Every sample point probability is between 0 and 1:
+        <span class="m" role="math" aria-label="0 is less than or equal to p sub i, which is less than or equal to 1">0 &#8804; p<sub>i</sub> &#8804; 1</span></li>
+      <li>They add to exactly 1 across the whole sample space:
+        <span class="m" role="math" aria-label="the sum of p sub i equals 1">&#8721; p<sub>i</sub> = 1</span></li>
+    </ol>
+    <p>And the probability of an event is just the sum of the sample points inside it:</p>
+    <span class="eq m" role="math" aria-label="P of A equals the sum of p sub i over all sample points in A">
+      P(A) <span class="op">=</span> &#8721;<sub>&nbsp;sample points in A</sub> p<sub>i</sub>
+    </span>
+  </div>
+
+  <p>There are three defensible ways to arrive at the numbers, and knowing which one you used
+  matters when somebody challenges your conclusion.</p>
+
+  <h3>1. Equally likely, by symmetry</h3>
+  <p>A fair die has no reason to prefer any face, so each gets
+  <span class="m" role="math" aria-label="one sixth"><span class="frac"><span>1</span><span class="den">6</span></span></span>.
+  This is the classical approach and it is the one that makes counting so powerful: if every
+  sample point is equally likely, then
+  <span class="m" role="math" aria-label="P of A equals the number of sample points in A divided by the total number in S">
+  P(A) = <span class="frac"><span>points in A</span><span class="den">points in S</span></span></span>.
+  <strong>The assumption is doing real work</strong> &#8212; it is exactly what a loaded die
+  violates.</p>
+
+  <h3>2. Relative frequency, from data</h3>
+  <p>Run the experiment many times and use the proportion observed. This is where the numbers come
+  from when symmetry does not apply, and it is the approach the study below uses.</p>
+
+  <div class="callout key">
+    <p><strong>Try this directly below Part B.</strong> The relative-frequency simulator begins
+    with a noisy short run, keeps accumulating trials, and lets you compare fair and biased
+    experiments against their true probabilities.</p>
+  </div>
+
+  <h3>3. Subjective assessment</h3>
+  <p>For one-off situations with no symmetry and no history &#8212; will this specific venture
+  succeed? &#8212; an informed judgement, stated openly as a judgement. It still has to satisfy
+  the two rules.</p>
+
+  <div class="example">
+    <h3>Relative frequency in practice: divorced couples</h3>
+    <p>The American Association for Marriage and Family Therapy classified 100 divorced couples by
+    the kind of relationship they maintained afterwards.</p>
+
+    <table>
+      <caption>Sample space <span class="m">S</span> = {PP, CC, AA, FF}. The four probabilities
+      sum to 1.00, as they must.</caption>
+      <thead><tr><th scope="col">Type</th><th scope="col">Description</th><th scope="col">Probability</th></tr></thead>
+      <tbody>
+        <tr><td>Perfect Pals (PP)</td><td>Joint custody, get along well</td><td class="numcell">0.12</td></tr>
+        <tr><td>Cooperative Colleagues (CC)</td><td>Occasional conflict, often remarried</td><td class="numcell">0.38</td></tr>
+        <tr><td>Angry Associates (AA)</td><td>Cooperate on the children only</td><td class="numcell">0.25</td></tr>
+        <tr><td>Fiery Foes (FF)</td><td>Communicate through the children, hostile</td><td class="numcell">0.25</td></tr>
+      </tbody>
+    </table>
+
+    <p>Take the event <span class="m" role="math" aria-label="A equals some conflict, equals the set CC, AA, FF">A = {some conflict} = {CC, AA, FF}</span>.
+    Sum the sample points inside it:</p>
+    <span class="eq m" role="math" aria-label="P of A equals 0.38 plus 0.25 plus 0.25 equals 0.88">
+      P(A) <span class="op">= 0.38 + 0.25 + 0.25 = <strong>0.88</strong></span>
+    </span>
+    <p>Note what these are not: they are not symmetry, and they are not a claim about any
+    individual couple. They are the proportions observed in one study of 100 couples, which is
+    why the sample size is worth stating every time you quote them.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Check yourself</h2>
+
+  <details class="check">
+    <summary>A sample point and an event &#8212; what is the actual difference?</summary>
+    <div class="body">
+      <p>A <strong>sample point</strong> is an indivisible outcome. An <strong>event</strong> is
+      any set of them.</p>
+      <p>Roll one die. The sample points are 1, 2, 3, 4, 5, 6. "Roll an even number" is an event
+      holding three of them. Every sample point is also an event (a set of size one), but most
+      events are not sample points.</p>
+      <p>The practical consequence: sample point probabilities must sum to 1 across
+      <span class="m">S</span>. Event probabilities do not &#8212; events can overlap, and
+      Section 3.4 is about what to do when they do.</p>
+    </div>
+  </details>
+
+  <details class="check">
+    <summary>Someone tells you the four AAMFT probabilities are 0.12, 0.38, 0.25 and 0.30. What do you say?</summary>
+    <div class="body">
+      <p>That they add to 1.05, so at least one is wrong. You do not need to know anything about
+      divorce to catch it &#8212; rule 2 is violated and that is enough.</p>
+      <p><strong>Make this reflex.</strong> Checking that a probability distribution sums to 1 is
+      the cheapest error-detection you have, and it will save you on the Chapter 3 Test.</p>
+    </div>
+  </details>
+
+  <details class="check">
+    <summary>Why can't you compute P(A) by counting for the AAMFT study?</summary>
+    <div class="body">
+      <p>Because counting only works when sample points are <em>equally likely</em>, and these are
+      not. There are four types, so counting would give
+      <span class="m" role="math" aria-label="3 over 4 equals 0.75"><span class="frac"><span>3</span><span class="den">4</span></span> = 0.75</span>
+      for the three-point event &#8212; but the right answer is 0.88.</p>
+      <p>The gap between 0.75 and 0.88 is the whole reason the counting shortcut needs its
+      assumption stated out loud.</p>
+    </div>
+  </details>
+
+  <details class="check">
+    <summary>Choose 5 movies from 20 to watch this month. How many ways, and does order matter?</summary>
+    <div class="body">
+      <p>Order does not matter &#8212; you are choosing a set, not a sequence &#8212; so it is
+      combinations:</p>
+      <span class="eq m" role="math" aria-label="20 choose 5 equals 15,504">
+        <span class="binom"><span class="paren">(</span><span class="stack">20<br>5</span><span class="paren">)</span></span>
+        <span class="op">= 15,504</span>
+      </span>
+      <p>If you were choosing five movies to watch <em>in a particular order</em> across five
+      weekends, that is a different question with
+      <span class="m" role="math" aria-label="15,504 times 5 factorial equals 1,860,480">15,504 &#215; 5! = 1,860,480</span>
+      answers. Same objects, different experiment, different sample space.</p>
+    </div>
+  </details>
+</div>
+
+<div class="callout key">
+  <p><strong>Carry into 3.2:</strong> you now have a sample space, a way to count it, and a way to
+  attach probabilities to its points. Everything from here is about <em>combining</em> events
+  &#8212; and that starts with two words, <em>and</em> and <em>or</em>, which turn out to mean
+  something very precise.</p>
+</div>
+
+</main>
 </body>
 </html>

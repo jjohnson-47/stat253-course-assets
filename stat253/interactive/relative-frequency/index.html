@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Relative Frequency Simulator</title>
+    <link rel="icon" href="data:," />
+    <script type="module" crossorigin src="./assets/index-wpHeZKyy.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-bmJqx7e4.css">
+  </head>
+  <body>
+    <main>
+      <header class="page-header">
+        <h1>Relative Frequency Simulator</h1>
+        <p class="lead">
+          Run the same experiment again and again. Short runs can land far from the true
+          probability; long runs usually settle close to it.
+        </p>
+      </header>
+
+      <aside class="callout key" aria-labelledby="watch-heading">
+        <h2 id="watch-heading">What to watch</h2>
+        <p>
+          Start with 10 trials and notice the noise. Then add 100 and 1,000. The proportion does
+          not become exactly equal to the theoretical probability, but its swings become smaller.
+          Try a biased coin last: relative frequency converges there too, just to a different
+          target.
+        </p>
+      </aside>
+
+      <section class="card controls-card" aria-labelledby="controls-heading">
+        <h2 id="controls-heading">Set up the experiment</h2>
+
+        <fieldset class="experiment-options">
+          <legend>Experiment</legend>
+          <label><input type="radio" name="experiment" value="fair-coin" checked disabled /> Fair coin</label>
+          <label><input type="radio" name="experiment" value="fair-die" disabled /> Fair six-sided die</label>
+          <label><input type="radio" name="experiment" value="biased-coin" disabled /> Biased coin</label>
+        </fieldset>
+
+        <div id="biased-controls" class="setting-row" hidden>
+          <label for="biased-probability">Probability of heads</label>
+          <input
+            id="biased-probability"
+            type="range"
+            min="0.05"
+            max="0.95"
+            step="0.01"
+            value="0.70"
+            aria-describedby="biased-probability-help"
+            disabled
+          />
+          <output id="biased-probability-value" for="biased-probability">0.70</output>
+          <p id="biased-probability-help" class="control-help">Changing this value resets the run.</p>
+        </div>
+
+        <div class="setting-row seed-row">
+          <label for="seed">Seed</label>
+          <input id="seed" type="number" min="0" max="4294967295" step="1" value="15" aria-describedby="seed-help" disabled />
+          <p id="seed-help" class="control-help">Use the same seed to reproduce the same sequence. Changing it resets the run.</p>
+        </div>
+
+        <div class="run-row" aria-label="Run trials">
+          <span class="run-label">Run</span>
+          <button type="button" data-batch="1" aria-label="Run 1 trial" disabled>+1</button>
+          <button type="button" data-batch="10" aria-label="Run 10 trials" disabled>+10</button>
+          <button type="button" data-batch="100" aria-label="Run 100 trials" disabled>+100</button>
+          <button type="button" data-batch="1000" aria-label="Run 1,000 trials" disabled>+1,000</button>
+          <button id="reset" class="secondary-button" type="button" disabled>Reset</button>
+        </div>
+
+        <noscript>
+          <div class="callout warning">
+            <p>
+              The simulator needs JavaScript to run trials. The explanation, theoretical values,
+              table, and chart reference lines remain available below.
+            </p>
+          </div>
+        </noscript>
+      </section>
+
+      <section class="card results-card" aria-labelledby="results-heading">
+        <h2 id="results-heading">Results</h2>
+        <div id="readout" aria-live="polite" aria-atomic="true">
+          <p id="announcement" class="visually-hidden">No trials yet.</p>
+          <p class="trial-total">Trials so far: <strong id="trial-count">0</strong></p>
+
+          <div class="table-wrap">
+            <table>
+              <caption>
+                Counts and relative frequencies from this run, compared with the theoretical
+                probabilities.
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Outcome</th>
+                  <th scope="col">Count</th>
+                  <th scope="col">Relative frequency</th>
+                  <th scope="col">Theoretical</th>
+                </tr>
+              </thead>
+              <tbody id="results-body">
+                <tr><th scope="row">Heads</th><td>0</td><td>&mdash;</td><td>0.5000</td></tr>
+                <tr><th scope="row">Tails</th><td>0</td><td>&mdash;</td><td>0.5000</td></tr>
+              </tbody>
+              <tfoot>
+                <tr><th scope="row">Total</th><td id="count-total">0</td><td id="frequency-total">&mdash;</td><td>1.0000</td></tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="charts-grid" aria-label="Charts">
+        <figure class="card chart-card">
+          <h2>Observed and theoretical proportions</h2>
+          <svg id="bar-chart" viewBox="0 0 520 320" role="img" aria-labelledby="bar-title bar-desc">
+            <title id="bar-title">Observed and theoretical proportions by outcome</title>
+            <desc id="bar-desc">
+              No trials yet. Heads and tails each have theoretical probability 0.5000. The
+              theoretical bars are dashed outlines; observed proportions will appear as solid bars.
+            </desc>
+            <g id="bar-plot" aria-hidden="true">
+              <line x1="58" y1="240" x2="498" y2="240" stroke="#5f6368" stroke-width="1.5" />
+              <rect x="151" y="130" width="34" height="110" fill="none" stroke="#a0522d" stroke-width="2" stroke-dasharray="6 4" />
+              <rect x="371" y="130" width="34" height="110" fill="none" stroke="#a0522d" stroke-width="2" stroke-dasharray="6 4" />
+              <text x="168" y="258" text-anchor="middle">Heads</text>
+              <text x="388" y="258" text-anchor="middle">Tails</text>
+              <text x="48" y="244" text-anchor="end">0</text>
+              <text x="48" y="134" text-anchor="end">0.5</text>
+              <text x="48" y="24" text-anchor="end">1</text>
+              <rect x="82" y="280" width="18" height="12" fill="#8e9cb8" stroke="#52627d" />
+              <text x="108" y="290">Observed</text>
+              <rect x="282" y="280" width="18" height="12" fill="none" stroke="#a0522d" stroke-width="2" stroke-dasharray="5 3" />
+              <text x="308" y="290">Theoretical</text>
+            </g>
+          </svg>
+          <figcaption>Solid bars are observed proportions. Dashed outlines are theoretical probabilities.</figcaption>
+        </figure>
+
+        <figure class="card chart-card">
+          <div class="chart-heading-row">
+            <h2>Convergence over trials</h2>
+            <label for="tracked-outcome">Track outcome</label>
+            <select id="tracked-outcome" disabled>
+              <option value="0">Heads</option>
+              <option value="1">Tails</option>
+            </select>
+          </div>
+          <svg id="convergence-chart" viewBox="0 0 520 320" role="img" aria-labelledby="convergence-title convergence-desc">
+            <title id="convergence-title">Relative frequency of heads over trial number</title>
+            <desc id="convergence-desc">
+              No trials yet. The dashed horizontal line marks the theoretical probability 0.5000.
+              Trial number uses a logarithmic scale so early variation remains visible.
+            </desc>
+            <g id="convergence-plot" aria-hidden="true">
+              <line x1="58" y1="240" x2="498" y2="240" stroke="#5f6368" stroke-width="1.5" />
+              <line x1="58" y1="20" x2="58" y2="240" stroke="#5f6368" stroke-width="1.5" />
+              <line x1="58" y1="130" x2="498" y2="130" stroke="#a0522d" stroke-width="2" stroke-dasharray="7 5" />
+              <text x="58" y="258" text-anchor="middle">1</text>
+              <text x="498" y="258" text-anchor="middle">10</text>
+              <text x="48" y="244" text-anchor="end">0</text>
+              <text x="48" y="134" text-anchor="end">0.5</text>
+              <text x="48" y="24" text-anchor="end">1</text>
+              <text x="278" y="306" text-anchor="middle">Trial number (log scale)</text>
+            </g>
+          </svg>
+          <figcaption>The horizontal axis is logarithmic, giving early trials enough room to show their larger swings.</figcaption>
+        </figure>
+      </section>
+
+      <aside class="callout key takeaway" aria-labelledby="takeaway-heading">
+        <h2 id="takeaway-heading">The takeaway</h2>
+        <p>
+          Relative frequency is an estimate made from data. More trials do not force the estimate
+          to equal the true probability, but they make a large miss less common. That remains true
+          when the probability is not one-half and symmetry cannot tell you its value.
+        </p>
+      </aside>
+    </main>
+  </body>
+</html>

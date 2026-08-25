@@ -1,517 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Section 3.1 Part A: Introduction to Probability</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            }
-        };
-    </script>
-    <style>
-        :root {
-            --primary: #0466c8;
-            --primary-light: #e0f2fe;
-            --accent: #0353a4;
-            --dark: #2c3e50;
-            --light: #f8f9fa;
-            --success: #38b000;
-            --warning: #ffbe0b;
-            --info: #4361ee;
-        }
-        
-        html {
-            font-size: 100%;
-            box-sizing: border-box;
-        }
-        
-        *, *::before, *::after {
-            box-sizing: inherit;
-        }
-        
-        body {
-            font-family: 'Open Sans', Arial, sans-serif;
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 1.6;
-            color: #333333;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Open Sans', Arial, sans-serif;
-            font-weight: 700;
-            line-height: 1.3;
-            color: #222222;
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        h1 {
-            font-size: 2.2rem;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 10px;
-            text-align: center;
-        }
-        
-        h2 {
-            font-size: 1.6rem;
-            border-bottom: 2px solid var(--primary-light);
-            padding-bottom: 5px;
-        }
-        
-        h3 {
-            font-size: 1.3rem;
-            color: var(--primary);
-        }
-        
-        .card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-        
-        .definition-box {
-            background-color: var(--primary-light);
-            border-left: 5px solid var(--primary);
-            border-radius: 5px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .example-box {
-            background-color: #fff8e6;
-            border-left: 5px solid var(--warning);
-            border-radius: 5px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .motivation-box {
-            background-color: #fff5f5;
-            border-left: 5px solid #dc3545;
-            border-radius: 5px;
-            padding: 20px;
-            margin: 20px 0;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section 3.1 Part A: Events, Sample Spaces, and Probability</title>
+<!--
+  STAT A253 - Applied Statistics for the Sciences
+  Section 3.1 Part A.
 
-        .tree-diagram {
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 30px;
-            margin: 20px 0;
-            text-align: center;
-        }
+  NO THIRD-PARTY RUNTIME DEPENDENCIES. This page loads nothing from a CDN.
+  The previous version pulled polyfill.io (a compromised external dependency),
+  MathJax from jsdelivr, and two Google
+  Fonts origins. All four are gone. Math is rendered with plain HTML and CSS and
+  labelled for screen readers; the type is a system font stack. Page-load
+  requests stay on the course-assets origin. The optional video is an external
+  link rather than an embedded player, so it makes no request until activated.
 
-        .tree-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
-        }
+  Style follows the course house style so the embedded page does not announce
+  itself as a different course.
+-->
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+html { background: #ffffff; }
+body {
+  margin: 0;
+  color: #202124;
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+main { width: min(100%, 920px); margin: 0 auto; padding: 20px 24px 32px; }
+p { margin: 0 0 1rem; }
+.lead { font-size: 1.08rem; }
+h1 {
+  margin: 0 0 1.1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid #4a3466;
+  color: #1f3864;
+  font-size: 1.6rem;
+  line-height: 1.25;
+}
+h2 { margin: 1.55rem 0 0.55rem; color: #1f3864; font-size: 1.3rem; line-height: 1.25; }
+h3 { margin: 1.2rem 0 0.4rem; color: #2d6a4f; font-size: 1.08rem; }
+ul, ol { margin: 0.4rem 0 1rem; padding-left: 1.55rem; }
+li { margin: 0.35rem 0; }
+a { color: #005ea8; text-decoration: underline; text-underline-offset: 0.12em; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid #f2c94c; outline-offset: 2px; box-shadow: 0 0 0 1px #202124; }
+table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1rem; }
+th, td { padding: 0.55rem 0.7rem; border: 1px solid #c7d0dd; text-align: left; }
+th { color: #ffffff; background: #1f3864; }
+tbody tr:nth-child(even) { background: #f4f6f9; }
+.card {
+  margin: 0 0 1.15rem;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid #dfe3e8;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.card > h2 { margin-top: 0; padding-bottom: 0.4rem; border-bottom: 2px solid #2d6a4f; }
+.callout { margin: 1.1rem 0; padding: 0.9rem 1rem; border-left: 5px solid #1f3864; background: #eef3f8; }
+.callout.warning { border-left-color: #a14b00; background: #fff4e8; }
+.callout.key { border-left-color: #2d6a4f; background: #edf8f1; }
+.callout p:last-child, .card p:last-child { margin-bottom: 0; }
+.callout h3 { margin-top: 0; }
 
-        .tree-level {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 80px;
-            position: relative;
-        }
+/* Definitions: a real description list, so a screen reader announces term and definition */
+.defs { margin: 0.6rem 0 0; }
+.defs > div { padding: 0.85rem 1rem; border-left: 5px solid #4a3466; background: #f5f2f9; margin-bottom: 0.7rem; }
+.defs dt { font-weight: 700; color: #1f3864; font-size: 1.02rem; }
+.defs dd { margin: 0.3rem 0 0; }
+.defs .eg { display: block; margin-top: 0.3rem; color: #5f6368; font-size: 0.95rem; }
 
-        .tree-node {
-            background: var(--primary);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 50%;
-            font-weight: bold;
-            min-width: 50px;
-            position: relative;
-        }
+/* Worked example */
+.example { margin: 1.1rem 0; padding: 1rem 1.1rem; border: 1px solid #e6d9b8; border-radius: 5px; background: #fffaf0; }
+.example > h3 { margin-top: 0; color: #7a5a00; }
+.qline { font-weight: 700; color: #202124; }
 
-        .tree-branch {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
+/* Figures */
+figure { margin: 1.1rem 0; text-align: center; }
+figure img { max-width: 100%; height: auto; border: 1px solid #c7d0dd; border-radius: 5px; }
+figcaption { margin-top: 0.5rem; color: #5f6368; font-size: 0.93rem; text-align: left; }
+.rlink { display: inline-block; margin-top: 0.5rem; font-size: 0.93rem; }
 
-        .branch-label {
-            font-size: 0.9em;
-            color: #666;
-            margin: 8px 0;
-            font-weight: bold;
-        }
+.resource-link { display: block; padding: 0.9rem 1rem; border: 2px solid #2d6a4f; border-radius: 6px; color: #202124; background: #edf8f1; text-decoration: none; }
+.resource-link:hover { background: #e0f2e8; }
+.resource-link strong { display: block; color: #1f3864; margin-bottom: 0.2rem; }
 
-        .sample-point {
-            background: var(--success);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 15px;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
+/* Math without a CDN. Every expression carries an aria-label so it is spoken
+   as words rather than as a run of loose symbols. */
+.m { font-family: "Cambria Math", Cambria, Georgia, serif; font-style: italic; white-space: nowrap; }
+.m .op, .m .num { font-style: normal; }
+.frac { display: inline-block; vertical-align: -0.55em; text-align: center; font-style: normal; margin: 0 0.15em; }
+.frac > span { display: block; padding: 0 0.3em; font-size: 0.92em; }
+.frac .den { border-top: 1px solid currentColor; }
+.eq { display: block; margin: 0.8rem 0; text-align: center; font-size: 1.08rem; }
 
-        /* Tree diagram connecting lines */
-        .tree-level:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 20px;
-            background: #ccc;
-        }
+/* Self-check: native details, keyboard operable, no script */
+.check { border: 1px solid #dfe3e8; border-radius: 5px; margin-bottom: 0.7rem; background: #ffffff; }
+.check > summary {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 700;
+  color: #1f3864;
+  background: #f4f6f9;
+  border-radius: 4px;
+  list-style-position: inside;
+}
+.check > summary:hover { background: #e9eef5; }
+.check[open] > summary { border-bottom: 1px solid #dfe3e8; border-radius: 4px 4px 0 0; }
+.check .body { padding: 0.9rem 1rem; }
+.check .body p:last-child { margin-bottom: 0; }
 
-        .tree-branch::before {
-            content: '';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 20px;
-            background: #ccc;
-        }
+.next { margin-top: 1.6rem; padding: 1rem 1.15rem; border-left: 5px solid #4a3466; background: #f5f2f9; }
+.next p:last-child { margin-bottom: 0; }
 
-        .tree-level:first-child .tree-branch::before {
-            display: none;
-        }
-
-        .probability-explorer {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .experiment-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-
-        .exp-btn {
-            padding: 10px 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .exp-btn:hover {
-            background: var(--accent);
-        }
-
-        .experiment-result {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 15px 0;
-            border-left: 4px solid var(--success);
-            display: none;
-        }
-
-        .next-section {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .next-section a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 5px;
-            display: inline-block;
-            transition: background-color 0.3s ease;
-        }
-
-        .next-section a:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        /* Code and monospace styling */
-        pre, code {
-            font-family: 'Roboto Mono', "Courier New", monospace;
-            font-size: 0.9375rem;
-            background-color: #f4f4f4;
-            border-radius: 4px;
-        }
-        
-        code {
-            padding: 0.2em 0.4em;
-        }
-        
-        pre {
-            padding: 1em;
-            overflow-x: auto;
-            border: 1px solid #ddd;
-        }
-        
-        /* Math rendering compatibility */
-        .katex {
-            font-size: 1.1em !important;
-        }
-    </style>
+@media (max-width: 640px) {
+  main { padding: 16px 16px 26px; }
+  h1 { font-size: 1.35rem; }
+  th, td { padding: 0.45rem 0.5rem; }
+  .card { padding: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
 </head>
 <body>
-    <h1>🎯 Section 3.1 Part A: Introduction to Probability</h1>
-    
-    <div class="card">
-        <h2>Why Probability Matters</h2>
-        <div class="motivation-box">
-            <p><strong>Probability is the reverse of statistics:</strong> Instead of making inferences about populations from samples, we use our knowledge of populations to predict the likelihood of sample outcomes.</p>
-        </div>
-        
-        <h3>🛢️ Real-World Motivation: Making Decisions Under Uncertainty</h3>
-        
-        <div class="example-box">
-            <h4>Example 1: Oil Drilling Investment</h4>
-            <p>An oil exploration company has drilled 10 wells in the past year. <strong>All 10 came up dry.</strong></p>
-            <p><strong>Question:</strong> If the company claims to hit oil 50% of the time, would you invest?</p>
-            <p><strong>Answer:</strong> Probably not! Getting 10 dry wells when the success rate should be 50% is extremely improbable if their claim is true.</p>
-            
-            <div style="text-align: center; margin: 20px 0;">
-                <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/binomial_oil_wells_plot.png" 
-                     alt="Binomial probability distribution showing likelihood of getting 0-10 successes out of 10 trials with p=0.5" 
-                     style="max-width: 85%; width: 85%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-                <div style="margin-top: 10px;">
-                    <a href="https://raw.githubusercontent.com/jjohnson-47/stat253-course-assets/main/stat253/r-code/oilplot.R" 
-                       download="oilplot.R" 
-                       style="display: inline-flex; align-items: center; gap: 8px; color: #0466c8; text-decoration: none; font-size: 0.9em; padding: 6px 12px; background: #f8f9fa; border-radius: 4px; border: 1px solid #dee2e6; transition: all 0.2s ease;"
-                       onmouseover="this.style.background='#e9ecef'; this.style.transform='translateY(-1px)'"
-                       onmouseout="this.style.background='#f8f9fa'; this.style.transform='translateY(0)'">
-                        <span style="font-size: 1.1em;">📊</span>
-                        Generate this plot yourself with R
-                    </a>
-                </div>
-            </div>
-            
-            <p><strong>Mathematical Analysis:</strong> The probability of getting 0 successes out of 10 trials when the true success rate is 50% is only $P(X = 0) = \binom{10}{0}(0.5)^{10} = \frac{1}{1024} \approx 0.001$ or about 0.1%!</p>
-        </div>
-        
-        <div class="example-box">
-            <h4>Example 2: Suspicious Card Game</h4>
-            <p>You're playing poker. In three consecutive hands, one player gets four aces each time.</p>
-            <p><strong>Question:</strong> Are the cards properly shuffled?</p>
-            <p><strong>Answer:</strong> Almost certainly not! This outcome is so improbable with fair shuffling that you should suspect cheating.</p>
-            
-            <div style="text-align: center; margin: 20px 0;">
-                <img src="https://jjohnson-47.github.io/stat253-course-assets/stat253/images/four_aces_probabilities.png" 
-                     alt="Probability calculations for getting four aces in consecutive poker hands" 
-                     style="max-width: 90%; width: 90%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);" />
-                <div style="margin-top: 10px;">
-                    <a href="https://raw.githubusercontent.com/jjohnson-47/stat253-course-assets/main/stat253/r-code/four_aces_probabilities.R" 
-                       download="four_aces_probabilities.R" 
-                       style="display: inline-flex; align-items: center; gap: 8px; color: #0466c8; text-decoration: none; font-size: 0.9em; padding: 6px 12px; background: #f8f9fa; border-radius: 4px; border: 1px solid #dee2e6; transition: all 0.2s ease;"
-                       onmouseover="this.style.background='#e9ecef'; this.style.transform='translateY(-1px)'"
-                       onmouseout="this.style.background='#f8f9fa'; this.style.transform='translateY(0)'">
-                        <span style="font-size: 1.1em;">🃏</span>
-                        Generate this analysis yourself with R
-                    </a>
-                </div>
-            </div>
-            
-            <p><strong>Mathematical Analysis:</strong> The probability of getting four aces in a single 5-card hand is approximately $\frac{48}{270,725} \approx 0.00018$. Getting this three times in a row has probability around $2.4 \times 10^{-11}$ - essentially impossible!</p>
-        </div>
-        
-        <p><strong>The Key Insight:</strong> We need probability theory to determine when observed results are "too improbable" to believe they occurred by chance.</p>
-    </div>
-    
-    <div class="card">
-        <h2>📚 Essential Definitions</h2>
-        
-        <div class="definition-box">
-            <h3>Experiment</h3>
-            <p><strong>Definition:</strong> An act or process of observation that leads to a single outcome that cannot be predicted with certainty.</p>
-            <p><strong>Examples:</strong> Toss a coin, roll a die, survey a voter, measure dissolved oxygen</p>
-        </div>
-        
-        <div class="definition-box">
-            <h3>Sample Point</h3>
-            <p><strong>Definition:</strong> The most basic outcome of an experiment—cannot be decomposed further.</p>
-            <p><strong>Examples:</strong> H, T (coin); 1,2,3,4,5,6 (die); HH, HT, TH, TT (two coins)</p>
-        </div>
-        
-        <div class="definition-box">
-            <h3>Sample Space ($S$)</h3>
-            <p><strong>Definition:</strong> The set of all possible sample points for an experiment.</p>
-            <p><strong>Notation:</strong> $S = \{H, T\}$ or $S = \{1, 2, 3, 4, 5, 6\}$</p>
-        </div>
-        
-        <div class="definition-box">
-            <h3>Event ($A$)</h3>
-            <p><strong>Definition:</strong> Any collection (subset) of one or more sample points in $S$.</p>
-            <p><strong>Example:</strong> $A = \{\text{even number}\} = \{2, 4, 6\}$</p>
-        </div>
-    </div>
-    
-    <div class="card">
-        <h2>📹 Video: Sample Spaces and Events</h2>
-        <div class="example-box">
-            <p>This video covers the fundamental concepts of sample spaces, events, and their relationships including unions, intersections, and complements.</p>
-            
-            <div style="text-align: center; margin: 20px 0;">
-                <iframe width="480" height="270" src="https://www.youtube.com/embed/PamWL2WN-to?si=PVvpU3pygWwKza9M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);"></iframe>
-            </div>
-            
-            <p><strong>Key Topics:</strong> Sample space definition, event relationships (A ∪ B, A ∩ B, A^c), and practical problem-solving with probability calculations.</p>
-        </div>
-    </div>
-    
-    <div class="card">
-        <h2>🎲 Experiment Explorer</h2>
-        <p style="text-align: center; color: #666;">
-            Explore different experiments and see their sample spaces
-        </p>
-        
-        <div class="probability-explorer">
-            <div class="experiment-buttons">
-                <button class="exp-btn" onclick="showExperiment('coin')">Single Coin</button>
-                <button class="exp-btn" onclick="showExperiment('die')">Single Die</button>
-                <button class="exp-btn" onclick="showExperiment('twoCoins')">Two Coins</button>
-                <button class="exp-btn" onclick="showExperiment('business')">Business Venture</button>
-            </div>
-            
-            <div id="experimentResult" class="experiment-result">
-                <h4 id="expTitle"></h4>
-                <p><strong>Experiment:</strong> <span id="expDescription"></span></p>
-                <p><strong>Sample Space $S$:</strong> <span id="expSampleSpace"></span></p>
-                <p><strong>Total Possible Outcomes:</strong> <span id="expCount"></span></p>
-                <div id="expExplanation" style="margin-top: 15px; padding: 10px; background: #f0f4f8; border-radius: 5px;"></div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="card">
-        <h2>🌳 Understanding Sample Points: Two Coins Example</h2>
-        <p>Let's carefully analyze tossing two coins to understand why order matters:</p>
-        
-        <div class="tree-diagram">
-            <h4>Tree Diagram for Two Coin Tosses</h4>
-            <div class="tree-container">
-                <div class="tree-level">
-                    <div class="tree-node">Start</div>
-                </div>
-                
-                <div class="tree-level">
-                    <div class="tree-branch">
-                        <div class="branch-label">Coin 1: H</div>
-                        <div class="tree-node">H</div>
-                    </div>
-                    <div class="tree-branch">
-                        <div class="branch-label">Coin 1: T</div>
-                        <div class="tree-node">T</div>
-                    </div>
-                </div>
-                
-                <div class="tree-level">
-                    <div class="tree-branch">
-                        <div class="branch-label">Coin 2: H</div>
-                        <div class="sample-point">HH</div>
-                    </div>
-                    <div class="tree-branch">
-                        <div class="branch-label">Coin 2: T</div>
-                        <div class="sample-point">HT</div>
-                    </div>
-                    <div class="tree-branch">
-                        <div class="branch-label">Coin 2: H</div>
-                        <div class="sample-point">TH</div>
-                    </div>
-                    <div class="tree-branch">
-                        <div class="branch-label">Coin 2: T</div>
-                        <div class="sample-point">TT</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="definition-box">
-            <p><strong>Why Four Sample Points?</strong></p>
-            <p>Even though the coins look identical, we must distinguish between them. HT means "Head on coin 1, Tail on coin 2" while TH means "Tail on coin 1, Head on coin 2." These are different outcomes!</p>
-            <p><strong>Sample Space:</strong> $S = \{HH, HT, TH, TT\}$ with 4 total outcomes</p>
-        </div>
-    </div>
-    
-    <div class="next-section">
-        <h3>Ready for More Advanced Concepts?</h3>
-        <p>Continue to Part B for counting rules, probability calculations, and detailed applications.</p>
-        <a href="../section-3-1-part-b/">Continue to Section 3.1 Part B →</a>
-    </div>
-    
-    <script>
-        const experiments = {
-            coin: {
-                title: "Single Coin Toss",
-                description: "Toss one fair coin and observe the up face",
-                sampleSpace: "{H, T}",
-                count: "2",
-                explanation: "This is the simplest probability experiment. Each outcome (H or T) is equally likely with probability 1/2."
-            },
-            die: {
-                title: "Single Die Roll",
-                description: "Roll one fair six-sided die and observe the up face",
-                sampleSpace: "{1, 2, 3, 4, 5, 6}",
-                count: "6",
-                explanation: "Each face has equal probability 1/6. This forms the basis for many probability calculations and games of chance."
-            },
-            twoCoins: {
-                title: "Two Coin Tosses",
-                description: "Toss two fair coins and observe both up faces",
-                sampleSpace: "{HH, HT, TH, TT}",
-                count: "4",
-                explanation: "Order matters! HT (Head then Tail) is different from TH (Tail then Head). Each outcome has probability 1/4."
-            },
-            business: {
-                title: "Business Venture",
-                description: "Invest in a business venture and observe the outcome",
-                sampleSpace: "{Success, Failure}",
-                count: "2",
-                explanation: "Unlike coins, these outcomes may not be equally likely. Success probability depends on market conditions, management, etc."
-            }
-        };
+<main>
 
-        function showExperiment(type) {
-            const exp = experiments[type];
-            document.getElementById('expTitle').textContent = exp.title;
-            document.getElementById('expDescription').textContent = exp.description;
-            document.getElementById('expSampleSpace').textContent = exp.sampleSpace;
-            document.getElementById('expCount').textContent = exp.count;
-            document.getElementById('expExplanation').textContent = exp.explanation;
-            document.getElementById('experimentResult').style.display = 'block';
-            
-            // Re-render MathJax
-            if (window.MathJax) {
-                MathJax.typesetPromise([document.getElementById('experimentResult')]).catch((err) => console.log(err.message));
-            }
-        }
-    </script>
+<h1>Section 3.1 Part A: Events, Sample Spaces, and Probability</h1>
+
+<p class="lead">Statistics reasons from a sample back to the population it came from.
+Probability runs the same road in the other direction: it starts from what we assume is true
+about a population and works out how likely a particular sample would be. You need the second
+one before the first one means anything.</p>
+
+<div class="card">
+  <h2>Why this comes first</h2>
+
+  <p>Every inference you make for the rest of this course rests on one move: deciding whether
+  what you observed is <em>too unlikely</em> to be a coincidence. Chapter 3 is where you learn to
+  put a number on "too unlikely." Here are two cases where the number does the deciding.</p>
+
+  <div class="example">
+    <h3>Ten dry wells</h3>
+    <p>An oil exploration company has drilled ten wells in the past year and every one came up
+    dry. The company's prospectus claims it hits oil about half the time.</p>
+    <p class="qline">Would you invest?</p>
+    <p>If the claim were true, ten dry wells in a row has probability</p>
+    <span class="eq m" role="math" aria-label="P of X equals 0 equals 0.5 to the tenth power, equals 1 over 1024, approximately 0.001">
+      P(X = <span class="num">0</span>) = (<span class="num">0.5</span>)<sup class="num">10</sup>
+      <span class="op">=</span>
+      <span class="frac"><span>1</span><span class="den">1024</span></span>
+      <span class="op">&#8776; 0.001</span>
+    </span>
+    <p>About one chance in a thousand. Either the company got extraordinarily unlucky, or the
+    50&#37; claim is wrong. Probability does not tell you which &#8212; it tells you that one of
+    those two things has to be true, which is enough to keep your money in your pocket.</p>
+
+    <figure>
+      <img src="../../images/binomial_oil_wells_plot.png"
+           alt="Bar chart of the binomial distribution for 10 wells at a 50 percent success rate. The bars rise to a peak of about 0.25 at 5 successes and fall away symmetrically. The bar at 0 successes is barely visible above the axis, at about 0.001.">
+      <figcaption>How ten wells should behave if the 50&#37; claim is true. Five hits is the most
+      likely single result. Zero is the bar you can barely see.</figcaption>
+      <a class="rlink" href="../../r-code/oilplot.R" download>
+        See the R code that produced this plot</a>
+    </figure>
+  </div>
+
+  <div class="example">
+    <h3>Four aces, three times running</h3>
+    <p>You are playing poker. In three consecutive hands, the same player is dealt four aces.</p>
+    <p class="qline">Are the cards being shuffled honestly?</p>
+    <p>Four aces in one five-card hand has probability about
+      <span class="m" role="math" aria-label="48 over 2,598,960, approximately 0.0000185"><span class="frac"><span>48</span><span class="den">2,598,960</span></span> <span class="op">&#8776; 0.0000185</span></span>.
+      Three hands running, if the deals are independent, is roughly
+      <span class="m" role="math" aria-label="6.3 times 10 to the negative 15"><span class="num">6.3 &#215; 10<sup>&#8722;15</sup></span></span>
+      &#8212; about one chance in 159 trillion.</p>
+    <p>Nobody needs a statistics course to be suspicious here. The point is that probability lets
+    you say <em>how</em> suspicious, on a scale, and defend the number.</p>
+
+    <figure>
+      <img src="../../images/four_aces_probabilities.png"
+           alt="Log-scale bar chart comparing rare-event probabilities. Four aces in one five-card hand is about 0.0000185; four aces in three independent hands is about 6.3 times 10 to the negative 15, far below the other comparisons shown.">
+      <figcaption>The same event repeated. Each additional hand multiplies the improbability.</figcaption>
+      <a class="rlink" href="../../r-code/four_aces_probabilities.R" download>
+        See the R code that produced this analysis</a>
+    </figure>
+  </div>
+
+  <div class="callout key">
+    <p><strong>The idea to carry forward.</strong> A probability is not a prediction about the
+    next observation. It is a statement about how often something happens in the long run, and
+    that is what makes it usable as evidence.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Four definitions, in order</h2>
+  <p>These four build on each other, so read them in sequence rather than skipping to the one
+  that looks unfamiliar.</p>
+
+  <dl class="defs">
+    <div>
+      <dt>Experiment</dt>
+      <dd>An act of observation whose outcome cannot be predicted with certainty.
+        <span class="eg">Toss a coin. Roll a die. Ask one voter who they support. Measure the
+        dissolved oxygen in one water sample.</span></dd>
+    </div>
+    <div>
+      <dt>Sample point</dt>
+      <dd>The most basic possible outcome of an experiment. It cannot be broken down further.
+        <span class="eg">For one coin: H, or T. For one die: 1, 2, 3, 4, 5, or 6.</span></dd>
+    </div>
+    <div>
+      <dt>Sample space <span class="m">S</span></dt>
+      <dd>The set of every sample point the experiment can produce.
+        <span class="eg"><span class="m" role="math" aria-label="S equals the set containing H and T">S = {H, T}</span>
+        &nbsp;or&nbsp;
+        <span class="m" role="math" aria-label="S equals the set containing 1, 2, 3, 4, 5, 6">S = {1, 2, 3, 4, 5, 6}</span></span></dd>
+    </div>
+    <div>
+      <dt>Event <span class="m">A</span></dt>
+      <dd>Any collection of sample points from <span class="m">S</span>, including none or all. An event
+        happens when the experiment produces any sample point inside it.
+        <span class="eg"><span class="m" role="math" aria-label="A equals the event roll an even number, equals the set 2, 4, 6">A = {roll an even number} = {2, 4, 6}</span></span></dd>
+    </div>
+  </dl>
+
+  <div class="callout">
+    <p><strong>The distinction that gets missed:</strong> every sample point is an event, but
+    most events are not sample points. "Roll a 4" is both. "Roll an even number" is only an
+    event &#8212; it is three sample points wearing one name.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Video: sample spaces and events</h2>
+  <p>Fourteen minutes on the same four definitions, plus a first look at combining events with
+  <em>and</em>, <em>or</em> and <em>not</em> &#8212; which is where Section 3.2 picks up.</p>
+  <a class="resource-link" href="https://www.youtube.com/watch?v=PamWL2WN-to" target="_blank" rel="noopener">
+    <strong>Watch sample spaces and events on YouTube</strong>
+    The video opens in a new tab. This page does not load YouTube automatically.
+  </a>
+</div>
+
+<div class="card">
+  <h2>Why two coins have four outcomes, not three</h2>
+
+  <p>Toss two coins and record both faces. Students very often write the sample space as
+  <span class="m">{two heads, one of each, two tails}</span> &#8212; three outcomes. That is a
+  reasonable-sounding answer and it is wrong, and the reason it is wrong is the single most
+  useful thing on this page.</p>
+
+  <p>The coins are separate objects even when they look identical. <span class="m">HT</span>
+  means head on the first coin and tail on the second; <span class="m">TH</span> is the other way
+  round. They are different outcomes of the experiment, so they are different sample points.</p>
+
+  <figure>
+    <svg viewBox="0 0 640 300" width="100%" role="img" aria-labelledby="tree-t tree-d"
+         style="max-width:640px;height:auto;background:#ffffff;border:1px solid #c7d0dd;border-radius:5px;">
+      <title id="tree-t">Tree diagram for tossing two coins</title>
+      <desc id="tree-d">A tree starting from one node labelled Start. It branches to two nodes,
+      H and T, for the first coin. Each of those branches again into H and T for the second coin,
+      giving four end points: HH, HT, TH and TT. Two branches at the first stage times two at the
+      second stage gives four sample points.</desc>
+      <g fill="none" stroke="#8e9cb8" stroke-width="2">
+        <path d="M320 52 L170 122"/><path d="M320 52 L470 122"/>
+        <path d="M170 142 L95 212"/><path d="M170 142 L245 212"/>
+        <path d="M470 142 L395 212"/><path d="M470 142 L545 212"/>
+      </g>
+      <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+        <circle cx="320" cy="36" r="22" fill="#4a3466"/>
+        <text x="320" y="41" fill="#ffffff" font-size="12" font-weight="bold">Start</text>
+
+        <circle cx="170" cy="132" r="20" fill="#1f3864"/>
+        <text x="170" y="137" fill="#ffffff" font-size="14" font-weight="bold">H</text>
+        <circle cx="470" cy="132" r="20" fill="#1f3864"/>
+        <text x="470" y="137" fill="#ffffff" font-size="14" font-weight="bold">T</text>
+
+        <text x="228" y="88" fill="#5f6368" font-size="12">coin 1: H</text>
+        <text x="412" y="88" fill="#5f6368" font-size="12">coin 1: T</text>
+        <text x="112" y="180" fill="#5f6368" font-size="12">coin 2: H</text>
+        <text x="228" y="180" fill="#5f6368" font-size="12">coin 2: T</text>
+        <text x="412" y="180" fill="#5f6368" font-size="12">coin 2: H</text>
+        <text x="528" y="180" fill="#5f6368" font-size="12">coin 2: T</text>
+
+        <g fill="#2d6a4f">
+          <rect x="60" y="216" width="70" height="34" rx="17"/>
+          <rect x="210" y="216" width="70" height="34" rx="17"/>
+          <rect x="360" y="216" width="70" height="34" rx="17"/>
+          <rect x="510" y="216" width="70" height="34" rx="17"/>
+        </g>
+        <g fill="#ffffff" font-size="15" font-weight="bold">
+          <text x="95" y="239">HH</text><text x="245" y="239">HT</text>
+          <text x="395" y="239">TH</text><text x="545" y="239">TT</text>
+        </g>
+        <text x="320" y="284" fill="#202124" font-size="14">2 &#215; 2 = 4 sample points</text>
+      </g>
+    </svg>
+    <figcaption>Each stage of the experiment is a level of the tree. Count the endpoints and you
+    have counted the sample space.</figcaption>
+  </figure>
+
+  <div class="callout key">
+    <p><span class="m" role="math" aria-label="S equals the set HH, HT, TH, TT">S = {HH, HT, TH, TT}</span>,
+    and each of the four is equally likely for fair coins, so each has probability
+    <span class="m" role="math" aria-label="one quarter"><span class="frac"><span>1</span><span class="den">4</span></span></span>.
+    Notice that "exactly one head" is an <em>event</em> containing two of them, so its probability
+    is <span class="m" role="math" aria-label="one half"><span class="frac"><span>1</span><span class="den">2</span></span></span>
+    &#8212; twice that of "two heads". This is why the three-outcome answer fails: those three
+    outcomes are not equally likely.</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Check yourself before Part B</h2>
+  <p>Answer each one in your head first, then open it.</p>
+
+  <details class="check">
+    <summary>An experiment has 4 sample points. How many different events can you define?</summary>
+    <div class="body">
+      <p><strong>16.</strong> An event is any subset of <span class="m">S</span>, and a set of 4
+      elements has <span class="m" role="math" aria-label="2 to the fourth power equals 16">2<sup>4</sup> = 16</span>
+      subsets &#8212; including the empty set and all of <span class="m">S</span> itself.</p>
+      <p>If that surprised you, list them for a 2-point sample space
+      <span class="m">{H, T}</span> and you will find 4: <span class="m">{}</span>,
+      <span class="m">{H}</span>, <span class="m">{T}</span>, <span class="m">{H, T}</span>.</p>
+    </div>
+  </details>
+
+  <details class="check">
+    <summary>Roll two dice and record the total. Is 7 a sample point?</summary>
+    <div class="body">
+      <p><strong>It depends on how you defined the experiment, and that is the lesson.</strong></p>
+      <p>If the experiment is "record the total", then the sample points are the totals
+      <span class="m">2</span> through <span class="m">12</span> and 7 is one of them &#8212; but
+      they are <em>not</em> equally likely.</p>
+      <p>If the experiment is "record both faces", the sample points are the 36 ordered pairs, all
+      equally likely, and 7 is an event containing six of them:
+      <span class="m">(1,6) (2,5) (3,4) (4,3) (5,2) (6,1)</span>.</p>
+      <p>The second definition is almost always the more useful one, because equally likely
+      sample points let you compute probabilities by counting.</p>
+    </div>
+  </details>
+
+  <details class="check">
+    <summary>Why did the ten-dry-wells argument need probability at all? Isn't ten in a row obviously bad luck?</summary>
+    <div class="body">
+      <p>"Obviously" is doing a lot of work there. Ten failures in a row would be unremarkable if
+      the true success rate were 5&#37;, and nearly impossible at 50&#37;. The observation alone
+      says nothing; it only becomes evidence once you compute how likely it is
+      <em>under the claim being tested</em>. That comparison is the whole of statistical
+      inference, and you will do it formally in Chapter 8.</p>
+    </div>
+  </details>
+</div>
+
+<div class="next">
+  <p><strong>Next:</strong> Part B, directly below this page in the module, takes the counting
+  rules further &#8212; the multiplication rule, combinations, and how to assign probabilities to
+  sample points that are not equally likely.</p>
+</div>
+
+</main>
 </body>
 </html>
