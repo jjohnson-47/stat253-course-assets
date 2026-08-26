@@ -42,12 +42,30 @@
 
         button, select { font: inherit; }
 
-        button, select, canvas { -webkit-tap-highlight-color: transparent; }
+        button, select, svg { -webkit-tap-highlight-color: transparent; }
 
         .app {
             width: min(1180px, calc(100% - 28px));
             margin: 0 auto;
-            padding: 24px 0 34px;
+            padding: 14px 0 22px;
+        }
+
+        .mode-banner {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+            justify-content: center;
+            margin: 0 0 9px;
+            color: #41506a;
+            font-size: 0.82rem;
+            text-align: center;
+        }
+
+        .mode-banner a {
+            color: #075fae;
+            font-weight: 750;
+            text-underline-offset: 2px;
         }
 
         .hero {
@@ -57,7 +75,7 @@
             grid-template-columns: minmax(0, 1fr) minmax(230px, 300px);
             gap: 24px;
             align-items: end;
-            padding: 28px 30px;
+            padding: 22px 26px;
             color: white;
             background: linear-gradient(125deg, #14264d 0%, #244a88 55%, #356fc3 100%);
             border-radius: 24px;
@@ -87,14 +105,14 @@
         h1 {
             max-width: 760px;
             margin: 0;
-            font-size: clamp(1.85rem, 4vw, 3.1rem);
+            font-size: clamp(1.75rem, 3.5vw, 2.65rem);
             line-height: 1.04;
             letter-spacing: -0.045em;
         }
 
         .subtitle {
             max-width: 700px;
-            margin: 12px 0 0;
+            margin: 8px 0 0;
             color: #e2ecfb;
             font-size: 1rem;
         }
@@ -132,7 +150,7 @@
 
         select:focus-visible,
         button:focus-visible,
-        canvas:focus-visible {
+        a:focus-visible {
             outline: 3px solid #ffcf70;
             outline-offset: 3px;
         }
@@ -147,8 +165,8 @@
         .workspace {
             display: grid;
             grid-template-columns: minmax(0, 1.5fr) minmax(290px, 0.8fr);
-            gap: 18px;
-            margin-top: 18px;
+            gap: 14px;
+            margin-top: 14px;
         }
 
         .workspace > *,
@@ -162,7 +180,7 @@
             box-shadow: 0 12px 30px rgba(30, 47, 85, 0.075);
         }
 
-        .diagram-panel { padding: 18px; }
+        .diagram-panel { padding: 15px; }
 
         .panel-heading {
             display: flex;
@@ -211,50 +229,54 @@
         .swatch.target { background: var(--coral); }
         .swatch.outside { background: #e9edf4; border: 1px solid #cbd3e1; }
 
-        .canvas-shell {
-            position: relative;
+        .diagram-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(170px, 0.34fr);
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .venn-shell {
             overflow: hidden;
             width: 100%;
-            aspect-ratio: 16 / 10;
-            min-height: 330px;
             background: #f7f9fc;
             border: 1px solid var(--line);
             border-radius: 16px;
         }
 
-        canvas {
+        .venn-svg {
             display: block;
             width: 100%;
-            height: 100%;
+            height: auto;
+            min-height: 286px;
             cursor: crosshair;
         }
 
-        .hover-card {
-            position: absolute;
-            z-index: 2;
-            max-width: 210px;
-            padding: 8px 10px;
-            color: white;
-            background: rgba(20, 32, 55, 0.94);
-            border-radius: 9px;
-            box-shadow: 0 7px 18px rgba(18, 28, 49, 0.24);
-            font-size: 0.77rem;
-            pointer-events: none;
-            transform: translate(12px, 12px);
-        }
-
-        .hover-card[hidden] { display: none; }
+        .event-outline { fill: none; stroke-width: 3; vector-effect: non-scaling-stroke; }
+        .outline-a { stroke: #4058b5; }
+        .outline-b { stroke: #138176; }
+        .outline-c { stroke: #b96809; }
+        .event-label { font-size: 21px; font-weight: 850; }
+        .label-a { fill: #4058b5; }
+        .label-b { fill: #138176; }
+        .label-c { fill: #9b5708; }
+        .sample-label { fill: #657087; font-size: 15px; font-weight: 800; }
+        .region-fill { transition: fill 180ms ease; }
+        .region-label rect { fill: rgba(255, 255, 255, 0.92); stroke: rgba(93, 108, 135, 0.4); }
+        .region-label text { fill: #2d394f; text-anchor: middle; pointer-events: none; }
+        .region-label .region-name { font-size: 11px; font-weight: 800; }
+        .region-label .region-value { fill: #657087; font-size: 9px; font-weight: 750; font-variant-numeric: tabular-nums; }
 
         .region-grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 7px;
-            margin-top: 10px;
+            align-content: start;
         }
 
         .region-button {
-            min-height: 52px;
-            padding: 7px 8px;
+            min-height: 48px;
+            padding: 6px 7px;
             text-align: left;
             color: var(--ink);
             background: var(--surface-soft);
@@ -274,6 +296,11 @@
             border-color: var(--coral);
         }
 
+        .region-button.in-condition:not([aria-pressed="true"]) {
+            background: var(--blue-soft);
+            border-color: #94c5ec;
+        }
+
         .region-button strong,
         .region-button span { display: block; }
 
@@ -283,19 +310,20 @@
             margin-top: 2px;
             color: var(--muted);
             font-size: 0.72rem;
+            font-variant-numeric: tabular-nums;
         }
 
-        .controls-panel { padding: 20px; }
+        .controls-panel { padding: 16px; }
 
         .controls-panel h2 { margin-bottom: 15px; }
 
-        .field + .field { margin-top: 14px; }
+        .field + .field { margin-top: 10px; }
 
         .field label { color: var(--muted); }
 
         .readout {
-            margin-top: 18px;
-            padding: 17px;
+            margin-top: 12px;
+            padding: 14px;
             background: linear-gradient(145deg, #f5f8fe, #edf3fc);
             border: 1px solid #d8e2f2;
             border-radius: 15px;
@@ -316,6 +344,7 @@
             font-size: clamp(1.7rem, 4vw, 2.45rem);
             font-weight: 850;
             letter-spacing: -0.045em;
+            font-variant-numeric: tabular-nums;
         }
 
         .formula {
@@ -325,6 +354,7 @@
             font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
             font-size: 0.79rem;
             line-height: 1.55;
+            font-variant-numeric: tabular-nums;
         }
 
         .probability-bar {
@@ -345,7 +375,7 @@
 
         .atom-detail {
             min-height: 70px;
-            margin-top: 14px;
+            margin-top: 10px;
             padding: 13px 14px;
             color: #3d4960;
             background: #fff;
@@ -366,7 +396,7 @@
         .rules {
             display: grid;
             gap: 8px;
-            margin-top: 14px;
+            margin-top: 10px;
         }
 
         .rule {
@@ -377,6 +407,7 @@
             border-radius: 10px;
             font-size: 0.73rem;
             line-height: 1.5;
+            font-variant-numeric: tabular-nums;
         }
 
         .rule strong { color: var(--navy); }
@@ -385,6 +416,38 @@
             margin-top: 18px;
             padding: 20px;
         }
+
+        .relationship-panel.embedded {
+            margin-top: 12px;
+            padding: 0;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .relationship-panel.embedded .relationship-header { margin-bottom: 8px; }
+
+        .relationship-panel.embedded .relationship-header p { display: none; }
+
+        .relationship-panel.embedded .status-card { padding: 9px; }
+
+        .relationship-panel.embedded .status-icon {
+            width: 22px;
+            height: 22px;
+        }
+
+        .relationship-panel.embedded .status-card h3 { font-size: 0.77rem; }
+
+        .relationship-panel.embedded .status-card p {
+            margin-top: 5px;
+            font-size: 0.66rem;
+            line-height: 1.32;
+        }
+
+        .relationship-panel.embedded .pair-row { margin-top: 6px; }
+
+        .relationship-panel.embedded .pair-chip { padding: 2px 5px; }
 
         .relationship-header {
             display: flex;
@@ -410,6 +473,7 @@
             padding: 13px;
             border: 1px solid var(--line);
             border-radius: 13px;
+            font-variant-numeric: tabular-nums;
         }
 
         .status-top {
@@ -466,6 +530,23 @@
 
         .pair-chip.pass { color: #0d684c; border-color: #80c6ad; }
 
+        .noscript-panel {
+            margin-top: 14px;
+            padding: 18px;
+            background: var(--surface);
+            border: 2px solid var(--amber);
+            border-radius: 16px;
+        }
+
+        .noscript-panel h2 { margin: 0 0 6px; color: var(--navy); font-size: 1.05rem; }
+        .noscript-panel p { margin: 5px 0 10px; color: var(--muted); }
+        .noscript-panel table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+        .noscript-panel th,
+        .noscript-panel td { padding: 6px 8px; text-align: left; border: 1px solid var(--line); }
+        .noscript-panel th { background: var(--surface-soft); }
+
+        [hidden] { display: none !important; }
+
         .sr-only {
             position: absolute;
             width: 1px;
@@ -478,10 +559,13 @@
             border: 0;
         }
 
-        @media (max-width: 880px) {
+        @media (max-width: 700px) {
             .hero { grid-template-columns: 1fr; }
             .preset-control { max-width: 430px; }
             .workspace { grid-template-columns: 1fr; }
+            .diagram-layout { grid-template-columns: 1fr; }
+            .venn-svg { min-height: 0; }
+            .region-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
         }
 
         @media (max-width: 620px) {
@@ -489,7 +573,6 @@
             .hero { padding: 22px 19px; border-radius: 18px; }
             .panel { border-radius: 16px; }
             .diagram-panel, .controls-panel, .relationship-panel { padding: 14px; }
-            .canvas-shell { min-height: 290px; aspect-ratio: 4 / 3; }
             .region-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .relationship-grid { grid-template-columns: 1fr; }
             .relationship-header { align-items: flex-start; flex-direction: column; }
@@ -506,49 +589,90 @@
 </head>
 <body>
     <main class="app">
+        <p class="mode-banner" id="mode-banner"></p>
         <header class="hero">
             <div>
-                <p class="eyebrow">Section 3.4 · Interactive tool</p>
+                <p class="eyebrow" id="eyebrow">Probability · Interactive tool</p>
                 <h1>Three-Event Probability Explorer</h1>
-                <p class="subtitle">See the regions behind unions, intersections, conditioning, and three-event independence.</p>
+                <p class="subtitle" id="subtitle">See the regions behind unions, intersections, conditioning, and three-event independence.</p>
             </div>
             <div class="preset-control">
                 <label for="preset">Probability model</label>
-                <select id="preset">
-                    <option value="overlap">General overlap</option>
-                    <option value="exclusive">Mutually exclusive</option>
-                    <option value="independent">Mutually independent</option>
-                    <option value="pairwise">Pairwise, not mutually independent</option>
-                </select>
+                <select id="preset"></select>
                 <p class="preset-note" id="preset-note"></p>
             </div>
         </header>
 
+        <noscript>
+            <style>.interactive-content { display: none !important; }</style>
+            <section class="noscript-panel" aria-labelledby="noscript-title">
+                <h2 id="noscript-title">Three-event probability explorer</h2>
+                <p>JavaScript is unavailable, so the interactive shading controls cannot run. The default general-overlap model is shown below.</p>
+                <table>
+                    <thead><tr><th scope="col">Region</th><th scope="col">Probability</th></tr></thead>
+                    <tbody>
+                        <tr><td>Outside all three</td><td>0.13</td></tr>
+                        <tr><td>A only</td><td>0.17</td></tr>
+                        <tr><td>B only</td><td>0.12</td></tr>
+                        <tr><td>C only</td><td>0.10</td></tr>
+                        <tr><td>A ∩ B only</td><td>0.13</td></tr>
+                        <tr><td>A ∩ C only</td><td>0.08</td></tr>
+                        <tr><td>B ∩ C only</td><td>0.07</td></tr>
+                        <tr><td>A ∩ B ∩ C</td><td>0.20</td></tr>
+                    </tbody>
+                </table>
+                <p>P(A ∪ B) = 0.77. For the default restriction to C, P(A ∪ B | C) = 0.35 / 0.45 = 0.778.</p>
+            </section>
+        </noscript>
+
+        <div class="interactive-content">
         <section class="workspace" aria-label="Probability explorer">
-            <div class="panel diagram-panel">
+            <div class="panel diagram-panel" id="diagram-panel">
                 <div class="panel-heading">
                     <div>
                         <h2>Sample space S</h2>
-                        <p>Click a region to identify its exact set expression.</p>
+                        <p>Select a region in the diagram or use the buttons.</p>
                     </div>
                     <div class="legend" aria-label="Color legend">
                         <span class="legend-item"><span class="swatch condition"></span><span id="condition-legend">Conditioning space</span></span>
                         <span class="legend-item"><span class="swatch target"></span><span id="target-legend">Target within condition</span></span>
-                        <span class="legend-item"><span class="swatch outside"></span>Outside condition</span>
+                        <span class="legend-item"><span class="swatch outside"></span><span id="outside-legend">Outside condition</span></span>
                     </div>
                 </div>
 
-                <div class="canvas-shell" id="canvas-shell">
-                    <canvas id="venn" role="img" aria-label="Three-set Venn diagram showing events A, B, and C in sample space S"></canvas>
-                    <div class="hover-card" id="hover-card" hidden></div>
+                <div class="diagram-layout">
+                <div class="venn-shell">
+                    <svg id="venn" class="venn-svg" viewBox="0 0 640 400" role="img" aria-labelledby="venn-title venn-desc">
+                        <title id="venn-title">Three-event probability diagram</title>
+                        <desc id="venn-desc">Three overlapping events in sample space S. Currently shaded: A union B within C, conditional probability 0.778. Restricted to C.</desc>
+                        <rect x="12" y="12" width="616" height="376" rx="4" fill="#f8faff" stroke="#8793aa" stroke-width="1.5"></rect>
+                        <g id="region-fill-layer"></g>
+
+                        <circle class="event-outline outline-a" cx="260" cy="170" r="130"></circle>
+                        <circle class="event-outline outline-b" cx="380" cy="170" r="130"></circle>
+                        <circle class="event-outline outline-c" cx="320" cy="275" r="130"></circle>
+                        <text class="sample-label" x="26" y="36">S</text>
+                        <text class="event-label label-a" x="170" y="92">A</text>
+                        <text class="event-label label-b" x="470" y="92">B</text>
+                        <text class="event-label label-c" x="320" y="374" text-anchor="middle">C</text>
+
+                        <g class="region-label" data-label-mask="0" transform="translate(82 332)"><rect x="-42" y="-18" width="84" height="36" rx="9"></rect><text class="region-name" y="-3">Outside</text><text class="region-value" y="11">0.13</text></g>
+                        <g class="region-label" data-label-mask="4" transform="translate(183 160)"><rect x="-38" y="-18" width="76" height="36" rx="9"></rect><text class="region-name" y="-3">A only</text><text class="region-value" y="11">0.17</text></g>
+                        <g class="region-label" data-label-mask="2" transform="translate(457 160)"><rect x="-38" y="-18" width="76" height="36" rx="9"></rect><text class="region-name" y="-3">B only</text><text class="region-value" y="11">0.12</text></g>
+                        <g class="region-label" data-label-mask="1" transform="translate(320 342)"><rect x="-38" y="-18" width="76" height="36" rx="9"></rect><text class="region-name" y="-3">C only</text><text class="region-value" y="11">0.10</text></g>
+                        <g class="region-label" data-label-mask="6" transform="translate(320 80)"><rect x="-42" y="-18" width="84" height="36" rx="9"></rect><text class="region-name" y="-3">A ∩ B</text><text class="region-value" y="11">0.13</text></g>
+                        <g class="region-label" data-label-mask="5" transform="translate(242 260)"><rect x="-42" y="-18" width="84" height="36" rx="9"></rect><text class="region-name" y="-3">A ∩ C</text><text class="region-value" y="11">0.08</text></g>
+                        <g class="region-label" data-label-mask="3" transform="translate(398 260)"><rect x="-42" y="-18" width="84" height="36" rx="9"></rect><text class="region-name" y="-3">B ∩ C</text><text class="region-value" y="11">0.07</text></g>
+                        <g class="region-label" data-label-mask="7" transform="translate(320 190)"><rect x="-44" y="-18" width="88" height="36" rx="9"></rect><text class="region-name" y="-3">All three</text><text class="region-value" y="11">0.20</text></g>
+                    </svg>
                 </div>
-                <p class="sr-only" id="canvas-description"></p>
                 <div class="region-grid" id="region-grid" aria-label="Atomic Venn regions"></div>
+                </div>
             </div>
 
             <aside class="panel controls-panel">
                 <h2>Probability lens</h2>
-                <div class="field">
+                <div class="field" id="target-field">
                     <label for="target">Target event</label>
                     <select id="target">
                         <option value="AorB">A ∪ B</option>
@@ -569,7 +693,7 @@
                         <option value="BConly">B ∩ C only</option>
                     </select>
                 </div>
-                <div class="field">
+                <div class="field" id="condition-field">
                     <label for="condition">Restrict the sample space</label>
                     <select id="condition">
                         <option value="S">No restriction (S)</option>
@@ -584,8 +708,8 @@
 
                 <div class="readout" aria-live="polite">
                     <p class="readout-kicker" id="readout-kicker">Conditional probability</p>
-                    <p class="readout-value" id="readout-value">0.000</p>
-                    <p class="formula" id="formula"></p>
+                    <p class="readout-value" id="readout-value">0.778</p>
+                    <p class="formula" id="formula">P(A ∪ B | C) = 0.35 / 0.45 = 0.778</p>
                     <div class="probability-bar" aria-hidden="true"><div class="probability-fill" id="probability-fill"></div></div>
                 </div>
 
@@ -601,13 +725,14 @@
             </aside>
         </section>
 
-        <section class="panel relationship-panel" aria-labelledby="relationship-title">
+        <section class="panel relationship-panel" id="relationship-panel" aria-labelledby="relationship-title">
             <div class="relationship-header">
-                <h2 id="relationship-title">Event relationship checks</h2>
+                <h2 id="relationship-title">Relationship checks from probabilities</h2>
                 <p>Independence is tested from the probabilities, not from how the circles look.</p>
             </div>
             <div class="relationship-grid" id="relationship-grid"></div>
         </section>
+        </div>
     </main>
 
     <script>
@@ -627,18 +752,22 @@
 
             const PRESETS = {
                 overlap: {
+                    label: "General overlap",
                     note: "Every kind of overlap is possible, so the general additive rule is needed.",
                     weights: [0.13, 0.17, 0.12, 0.10, 0.13, 0.08, 0.07, 0.20]
                 },
                 exclusive: {
+                    label: "Mutually exclusive",
                     note: "The events are disjoint: unions add directly, but the events are not independent.",
                     weights: [0.15, 0.30, 0.25, 0.30, 0, 0, 0, 0]
                 },
                 independent: {
+                    label: "Mutually independent",
                     note: "All pairwise checks and the three-way check pass.",
                     weights: [0.21, 0.21, 0.14, 0.09, 0.14, 0.09, 0.06, 0.06]
                 },
                 pairwise: {
+                    label: "Pairwise, not mutually independent",
                     note: "Each pair is independent, but the three events are not mutually independent.",
                     weights: [0, 0.25, 0.25, 0.25, 0, 0, 0, 0.25]
                 }
@@ -664,18 +793,26 @@
                 BConly: { label: "B ∩ C only", test: mask => mask === 3 }
             };
 
+            const requestedMode = new URLSearchParams(window.location.search).get("mode");
+            const mode = ["3.4", "3.5", "3.6", "all"].includes(requestedMode) ? requestedMode : "all";
+
             const elements = {
+                modeBanner: document.getElementById("mode-banner"),
+                eyebrow: document.getElementById("eyebrow"),
+                subtitle: document.getElementById("subtitle"),
                 preset: document.getElementById("preset"),
                 presetNote: document.getElementById("preset-note"),
                 target: document.getElementById("target"),
                 condition: document.getElementById("condition"),
-                canvas: document.getElementById("venn"),
-                canvasShell: document.getElementById("canvas-shell"),
-                canvasDescription: document.getElementById("canvas-description"),
-                hoverCard: document.getElementById("hover-card"),
+                conditionField: document.getElementById("condition-field"),
+                diagramPanel: document.getElementById("diagram-panel"),
+                svg: document.getElementById("venn"),
+                svgTitle: document.getElementById("venn-title"),
+                svgDescription: document.getElementById("venn-desc"),
                 regionGrid: document.getElementById("region-grid"),
                 conditionLegend: document.getElementById("condition-legend"),
                 targetLegend: document.getElementById("target-legend"),
+                outsideLegend: document.getElementById("outside-legend"),
                 readoutKicker: document.getElementById("readout-kicker"),
                 readoutValue: document.getElementById("readout-value"),
                 formula: document.getElementById("formula"),
@@ -683,15 +820,58 @@
                 atomDetail: document.getElementById("atom-detail"),
                 twoSetRule: document.getElementById("two-set-rule"),
                 threeSetRule: document.getElementById("three-set-rule"),
+                relationshipPanel: document.getElementById("relationship-panel"),
                 relationshipGrid: document.getElementById("relationship-grid")
             };
 
-            const context = elements.canvas.getContext("2d");
             const state = {
+                mode,
                 weights: PRESETS.overlap.weights.slice(),
-                selectedMask: null,
-                geometry: null
+                selectedMask: null
             };
+
+            function configureMode() {
+                const includesConditioning = ["3.5", "3.6", "all"].includes(state.mode);
+                const includesIndependence = ["3.6", "all"].includes(state.mode);
+                const presetKeys = includesIndependence
+                    ? ["overlap", "exclusive", "independent", "pairwise"]
+                    : ["overlap", "exclusive"];
+
+                elements.preset.textContent = "";
+                presetKeys.forEach(key => {
+                    const option = document.createElement("option");
+                    option.value = key;
+                    option.textContent = PRESETS[key].label;
+                    elements.preset.appendChild(option);
+                });
+
+                elements.conditionField.hidden = !includesConditioning;
+                elements.relationshipPanel.hidden = !includesIndependence;
+                elements.condition.value = includesConditioning ? "C" : "S";
+                if (includesIndependence) {
+                    elements.relationshipPanel.classList.add("embedded");
+                    elements.diagramPanel.appendChild(elements.relationshipPanel);
+                }
+
+                if (state.mode === "all") {
+                    elements.modeBanner.textContent = "Showing the full explorer.";
+                    elements.eyebrow.textContent = "Probability · Interactive tool";
+                    elements.subtitle.textContent = "See the regions behind unions, intersections, conditioning, and three-event independence.";
+                    return;
+                }
+
+                elements.modeBanner.textContent = `Showing the controls for Section ${state.mode}. `;
+                const link = document.createElement("a");
+                link.href = "?mode=all";
+                link.textContent = "Open the full tool.";
+                elements.modeBanner.appendChild(link);
+                elements.eyebrow.textContent = `Section ${state.mode} · Interactive tool`;
+                elements.subtitle.textContent = state.mode === "3.4"
+                    ? "See the regions behind unions, intersections, and the additive rule."
+                    : state.mode === "3.5"
+                        ? "Build from event regions to conditional probability."
+                        : "Connect event regions, conditioning, and three-event independence.";
+            }
 
             function bitCount(mask) {
                 let count = 0;
@@ -725,40 +905,59 @@
                 return probability(EVENTS[key].test);
             }
 
-            function renderRegionButtons() {
-                elements.regionGrid.textContent = "";
-                REGIONS.forEach((region, index) => {
+            function buildRegionButtons() {
+                REGIONS.forEach(region => {
                     const button = document.createElement("button");
                     button.type = "button";
                     button.className = "region-button";
                     button.dataset.mask = String(region.mask);
-                    button.setAttribute("aria-pressed", String(state.selectedMask === region.mask));
-                    button.innerHTML = `<strong>${region.short}</strong><span>${region.expression} · ${formatPercent(state.weights[index])}</span>`;
-                    button.addEventListener("click", () => selectRegion(region.mask));
+                    button.innerHTML = "<strong></strong><span></span>";
+                    button.addEventListener("click", () => activateRegion(region.mask));
                     elements.regionGrid.appendChild(button);
                 });
             }
 
-            function geometryFor(width, height) {
-                const min = Math.min(width, height);
-                const radius = min * 0.285;
-                return {
-                    width,
-                    height,
-                    inset: Math.max(14, min * 0.035),
-                    circles: [
-                        { label: "A", bit: 4, x: width * 0.405, y: height * 0.42, r: radius },
-                        { label: "B", bit: 2, x: width * 0.595, y: height * 0.42, r: radius },
-                        { label: "C", bit: 1, x: width * 0.50, y: height * 0.61, r: radius }
-                    ]
-                };
-            }
-
-            function maskAt(x, y, geometry) {
-                return geometry.circles.reduce((mask, circle) => {
+            function maskAt(x, y) {
+                const circles = [
+                    { bit: 4, x: 260, y: 170, r: 130 },
+                    { bit: 2, x: 380, y: 170, r: 130 },
+                    { bit: 1, x: 320, y: 275, r: 130 }
+                ];
+                return circles.reduce((mask, circle) => {
                     const inside = (x - circle.x) ** 2 + (y - circle.y) ** 2 <= circle.r ** 2;
                     return inside ? mask | circle.bit : mask;
                 }, 0);
+            }
+
+            function buildRegionPaths() {
+                const namespace = "http://www.w3.org/2000/svg";
+                const pathData = new Map(REGIONS.map(region => [region.mask, ""]));
+                const step = 2;
+                const left = 14;
+                const right = 626;
+                const top = 14;
+                const bottom = 386;
+
+                for (let y = top; y < bottom; y += step) {
+                    let runStart = left;
+                    let currentMask = maskAt(left + step / 2, y + step / 2);
+                    for (let x = left + step; x <= right; x += step) {
+                        const nextMask = x < right ? maskAt(x + step / 2, y + step / 2) : -1;
+                        if (nextMask === currentMask) continue;
+                        pathData.set(currentMask, `${pathData.get(currentMask)}M${runStart},${y}H${x}V${y + step}H${runStart}Z`);
+                        runStart = x;
+                        currentMask = nextMask;
+                    }
+                }
+
+                const layer = document.getElementById("region-fill-layer");
+                REGIONS.forEach(region => {
+                    const path = document.createElementNS(namespace, "path");
+                    path.classList.add("region-fill");
+                    path.dataset.regionMask = String(region.mask);
+                    path.setAttribute("d", pathData.get(region.mask));
+                    layer.appendChild(path);
+                });
             }
 
             function fillFor(mask, targetTest, conditionTest) {
@@ -769,106 +968,23 @@
                 return "#edf0f5";
             }
 
-            function drawDiagram() {
-                const rect = elements.canvasShell.getBoundingClientRect();
-                const width = Math.max(320, Math.round(rect.width));
-                const height = Math.max(290, Math.round(rect.height));
-                const dpr = Math.min(window.devicePixelRatio || 1, 2);
-                elements.canvas.width = Math.round(width * dpr);
-                elements.canvas.height = Math.round(height * dpr);
-                context.setTransform(dpr, 0, 0, dpr, 0, 0);
-                context.clearRect(0, 0, width, height);
-
-                const geometry = geometryFor(width, height);
-                state.geometry = geometry;
+            function updateRegionButtons() {
                 const targetTest = EVENTS[elements.target.value].test;
                 const conditionTest = EVENTS[elements.condition.value].test;
-                const step = width < 520 ? 3 : 2;
-
-                context.fillStyle = "#f8faff";
-                context.fillRect(0, 0, width, height);
-                for (let y = geometry.inset; y < height - geometry.inset; y += step) {
-                    for (let x = geometry.inset; x < width - geometry.inset; x += step) {
-                        context.fillStyle = fillFor(maskAt(x, y, geometry), targetTest, conditionTest);
-                        context.fillRect(x, y, step, step);
-                    }
-                }
-
-                context.strokeStyle = "#8793aa";
-                context.lineWidth = 1.5;
-                context.strokeRect(geometry.inset, geometry.inset, width - geometry.inset * 2, height - geometry.inset * 2);
-
-                const outlineColors = ["#4058b5", "#138176", "#b96809"];
-                geometry.circles.forEach((circle, index) => {
-                    context.beginPath();
-                    context.arc(circle.x, circle.y, circle.r, 0, Math.PI * 2);
-                    context.strokeStyle = outlineColors[index];
-                    context.lineWidth = 3;
-                    context.stroke();
-                    context.fillStyle = outlineColors[index];
-                    context.font = `800 ${Math.max(17, width * 0.026)}px system-ui, sans-serif`;
-                    context.textAlign = "center";
-                    context.fillText(circle.label, circle.x + (index === 0 ? -circle.r * 0.62 : index === 1 ? circle.r * 0.62 : 0), circle.y + (index === 2 ? circle.r * 0.72 : -circle.r * 0.62));
-                });
-
-                context.fillStyle = "#657087";
-                context.font = "700 13px system-ui, sans-serif";
-                context.textAlign = "left";
-                context.fillText("S", geometry.inset + 9, geometry.inset + 20);
-
-                drawRegionLabels(geometry);
-            }
-
-            function drawRegionLabels(geometry) {
-                const positions = {
-                    0: [0.11, 0.84],
-                    4: [0.29, 0.35],
-                    2: [0.71, 0.35],
-                    1: [0.50, 0.83],
-                    6: [0.50, 0.25],
-                    5: [0.36, 0.62],
-                    3: [0.64, 0.62],
-                    7: [0.50, 0.49]
-                };
-                const compact = geometry.width < 480;
-                context.textAlign = "center";
-                context.textBaseline = "middle";
-
                 REGIONS.forEach((region, index) => {
-                    const [xRatio, yRatio] = positions[region.mask];
-                    const x = geometry.width * xRatio;
-                    const y = geometry.height * yRatio;
-                    const text = compact ? region.short.replace(" only", "") : region.short;
-                    context.font = `750 ${compact ? 10 : 11}px system-ui, sans-serif`;
-                    const textWidth = context.measureText(text).width;
-                    const boxWidth = Math.max(44, textWidth + 14);
-                    const selected = state.selectedMask === region.mask;
-                    context.fillStyle = selected ? "#172a53" : "rgba(255,255,255,0.88)";
-                    roundedRect(context, x - boxWidth / 2, y - 12, boxWidth, 24, 8);
-                    context.fill();
-                    context.strokeStyle = selected ? "#172a53" : "rgba(93,108,135,0.35)";
-                    context.lineWidth = 1;
-                    context.stroke();
-                    context.fillStyle = selected ? "#ffffff" : "#2d394f";
-                    context.fillText(text, x, y - 2);
-                    context.font = `700 ${compact ? 8 : 9}px system-ui, sans-serif`;
-                    context.fillStyle = selected ? "#dfeaff" : "#657087";
-                    context.fillText(formatPercent(state.weights[index]), x, y + 7);
+                    const button = elements.regionGrid.querySelector(`[data-mask="${region.mask}"]`);
+                    const inCondition = conditionTest(region.mask);
+                    const inTarget = inCondition && targetTest(region.mask);
+                    const stateText = inTarget ? "target within condition" : inCondition ? "conditioning space" : "outside condition";
+                    button.querySelector("strong").textContent = region.short;
+                    button.querySelector("span").textContent = `${state.weights[index].toFixed(2)} · ${region.expression}`;
+                    button.setAttribute("aria-pressed", String(inTarget));
+                    button.setAttribute("aria-label", `${region.short} — ${state.weights[index].toFixed(2)}. ${stateText}.`);
+                    button.classList.toggle("in-condition", inCondition);
                 });
             }
 
-            function roundedRect(ctx, x, y, width, height, radius) {
-                const r = Math.min(radius, width / 2, height / 2);
-                ctx.beginPath();
-                ctx.moveTo(x + r, y);
-                ctx.arcTo(x + width, y, x + width, y + height, r);
-                ctx.arcTo(x + width, y + height, x, y + height, r);
-                ctx.arcTo(x, y + height, x, y, r);
-                ctx.arcTo(x, y, x + width, y, r);
-                ctx.closePath();
-            }
-
-            function selectRegion(mask) {
+            function renderAtomDetail(mask) {
                 state.selectedMask = mask;
                 const region = REGIONS.find(item => item.mask === mask);
                 const index = REGIONS.indexOf(region);
@@ -876,9 +992,14 @@
                 const conditionTest = EVENTS[elements.condition.value].test;
                 const targetText = targetTest(mask) ? "inside the target" : "outside the target";
                 const conditionText = conditionTest(mask) ? "inside the conditioning space" : "outside the conditioning space";
-                elements.atomDetail.innerHTML = `<strong>${region.short}: ${region.expression}</strong><span>${formatPercent(state.weights[index])} of S · ${targetText} · ${conditionText}</span>`;
-                renderRegionButtons();
-                drawDiagram();
+                elements.atomDetail.innerHTML = `<strong>${region.short}: ${region.expression}</strong><span>Probability: ${formatPercent(state.weights[index])} of S · ${targetText} · ${conditionText}</span>`;
+            }
+
+            function activateRegion(mask) {
+                const region = REGIONS.find(item => item.mask === mask);
+                elements.target.value = region.key;
+                state.selectedMask = mask;
+                renderAll();
             }
 
             function renderProbability() {
@@ -897,7 +1018,40 @@
                 elements.probabilityFill.style.width = Number.isFinite(conditional) ? `${Math.max(0, Math.min(100, conditional * 100))}%` : "0%";
                 elements.conditionLegend.textContent = isConditional ? `Conditioning space (${condition.label})` : "Sample space S";
                 elements.targetLegend.textContent = isConditional ? `Target within ${condition.label}` : `Target (${target.label})`;
-                elements.canvasDescription.textContent = `The diagram highlights ${target.label}${isConditional ? ` within the restricted sample space ${condition.label}` : " in the full sample space"}. The displayed probability is ${Number.isFinite(conditional) ? formatNumber(conditional) : "undefined"}.`;
+                elements.outsideLegend.textContent = isConditional ? "Outside condition" : "Not in target";
+                return { target, condition, numerator, denominator, conditional, isConditional };
+            }
+
+            function renderSvg(summary) {
+                document.querySelectorAll("[data-region-mask]").forEach(shape => {
+                    const mask = Number(shape.dataset.regionMask);
+                    shape.setAttribute("fill", fillFor(mask, summary.target.test, summary.condition.test));
+                });
+
+                document.querySelectorAll("[data-label-mask]").forEach(label => {
+                    const mask = Number(label.dataset.labelMask);
+                    const index = REGIONS.findIndex(region => region.mask === mask);
+                    label.querySelector(".region-value").textContent = state.weights[index].toFixed(2);
+                });
+
+                const pAB = intersectionProbability(EVENTS.A.test, EVENTS.B.test);
+                const pAC = intersectionProbability(EVENTS.A.test, EVENTS.C.test);
+                const pBC = intersectionProbability(EVENTS.B.test, EVENTS.C.test);
+                let overlapText;
+                if (approximatelyEqual(pAB + pAC + pBC, 0)) {
+                    overlapText = "A, B, and C are mutually exclusive.";
+                } else if (approximatelyEqual(pAC + pBC, 0)) {
+                    overlapText = `A and B overlap in ${formatNumber(pAB)}; C is disjoint from both.`;
+                } else {
+                    overlapText = `A and B overlap in ${formatNumber(pAB)}; A and C overlap in ${formatNumber(pAC)}; B and C overlap in ${formatNumber(pBC)}.`;
+                }
+                const restriction = summary.isConditional ? summary.condition.label : "no restriction";
+                const shaded = summary.isConditional
+                    ? `${summary.target.label} within ${summary.condition.label}`
+                    : summary.target.label;
+                const value = Number.isFinite(summary.conditional) ? formatNumber(summary.conditional) : "undefined";
+                elements.svgTitle.textContent = `Three-event diagram: ${shaded}`;
+                elements.svgDescription.textContent = `Three event circles in sample space S. Currently shaded: ${shaded}, probability ${value}. ${overlapText} Restricted to: ${restriction}.`;
             }
 
             function renderRules() {
@@ -966,19 +1120,19 @@
                 cards.forEach(card => {
                     const element = document.createElement("article");
                     element.className = `status-card ${card.pass ? "pass" : "fail"}`;
-                    const chips = card.chips.map(chip => `<span class="pair-chip ${chip.pass ? "pass" : ""}">${chip.pass ? "✓" : "×"} ${chip.label}</span>`).join("");
+                    const chips = card.chips.map(chip => `<span class="pair-chip ${chip.pass ? "pass" : ""}"><span aria-hidden="true">${chip.pass ? "✓" : "×"}</span> ${chip.label}</span>`).join("");
                     element.innerHTML = `<div class="status-top"><span class="status-icon" aria-hidden="true">${card.pass ? "✓" : "×"}</span><h3>${card.title}: ${card.pass ? "yes" : "no"}</h3></div><p>${card.detail}</p><div class="pair-row">${chips}</div>`;
                     elements.relationshipGrid.appendChild(element);
                 });
             }
 
             function renderAll() {
-                renderProbability();
+                const summary = renderProbability();
                 renderRules();
-                renderRelationships();
-                renderRegionButtons();
-                drawDiagram();
-                if (state.selectedMask !== null) selectRegion(state.selectedMask);
+                if (!elements.relationshipPanel.hidden) renderRelationships();
+                updateRegionButtons();
+                renderSvg(summary);
+                if (state.selectedMask !== null) renderAtomDetail(state.selectedMask);
             }
 
             function applyPreset() {
@@ -990,45 +1144,25 @@
                 renderAll();
             }
 
-            function pointerPosition(event) {
-                const rect = elements.canvas.getBoundingClientRect();
-                return {
-                    x: (event.clientX - rect.left) * (state.geometry.width / rect.width),
-                    y: (event.clientY - rect.top) * (state.geometry.height / rect.height),
-                    cssX: event.clientX - rect.left,
-                    cssY: event.clientY - rect.top
-                };
-            }
-
-            elements.canvas.addEventListener("click", event => {
-                if (!state.geometry) return;
-                const point = pointerPosition(event);
-                selectRegion(maskAt(point.x, point.y, state.geometry));
-            });
-
-            elements.canvas.addEventListener("pointermove", event => {
-                if (!state.geometry) return;
-                const point = pointerPosition(event);
-                const mask = maskAt(point.x, point.y, state.geometry);
-                const region = REGIONS.find(item => item.mask === mask);
-                const index = REGIONS.indexOf(region);
-                elements.hoverCard.textContent = `${region.short} · ${region.expression} · ${formatPercent(state.weights[index])}`;
-                elements.hoverCard.style.left = `${Math.min(point.cssX, elements.canvasShell.clientWidth - 220)}px`;
-                elements.hoverCard.style.top = `${Math.min(point.cssY, elements.canvasShell.clientHeight - 70)}px`;
-                elements.hoverCard.hidden = false;
-            });
-
-            elements.canvas.addEventListener("pointerleave", () => {
-                elements.hoverCard.hidden = true;
+            elements.svg.addEventListener("click", event => {
+                const point = elements.svg.createSVGPoint();
+                point.x = event.clientX;
+                point.y = event.clientY;
+                const local = point.matrixTransform(elements.svg.getScreenCTM().inverse());
+                activateRegion(maskAt(local.x, local.y));
             });
 
             elements.preset.addEventListener("change", applyPreset);
-            elements.target.addEventListener("change", renderAll);
+            elements.target.addEventListener("change", () => {
+                state.selectedMask = null;
+                elements.atomDetail.innerHTML = "<strong>Target updated</strong><span>Use a region button to focus on one atomic outcome region.</span>";
+                renderAll();
+            });
             elements.condition.addEventListener("change", renderAll);
 
-            const resizeObserver = new ResizeObserver(() => drawDiagram());
-            resizeObserver.observe(elements.canvasShell);
-
+            configureMode();
+            buildRegionButtons();
+            buildRegionPaths();
             applyPreset();
         })();
     </script>
