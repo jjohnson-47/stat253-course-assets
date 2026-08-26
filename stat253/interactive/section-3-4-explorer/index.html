@@ -1,0 +1,1036 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Section 3.4: Three-Event Probability Explorer</title>
+    <style>
+        :root {
+            --ink: #172033;
+            --muted: #5b6477;
+            --line: #d8deea;
+            --surface: #ffffff;
+            --surface-soft: #f5f7fb;
+            --navy: #172a53;
+            --blue: #1976c9;
+            --blue-soft: #dcefff;
+            --coral: #e85555;
+            --coral-soft: #ffe1df;
+            --green: #137c5b;
+            --green-soft: #dff5ed;
+            --amber: #b96809;
+            --amber-soft: #fff0d5;
+            --purple: #6657c7;
+            --shadow: 0 18px 45px rgba(27, 42, 75, 0.11);
+        }
+
+        * { box-sizing: border-box; }
+
+        html { font-size: 16px; }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at 15% -5%, rgba(69, 112, 221, 0.16), transparent 32rem),
+                linear-gradient(180deg, #f8faff 0%, #eef2f8 100%);
+            color: var(--ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.45;
+            min-height: 100vh;
+        }
+
+        button, select { font: inherit; }
+
+        button, select, canvas { -webkit-tap-highlight-color: transparent; }
+
+        .app {
+            width: min(1180px, calc(100% - 28px));
+            margin: 0 auto;
+            padding: 24px 0 34px;
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(230px, 300px);
+            gap: 24px;
+            align-items: end;
+            padding: 28px 30px;
+            color: white;
+            background: linear-gradient(125deg, #14264d 0%, #244a88 55%, #356fc3 100%);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            right: -115px;
+            top: -160px;
+            border: 58px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: #cde2ff;
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            max-width: 760px;
+            margin: 0;
+            font-size: clamp(1.85rem, 4vw, 3.1rem);
+            line-height: 1.04;
+            letter-spacing: -0.045em;
+        }
+
+        .subtitle {
+            max-width: 700px;
+            margin: 12px 0 0;
+            color: #e2ecfb;
+            font-size: 1rem;
+        }
+
+        .preset-control {
+            position: relative;
+            z-index: 1;
+            min-width: 0;
+        }
+
+        .preset-control label,
+        .field label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.075em;
+            text-transform: uppercase;
+        }
+
+        .preset-control label { color: #d7e7ff; }
+
+        select {
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            min-height: 46px;
+            padding: 10px 38px 10px 12px;
+            color: var(--ink);
+            background: white;
+            border: 1px solid rgba(255, 255, 255, 0.42);
+            border-radius: 11px;
+            cursor: pointer;
+        }
+
+        select:focus-visible,
+        button:focus-visible,
+        canvas:focus-visible {
+            outline: 3px solid #ffcf70;
+            outline-offset: 3px;
+        }
+
+        .preset-note {
+            min-height: 2.7em;
+            margin: 9px 2px 0;
+            color: #dce9fc;
+            font-size: 0.82rem;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(290px, 0.8fr);
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .workspace > *,
+        .hero > * { min-width: 0; }
+
+        .panel {
+            min-width: 0;
+            background: var(--surface);
+            border: 1px solid rgba(196, 205, 222, 0.78);
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(30, 47, 85, 0.075);
+        }
+
+        .diagram-panel { padding: 18px; }
+
+        .panel-heading {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .panel-heading h2,
+        .controls-panel h2,
+        .relationship-panel h2 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 1.08rem;
+            letter-spacing: -0.015em;
+        }
+
+        .panel-heading p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 0.84rem;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px 14px;
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        .legend-item { white-space: nowrap; }
+
+        .swatch {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
+            border-radius: 4px;
+            vertical-align: -1px;
+        }
+
+        .swatch.condition { background: var(--blue); }
+        .swatch.target { background: var(--coral); }
+        .swatch.outside { background: #e9edf4; border: 1px solid #cbd3e1; }
+
+        .canvas-shell {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            min-height: 330px;
+            background: #f7f9fc;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .hover-card {
+            position: absolute;
+            z-index: 2;
+            max-width: 210px;
+            padding: 8px 10px;
+            color: white;
+            background: rgba(20, 32, 55, 0.94);
+            border-radius: 9px;
+            box-shadow: 0 7px 18px rgba(18, 28, 49, 0.24);
+            font-size: 0.77rem;
+            pointer-events: none;
+            transform: translate(12px, 12px);
+        }
+
+        .hover-card[hidden] { display: none; }
+
+        .region-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 7px;
+            margin-top: 10px;
+        }
+
+        .region-button {
+            min-height: 52px;
+            padding: 7px 8px;
+            text-align: left;
+            color: var(--ink);
+            background: var(--surface-soft);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+        }
+
+        .region-button:hover {
+            border-color: #93a5c4;
+            transform: translateY(-1px);
+        }
+
+        .region-button[aria-pressed="true"] {
+            background: var(--coral-soft);
+            border-color: var(--coral);
+        }
+
+        .region-button strong,
+        .region-button span { display: block; }
+
+        .region-button strong { font-size: 0.79rem; }
+
+        .region-button span {
+            margin-top: 2px;
+            color: var(--muted);
+            font-size: 0.72rem;
+        }
+
+        .controls-panel { padding: 20px; }
+
+        .controls-panel h2 { margin-bottom: 15px; }
+
+        .field + .field { margin-top: 14px; }
+
+        .field label { color: var(--muted); }
+
+        .readout {
+            margin-top: 18px;
+            padding: 17px;
+            background: linear-gradient(145deg, #f5f8fe, #edf3fc);
+            border: 1px solid #d8e2f2;
+            border-radius: 15px;
+        }
+
+        .readout-kicker {
+            margin: 0 0 3px;
+            color: var(--blue);
+            font-size: 0.73rem;
+            font-weight: 850;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .readout-value {
+            margin: 0;
+            color: var(--navy);
+            font-size: clamp(1.7rem, 4vw, 2.45rem);
+            font-weight: 850;
+            letter-spacing: -0.045em;
+        }
+
+        .formula {
+            overflow-wrap: anywhere;
+            margin: 5px 0 0;
+            color: #3d4960;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.79rem;
+            line-height: 1.55;
+        }
+
+        .probability-bar {
+            overflow: hidden;
+            height: 8px;
+            margin-top: 13px;
+            background: #dfe5ef;
+            border-radius: 999px;
+        }
+
+        .probability-fill {
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--coral), #ef8a55);
+            border-radius: inherit;
+            transition: width 220ms ease;
+        }
+
+        .atom-detail {
+            min-height: 70px;
+            margin-top: 14px;
+            padding: 13px 14px;
+            color: #3d4960;
+            background: #fff;
+            border: 1px dashed #bec9da;
+            border-radius: 12px;
+            font-size: 0.82rem;
+        }
+
+        .atom-detail strong {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--navy);
+            font-size: 0.92rem;
+        }
+
+        .atom-detail span { display: block; }
+
+        .rules {
+            display: grid;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .rule {
+            padding: 10px 11px;
+            color: #43506a;
+            background: #fafbfe;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            font-size: 0.73rem;
+            line-height: 1.5;
+        }
+
+        .rule strong { color: var(--navy); }
+
+        .relationship-panel {
+            margin-top: 18px;
+            padding: 20px;
+        }
+
+        .relationship-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 13px;
+        }
+
+        .relationship-header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.77rem;
+        }
+
+        .relationship-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .status-card {
+            padding: 13px;
+            border: 1px solid var(--line);
+            border-radius: 13px;
+        }
+
+        .status-top {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .status-icon {
+            display: inline-grid;
+            flex: 0 0 auto;
+            width: 26px;
+            height: 26px;
+            place-items: center;
+            border-radius: 50%;
+            font-size: 0.82rem;
+            font-weight: 900;
+        }
+
+        .status-card.pass { background: var(--green-soft); border-color: #a9dccb; }
+        .status-card.pass .status-icon { color: white; background: var(--green); }
+        .status-card.fail { background: #f8f9fc; }
+        .status-card.fail .status-icon { color: #6e7788; background: #e2e6ee; }
+
+        .status-card h3 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 0.87rem;
+        }
+
+        .status-card p {
+            margin: 7px 0 0;
+            color: #4f5b70;
+            font-size: 0.72rem;
+            line-height: 1.42;
+        }
+
+        .pair-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 9px;
+        }
+
+        .pair-chip {
+            padding: 3px 7px;
+            color: #536078;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(151, 166, 191, 0.6);
+            border-radius: 999px;
+            font-size: 0.67rem;
+            font-weight: 750;
+        }
+
+        .pair-chip.pass { color: #0d684c; border-color: #80c6ad; }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @media (max-width: 880px) {
+            .hero { grid-template-columns: 1fr; }
+            .preset-control { max-width: 430px; }
+            .workspace { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 620px) {
+            .app { width: min(100% - 16px, 1180px); padding-top: 8px; }
+            .hero { padding: 22px 19px; border-radius: 18px; }
+            .panel { border-radius: 16px; }
+            .diagram-panel, .controls-panel, .relationship-panel { padding: 14px; }
+            .canvas-shell { min-height: 290px; aspect-ratio: 4 / 3; }
+            .region-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .relationship-grid { grid-template-columns: 1fr; }
+            .relationship-header { align-items: flex-start; flex-direction: column; }
+            .legend { gap: 6px 10px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="app">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Section 3.4 · Interactive tool</p>
+                <h1>Three-Event Probability Explorer</h1>
+                <p class="subtitle">See the regions behind unions, intersections, conditioning, and three-event independence.</p>
+            </div>
+            <div class="preset-control">
+                <label for="preset">Probability model</label>
+                <select id="preset">
+                    <option value="overlap">General overlap</option>
+                    <option value="exclusive">Mutually exclusive</option>
+                    <option value="independent">Mutually independent</option>
+                    <option value="pairwise">Pairwise, not mutually independent</option>
+                </select>
+                <p class="preset-note" id="preset-note"></p>
+            </div>
+        </header>
+
+        <section class="workspace" aria-label="Probability explorer">
+            <div class="panel diagram-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Sample space S</h2>
+                        <p>Click a region to identify its exact set expression.</p>
+                    </div>
+                    <div class="legend" aria-label="Color legend">
+                        <span class="legend-item"><span class="swatch condition"></span><span id="condition-legend">Conditioning space</span></span>
+                        <span class="legend-item"><span class="swatch target"></span><span id="target-legend">Target within condition</span></span>
+                        <span class="legend-item"><span class="swatch outside"></span>Outside condition</span>
+                    </div>
+                </div>
+
+                <div class="canvas-shell" id="canvas-shell">
+                    <canvas id="venn" role="img" aria-label="Three-set Venn diagram showing events A, B, and C in sample space S"></canvas>
+                    <div class="hover-card" id="hover-card" hidden></div>
+                </div>
+                <p class="sr-only" id="canvas-description"></p>
+                <div class="region-grid" id="region-grid" aria-label="Atomic Venn regions"></div>
+            </div>
+
+            <aside class="panel controls-panel">
+                <h2>Probability lens</h2>
+                <div class="field">
+                    <label for="target">Target event</label>
+                    <select id="target">
+                        <option value="AorB">A ∪ B</option>
+                        <option value="AandB">A ∩ B</option>
+                        <option value="any">A ∪ B ∪ C</option>
+                        <option value="exactlyOne">Exactly one event</option>
+                        <option value="atLeastTwo">At least two events</option>
+                        <option value="all">A ∩ B ∩ C</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="none">None of A, B, or C</option>
+                        <option value="Aonly">A only</option>
+                        <option value="Bonly">B only</option>
+                        <option value="Conly">C only</option>
+                        <option value="ABonly">A ∩ B only</option>
+                        <option value="AConly">A ∩ C only</option>
+                        <option value="BConly">B ∩ C only</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="condition">Restrict the sample space</label>
+                    <select id="condition">
+                        <option value="S">No restriction (S)</option>
+                        <option value="A">Given A</option>
+                        <option value="B">Given B</option>
+                        <option value="C" selected>Given C</option>
+                        <option value="AorB">Given A ∪ B</option>
+                        <option value="AandB">Given A ∩ B</option>
+                        <option value="any">Given at least one event</option>
+                    </select>
+                </div>
+
+                <div class="readout" aria-live="polite">
+                    <p class="readout-kicker" id="readout-kicker">Conditional probability</p>
+                    <p class="readout-value" id="readout-value">0.000</p>
+                    <p class="formula" id="formula"></p>
+                    <div class="probability-bar" aria-hidden="true"><div class="probability-fill" id="probability-fill"></div></div>
+                </div>
+
+                <div class="atom-detail" id="atom-detail" aria-live="polite">
+                    <strong>Select a region</strong>
+                    <span>Use the diagram or the region buttons to inspect one atomic outcome region.</span>
+                </div>
+
+                <div class="rules" aria-label="Additive-rule calculations">
+                    <div class="rule" id="two-set-rule"></div>
+                    <div class="rule" id="three-set-rule"></div>
+                </div>
+            </aside>
+        </section>
+
+        <section class="panel relationship-panel" aria-labelledby="relationship-title">
+            <div class="relationship-header">
+                <h2 id="relationship-title">Event relationship checks</h2>
+                <p>Independence is tested from the probabilities, not from how the circles look.</p>
+            </div>
+            <div class="relationship-grid" id="relationship-grid"></div>
+        </section>
+    </main>
+
+    <script>
+        (() => {
+            "use strict";
+
+            const REGIONS = [
+                { mask: 0, key: "none", short: "Outside", expression: "Aᶜ ∩ Bᶜ ∩ Cᶜ" },
+                { mask: 4, key: "Aonly", short: "A only", expression: "A ∩ Bᶜ ∩ Cᶜ" },
+                { mask: 2, key: "Bonly", short: "B only", expression: "Aᶜ ∩ B ∩ Cᶜ" },
+                { mask: 1, key: "Conly", short: "C only", expression: "Aᶜ ∩ Bᶜ ∩ C" },
+                { mask: 6, key: "ABonly", short: "A ∩ B only", expression: "A ∩ B ∩ Cᶜ" },
+                { mask: 5, key: "AConly", short: "A ∩ C only", expression: "A ∩ Bᶜ ∩ C" },
+                { mask: 3, key: "BConly", short: "B ∩ C only", expression: "Aᶜ ∩ B ∩ C" },
+                { mask: 7, key: "all", short: "All three", expression: "A ∩ B ∩ C" }
+            ];
+
+            const PRESETS = {
+                overlap: {
+                    note: "Every kind of overlap is possible, so the general additive rule is needed.",
+                    weights: [0.13, 0.17, 0.12, 0.10, 0.13, 0.08, 0.07, 0.20]
+                },
+                exclusive: {
+                    note: "The events are disjoint: unions add directly, but the events are not independent.",
+                    weights: [0.15, 0.30, 0.25, 0.30, 0, 0, 0, 0]
+                },
+                independent: {
+                    note: "All pairwise checks and the three-way check pass.",
+                    weights: [0.21, 0.21, 0.14, 0.09, 0.14, 0.09, 0.06, 0.06]
+                },
+                pairwise: {
+                    note: "Each pair is independent, but the three events are not mutually independent.",
+                    weights: [0, 0.25, 0.25, 0.25, 0, 0, 0, 0.25]
+                }
+            };
+
+            const EVENTS = {
+                S: { label: "S", test: () => true },
+                A: { label: "A", test: mask => Boolean(mask & 4) },
+                B: { label: "B", test: mask => Boolean(mask & 2) },
+                C: { label: "C", test: mask => Boolean(mask & 1) },
+                AorB: { label: "A ∪ B", test: mask => Boolean(mask & 6) },
+                AandB: { label: "A ∩ B", test: mask => (mask & 6) === 6 },
+                any: { label: "A ∪ B ∪ C", test: mask => mask !== 0 },
+                exactlyOne: { label: "exactly one", test: mask => bitCount(mask) === 1 },
+                atLeastTwo: { label: "at least two", test: mask => bitCount(mask) >= 2 },
+                all: { label: "A ∩ B ∩ C", test: mask => mask === 7 },
+                none: { label: "none", test: mask => mask === 0 },
+                Aonly: { label: "A only", test: mask => mask === 4 },
+                Bonly: { label: "B only", test: mask => mask === 2 },
+                Conly: { label: "C only", test: mask => mask === 1 },
+                ABonly: { label: "A ∩ B only", test: mask => mask === 6 },
+                AConly: { label: "A ∩ C only", test: mask => mask === 5 },
+                BConly: { label: "B ∩ C only", test: mask => mask === 3 }
+            };
+
+            const elements = {
+                preset: document.getElementById("preset"),
+                presetNote: document.getElementById("preset-note"),
+                target: document.getElementById("target"),
+                condition: document.getElementById("condition"),
+                canvas: document.getElementById("venn"),
+                canvasShell: document.getElementById("canvas-shell"),
+                canvasDescription: document.getElementById("canvas-description"),
+                hoverCard: document.getElementById("hover-card"),
+                regionGrid: document.getElementById("region-grid"),
+                conditionLegend: document.getElementById("condition-legend"),
+                targetLegend: document.getElementById("target-legend"),
+                readoutKicker: document.getElementById("readout-kicker"),
+                readoutValue: document.getElementById("readout-value"),
+                formula: document.getElementById("formula"),
+                probabilityFill: document.getElementById("probability-fill"),
+                atomDetail: document.getElementById("atom-detail"),
+                twoSetRule: document.getElementById("two-set-rule"),
+                threeSetRule: document.getElementById("three-set-rule"),
+                relationshipGrid: document.getElementById("relationship-grid")
+            };
+
+            const context = elements.canvas.getContext("2d");
+            const state = {
+                weights: PRESETS.overlap.weights.slice(),
+                selectedMask: null,
+                geometry: null
+            };
+
+            function bitCount(mask) {
+                let count = 0;
+                for (let n = mask; n; n >>= 1) count += n & 1;
+                return count;
+            }
+
+            function probability(test) {
+                return REGIONS.reduce((sum, region, index) => sum + (test(region.mask) ? state.weights[index] : 0), 0);
+            }
+
+            function intersectionProbability(first, second) {
+                return probability(mask => first(mask) && second(mask));
+            }
+
+            function formatNumber(value, digits = 3) {
+                if (Math.abs(value) < 0.0000001) return "0";
+                if (Math.abs(value - 1) < 0.0000001) return "1";
+                return value.toFixed(digits).replace(/0+$/, "").replace(/\.$/, "");
+            }
+
+            function formatPercent(value) {
+                return `${(value * 100).toFixed(value * 100 % 1 ? 1 : 0)}%`;
+            }
+
+            function approximatelyEqual(first, second) {
+                return Math.abs(first - second) < 1e-9;
+            }
+
+            function eventProbability(key) {
+                return probability(EVENTS[key].test);
+            }
+
+            function renderRegionButtons() {
+                elements.regionGrid.textContent = "";
+                REGIONS.forEach((region, index) => {
+                    const button = document.createElement("button");
+                    button.type = "button";
+                    button.className = "region-button";
+                    button.dataset.mask = String(region.mask);
+                    button.setAttribute("aria-pressed", String(state.selectedMask === region.mask));
+                    button.innerHTML = `<strong>${region.short}</strong><span>${region.expression} · ${formatPercent(state.weights[index])}</span>`;
+                    button.addEventListener("click", () => selectRegion(region.mask));
+                    elements.regionGrid.appendChild(button);
+                });
+            }
+
+            function geometryFor(width, height) {
+                const min = Math.min(width, height);
+                const radius = min * 0.285;
+                return {
+                    width,
+                    height,
+                    inset: Math.max(14, min * 0.035),
+                    circles: [
+                        { label: "A", bit: 4, x: width * 0.405, y: height * 0.42, r: radius },
+                        { label: "B", bit: 2, x: width * 0.595, y: height * 0.42, r: radius },
+                        { label: "C", bit: 1, x: width * 0.50, y: height * 0.61, r: radius }
+                    ]
+                };
+            }
+
+            function maskAt(x, y, geometry) {
+                return geometry.circles.reduce((mask, circle) => {
+                    const inside = (x - circle.x) ** 2 + (y - circle.y) ** 2 <= circle.r ** 2;
+                    return inside ? mask | circle.bit : mask;
+                }, 0);
+            }
+
+            function fillFor(mask, targetTest, conditionTest) {
+                const insideCondition = conditionTest(mask);
+                const insideTarget = targetTest(mask);
+                if (insideCondition && insideTarget) return "#e85555";
+                if (insideCondition) return "#cfe8fb";
+                return "#edf0f5";
+            }
+
+            function drawDiagram() {
+                const rect = elements.canvasShell.getBoundingClientRect();
+                const width = Math.max(320, Math.round(rect.width));
+                const height = Math.max(290, Math.round(rect.height));
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                elements.canvas.width = Math.round(width * dpr);
+                elements.canvas.height = Math.round(height * dpr);
+                context.setTransform(dpr, 0, 0, dpr, 0, 0);
+                context.clearRect(0, 0, width, height);
+
+                const geometry = geometryFor(width, height);
+                state.geometry = geometry;
+                const targetTest = EVENTS[elements.target.value].test;
+                const conditionTest = EVENTS[elements.condition.value].test;
+                const step = width < 520 ? 3 : 2;
+
+                context.fillStyle = "#f8faff";
+                context.fillRect(0, 0, width, height);
+                for (let y = geometry.inset; y < height - geometry.inset; y += step) {
+                    for (let x = geometry.inset; x < width - geometry.inset; x += step) {
+                        context.fillStyle = fillFor(maskAt(x, y, geometry), targetTest, conditionTest);
+                        context.fillRect(x, y, step, step);
+                    }
+                }
+
+                context.strokeStyle = "#8793aa";
+                context.lineWidth = 1.5;
+                context.strokeRect(geometry.inset, geometry.inset, width - geometry.inset * 2, height - geometry.inset * 2);
+
+                const outlineColors = ["#4058b5", "#138176", "#b96809"];
+                geometry.circles.forEach((circle, index) => {
+                    context.beginPath();
+                    context.arc(circle.x, circle.y, circle.r, 0, Math.PI * 2);
+                    context.strokeStyle = outlineColors[index];
+                    context.lineWidth = 3;
+                    context.stroke();
+                    context.fillStyle = outlineColors[index];
+                    context.font = `800 ${Math.max(17, width * 0.026)}px system-ui, sans-serif`;
+                    context.textAlign = "center";
+                    context.fillText(circle.label, circle.x + (index === 0 ? -circle.r * 0.62 : index === 1 ? circle.r * 0.62 : 0), circle.y + (index === 2 ? circle.r * 0.72 : -circle.r * 0.62));
+                });
+
+                context.fillStyle = "#657087";
+                context.font = "700 13px system-ui, sans-serif";
+                context.textAlign = "left";
+                context.fillText("S", geometry.inset + 9, geometry.inset + 20);
+
+                drawRegionLabels(geometry);
+            }
+
+            function drawRegionLabels(geometry) {
+                const positions = {
+                    0: [0.11, 0.84],
+                    4: [0.29, 0.35],
+                    2: [0.71, 0.35],
+                    1: [0.50, 0.83],
+                    6: [0.50, 0.25],
+                    5: [0.36, 0.62],
+                    3: [0.64, 0.62],
+                    7: [0.50, 0.49]
+                };
+                const compact = geometry.width < 480;
+                context.textAlign = "center";
+                context.textBaseline = "middle";
+
+                REGIONS.forEach((region, index) => {
+                    const [xRatio, yRatio] = positions[region.mask];
+                    const x = geometry.width * xRatio;
+                    const y = geometry.height * yRatio;
+                    const text = compact ? region.short.replace(" only", "") : region.short;
+                    context.font = `750 ${compact ? 10 : 11}px system-ui, sans-serif`;
+                    const textWidth = context.measureText(text).width;
+                    const boxWidth = Math.max(44, textWidth + 14);
+                    const selected = state.selectedMask === region.mask;
+                    context.fillStyle = selected ? "#172a53" : "rgba(255,255,255,0.88)";
+                    roundedRect(context, x - boxWidth / 2, y - 12, boxWidth, 24, 8);
+                    context.fill();
+                    context.strokeStyle = selected ? "#172a53" : "rgba(93,108,135,0.35)";
+                    context.lineWidth = 1;
+                    context.stroke();
+                    context.fillStyle = selected ? "#ffffff" : "#2d394f";
+                    context.fillText(text, x, y - 2);
+                    context.font = `700 ${compact ? 8 : 9}px system-ui, sans-serif`;
+                    context.fillStyle = selected ? "#dfeaff" : "#657087";
+                    context.fillText(formatPercent(state.weights[index]), x, y + 7);
+                });
+            }
+
+            function roundedRect(ctx, x, y, width, height, radius) {
+                const r = Math.min(radius, width / 2, height / 2);
+                ctx.beginPath();
+                ctx.moveTo(x + r, y);
+                ctx.arcTo(x + width, y, x + width, y + height, r);
+                ctx.arcTo(x + width, y + height, x, y + height, r);
+                ctx.arcTo(x, y + height, x, y, r);
+                ctx.arcTo(x, y, x + width, y, r);
+                ctx.closePath();
+            }
+
+            function selectRegion(mask) {
+                state.selectedMask = mask;
+                const region = REGIONS.find(item => item.mask === mask);
+                const index = REGIONS.indexOf(region);
+                const targetTest = EVENTS[elements.target.value].test;
+                const conditionTest = EVENTS[elements.condition.value].test;
+                const targetText = targetTest(mask) ? "inside the target" : "outside the target";
+                const conditionText = conditionTest(mask) ? "inside the conditioning space" : "outside the conditioning space";
+                elements.atomDetail.innerHTML = `<strong>${region.short}: ${region.expression}</strong><span>${formatPercent(state.weights[index])} of S · ${targetText} · ${conditionText}</span>`;
+                renderRegionButtons();
+                drawDiagram();
+            }
+
+            function renderProbability() {
+                const target = EVENTS[elements.target.value];
+                const condition = EVENTS[elements.condition.value];
+                const denominator = probability(condition.test);
+                const numerator = intersectionProbability(target.test, condition.test);
+                const conditional = denominator > 0 ? numerator / denominator : NaN;
+                const isConditional = elements.condition.value !== "S";
+
+                elements.readoutKicker.textContent = isConditional ? "Conditional probability" : "Probability";
+                elements.readoutValue.textContent = Number.isFinite(conditional) ? formatNumber(conditional) : "Undefined";
+                elements.formula.textContent = isConditional
+                    ? `P(${target.label} | ${condition.label}) = P((${target.label}) ∩ (${condition.label})) / P(${condition.label}) = ${formatNumber(numerator)} / ${formatNumber(denominator)}${Number.isFinite(conditional) ? ` = ${formatNumber(conditional)}` : ""}`
+                    : `P(${target.label}) = ${formatNumber(numerator)}`;
+                elements.probabilityFill.style.width = Number.isFinite(conditional) ? `${Math.max(0, Math.min(100, conditional * 100))}%` : "0%";
+                elements.conditionLegend.textContent = isConditional ? `Conditioning space (${condition.label})` : "Sample space S";
+                elements.targetLegend.textContent = isConditional ? `Target within ${condition.label}` : `Target (${target.label})`;
+                elements.canvasDescription.textContent = `The diagram highlights ${target.label}${isConditional ? ` within the restricted sample space ${condition.label}` : " in the full sample space"}. The displayed probability is ${Number.isFinite(conditional) ? formatNumber(conditional) : "undefined"}.`;
+            }
+
+            function renderRules() {
+                const pA = eventProbability("A");
+                const pB = eventProbability("B");
+                const pC = eventProbability("C");
+                const pAB = intersectionProbability(EVENTS.A.test, EVENTS.B.test);
+                const pAC = intersectionProbability(EVENTS.A.test, EVENTS.C.test);
+                const pBC = intersectionProbability(EVENTS.B.test, EVENTS.C.test);
+                const pABC = eventProbability("all");
+                const pAorB = eventProbability("AorB");
+                const pAny = eventProbability("any");
+
+                elements.twoSetRule.innerHTML = `<strong>Two-set additive rule</strong><br>P(A ∪ B) = ${formatNumber(pA)} + ${formatNumber(pB)} − ${formatNumber(pAB)} = <strong>${formatNumber(pAorB)}</strong>`;
+                elements.threeSetRule.innerHTML = `<strong>Three-set inclusion–exclusion</strong><br>${formatNumber(pA)} + ${formatNumber(pB)} + ${formatNumber(pC)} − ${formatNumber(pAB)} − ${formatNumber(pAC)} − ${formatNumber(pBC)} + ${formatNumber(pABC)} = <strong>${formatNumber(pAny)}</strong>`;
+            }
+
+            function renderRelationships() {
+                const pairs = [
+                    { label: "A and B", short: "A–B", first: EVENTS.A.test, second: EVENTS.B.test },
+                    { label: "A and C", short: "A–C", first: EVENTS.A.test, second: EVENTS.C.test },
+                    { label: "B and C", short: "B–C", first: EVENTS.B.test, second: EVENTS.C.test }
+                ];
+
+                const pairResults = pairs.map(pair => {
+                    const firstProbability = probability(pair.first);
+                    const secondProbability = probability(pair.second);
+                    const intersection = intersectionProbability(pair.first, pair.second);
+                    return {
+                        ...pair,
+                        disjoint: approximatelyEqual(intersection, 0),
+                        independent: approximatelyEqual(intersection, firstProbability * secondProbability),
+                        intersection,
+                        product: firstProbability * secondProbability
+                    };
+                });
+
+                const mutuallyExclusive = pairResults.every(pair => pair.disjoint);
+                const pairwiseIndependent = pairResults.every(pair => pair.independent);
+                const pABC = eventProbability("all");
+                const productABC = eventProbability("A") * eventProbability("B") * eventProbability("C");
+                const mutuallyIndependent = pairwiseIndependent && approximatelyEqual(pABC, productABC);
+
+                const cards = [
+                    {
+                        pass: mutuallyExclusive,
+                        title: "Mutually exclusive",
+                        detail: mutuallyExclusive ? "No pair can occur together." : "At least one pair has shared probability.",
+                        chips: pairResults.map(pair => ({ label: pair.short, pass: pair.disjoint }))
+                    },
+                    {
+                        pass: pairwiseIndependent,
+                        title: "Pairwise independent",
+                        detail: "Each pair checks whether P(X ∩ Y) = P(X)P(Y).",
+                        chips: pairResults.map(pair => ({ label: pair.short, pass: pair.independent }))
+                    },
+                    {
+                        pass: mutuallyIndependent,
+                        title: "Mutually independent",
+                        detail: `Pairwise checks plus P(A ∩ B ∩ C) = ${formatNumber(pABC)} versus ${formatNumber(productABC)}.`,
+                        chips: [{ label: "three-way", pass: approximatelyEqual(pABC, productABC) }]
+                    }
+                ];
+
+                elements.relationshipGrid.textContent = "";
+                cards.forEach(card => {
+                    const element = document.createElement("article");
+                    element.className = `status-card ${card.pass ? "pass" : "fail"}`;
+                    const chips = card.chips.map(chip => `<span class="pair-chip ${chip.pass ? "pass" : ""}">${chip.pass ? "✓" : "×"} ${chip.label}</span>`).join("");
+                    element.innerHTML = `<div class="status-top"><span class="status-icon" aria-hidden="true">${card.pass ? "✓" : "×"}</span><h3>${card.title}: ${card.pass ? "yes" : "no"}</h3></div><p>${card.detail}</p><div class="pair-row">${chips}</div>`;
+                    elements.relationshipGrid.appendChild(element);
+                });
+            }
+
+            function renderAll() {
+                renderProbability();
+                renderRules();
+                renderRelationships();
+                renderRegionButtons();
+                drawDiagram();
+                if (state.selectedMask !== null) selectRegion(state.selectedMask);
+            }
+
+            function applyPreset() {
+                const preset = PRESETS[elements.preset.value];
+                state.weights = preset.weights.slice();
+                state.selectedMask = null;
+                elements.presetNote.textContent = preset.note;
+                elements.atomDetail.innerHTML = "<strong>Select a region</strong><span>Use the diagram or the region buttons to inspect one atomic outcome region.</span>";
+                renderAll();
+            }
+
+            function pointerPosition(event) {
+                const rect = elements.canvas.getBoundingClientRect();
+                return {
+                    x: (event.clientX - rect.left) * (state.geometry.width / rect.width),
+                    y: (event.clientY - rect.top) * (state.geometry.height / rect.height),
+                    cssX: event.clientX - rect.left,
+                    cssY: event.clientY - rect.top
+                };
+            }
+
+            elements.canvas.addEventListener("click", event => {
+                if (!state.geometry) return;
+                const point = pointerPosition(event);
+                selectRegion(maskAt(point.x, point.y, state.geometry));
+            });
+
+            elements.canvas.addEventListener("pointermove", event => {
+                if (!state.geometry) return;
+                const point = pointerPosition(event);
+                const mask = maskAt(point.x, point.y, state.geometry);
+                const region = REGIONS.find(item => item.mask === mask);
+                const index = REGIONS.indexOf(region);
+                elements.hoverCard.textContent = `${region.short} · ${region.expression} · ${formatPercent(state.weights[index])}`;
+                elements.hoverCard.style.left = `${Math.min(point.cssX, elements.canvasShell.clientWidth - 220)}px`;
+                elements.hoverCard.style.top = `${Math.min(point.cssY, elements.canvasShell.clientHeight - 70)}px`;
+                elements.hoverCard.hidden = false;
+            });
+
+            elements.canvas.addEventListener("pointerleave", () => {
+                elements.hoverCard.hidden = true;
+            });
+
+            elements.preset.addEventListener("change", applyPreset);
+            elements.target.addEventListener("change", renderAll);
+            elements.condition.addEventListener("change", renderAll);
+
+            const resizeObserver = new ResizeObserver(() => drawDiagram());
+            resizeObserver.observe(elements.canvasShell);
+
+            applyPreset();
+        })();
+    </script>
+</body>
+</html>
